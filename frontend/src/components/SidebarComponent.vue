@@ -4,10 +4,11 @@
 
 
     <div class="flex justify-between my-4 h-6">
-      <h3 :class="(isMenuOpen) ? '' : 'w-0'" class="overflow-x-hidden text-xl text-slate-800 font-bold ">SmartShip</h3>
+      <h3 :class="(isMenuOpen) ? '' : ''" class="overflow-x-hidden text-xl text-slate-800 font-bold ">SmartShip</h3>
 
       <!--Hamburger-->
-      <button @click="toggleMenu" class="-m-2 p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-500">
+      <button @click="toggleMenu"
+              class="-m-2 p-2 bg-white hover:bg-slate-100 rounded-lg transition-colors text-slate-500">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
              class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
@@ -27,7 +28,7 @@
                       d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/>
               </svg>
             </div>
-            <span v-if="isMenuOpen" class="overflow-x-hidden whitespace-nowrap">Dashboard</span>
+            <span class="overflow-x-hidden whitespace-nowrap">Dashboard</span>
           </a>
         </li>
         <li>
@@ -39,7 +40,7 @@
                       d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/>
               </svg>
             </div>
-            <span v-if="isMenuOpen" class="overflow-x-hidden whitespace-nowrap">Notifications</span>
+            <span class="overflow-x-hidden whitespace-nowrap">Notifications</span>
           </a>
         </li>
         <li>
@@ -51,7 +52,7 @@
                       d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>
               </svg>
             </div>
-            <span v-if="isMenuOpen" class="overflow-x-hidden whitespace-nowrap">Power usage</span>
+            <span class="overflow-x-hidden whitespace-nowrap">Power usage</span>
           </a>
         </li>
         <li>
@@ -63,7 +64,7 @@
                       d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
               </svg>
             </div>
-            <span v-if="isMenuOpen" class="overflow-x-hidden whitespace-nowrap">Ship information</span>
+            <span class="overflow-x-hidden whitespace-nowrap">Ship information</span>
           </a>
         </li>
         <li>
@@ -75,7 +76,7 @@
                       d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z"/>
               </svg>
             </div>
-            <span v-if="isMenuOpen" class="overflow-x-hidden whitespace-nowrap">Rating</span>
+            <span class="overflow-x-hidden whitespace-nowrap">Rating</span>
           </a>
         </li>
       </ul>
@@ -89,7 +90,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
-            <span v-if="isMenuOpen" class="overflow-x-hidden whitespace-nowrap">Settings</span>
+            <span class="overflow-x-hidden whitespace-nowrap">Settings</span>
           </a>
         </li>
         <li>
@@ -99,7 +100,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
               </svg>
             </div>
-            <span v-if="isMenuOpen" class="overflow-x-hidden whitespace-nowrap">Check out</span>
+            <span class="overflow-x-hidden whitespace-nowrap">Check out</span>
           </a>
         </li>
         <li>
@@ -107,7 +108,7 @@
             <div class="mr-2">
               <div class="h-[24px] w-[24px] bg-slate-200 rounded-full animate-pulse"></div>
             </div>
-            <span v-if="isMenuOpen" class="overflow-x-hidden whitespace-nowrap">Profile</span>
+            <span class="overflow-x-hidden whitespace-nowrap">Profile</span>
           </a>
         </li>
       </ul>
