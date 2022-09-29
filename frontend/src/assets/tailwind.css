@@ -7,3 +7,7 @@
 body {
     @apply bg-slate-100
 }
+
+.router-link-exact-active {
+    @apply bg-sky-100 text-sky-600
+}

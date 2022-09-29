@@ -1,6 +1,6 @@
 <template>
   <div :class="(isMenuOpen) ? 'w-[240px]' : 'w-[56px]'"
-       class="bg-white h-screen p-4 transition-all duration-500 flex flex-col fixed">
+       class="bg-white h-screen p-4 transition-all duration-500 flex flex-col fixed top-0">
 
     <div class="flex justify-between my-4 h-6">
       <h3 :class="(isMenuOpen) ? '' : ''" class="overflow-x-hidden text-xl text-slate-800 font-bold ">SmartShip</h3>
@@ -19,7 +19,8 @@
     <div class="flex flex-col justify-between h-full text-slate-500">
       <ul>
         <li>
-          <router-link to="/dashboard" class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
+          <router-link to="/dashboard"
+                       class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -31,7 +32,7 @@
           </router-link>
         </li>
         <li>
-          <router-link to="/notifications"
+          <router-link to="/dashboard/notifications"
                        class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -44,7 +45,8 @@
           </router-link>
         </li>
         <li>
-          <a href="#" class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
+          <router-link to="/dashboard/power-usage"
+                       class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -53,10 +55,11 @@
               </svg>
             </div>
             <span class="overflow-x-hidden whitespace-nowrap">Power usage</span>
-          </a>
+          </router-link>
         </li>
         <li>
-          <a href="#" class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
+          <router-link to="/dashboard/information"
+                       class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -65,10 +68,11 @@
               </svg>
             </div>
             <span class="overflow-x-hidden whitespace-nowrap">Ship information</span>
-          </a>
+          </router-link>
         </li>
         <li>
-          <a href="#" class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
+          <router-link to="/dashboard/rating"
+                       class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -77,39 +81,46 @@
               </svg>
             </div>
             <span class="overflow-x-hidden whitespace-nowrap">Rating</span>
-          </a>
+          </router-link>
         </li>
       </ul>
 
       <ul>
         <li>
-          <a href="#" class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
+          <router-link to="/dashboard/settings"
+                       class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
             <div class="mr-2">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z" />
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                   stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
               </svg>
             </div>
             <span class="overflow-x-hidden whitespace-nowrap">Settings</span>
-          </a>
+          </router-link>
         </li>
         <li>
-          <a href="#" class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
+          <router-link to="/dashboard/check-out"
+                       class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
             <div class="mr-2">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                   stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/>
               </svg>
             </div>
             <span class="overflow-x-hidden whitespace-nowrap">Check out</span>
-          </a>
+          </router-link>
         </li>
         <li>
-          <a href="#" class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
+          <router-link to="/dashboard/profile"
+                       class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
             <div class="mr-2">
               <div class="h-[24px] w-[24px] bg-slate-200 rounded-full animate-pulse"></div>
             </div>
             <span class="overflow-x-hidden whitespace-nowrap">Profile</span>
-          </a>
+          </router-link>
         </li>
       </ul>
     </div>
@@ -120,7 +131,7 @@
 export default {
   name: "SidebarComponent",
   emits: [
-      'isMenuOpen'
+    'isMenuOpen'
   ],
   data() {
     return {
