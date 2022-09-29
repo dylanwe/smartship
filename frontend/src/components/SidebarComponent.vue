@@ -1,7 +1,6 @@
 <template>
   <div :class="(isMenuOpen) ? 'w-[240px]' : 'w-[56px]'"
-       class="bg-white h-screen p-4 w-fit transition-all duration-500 flex flex-col fixed">
-
+       class="bg-white h-screen p-4 transition-all duration-500 flex flex-col fixed">
 
     <div class="flex justify-between my-4 h-6">
       <h3 :class="(isMenuOpen) ? '' : ''" class="overflow-x-hidden text-xl text-slate-800 font-bold ">SmartShip</h3>
@@ -20,7 +19,7 @@
     <div class="flex flex-col justify-between h-full text-slate-500">
       <ul>
         <li>
-          <a href="#" class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
+          <router-link to="/dashboard" class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -29,10 +28,11 @@
               </svg>
             </div>
             <span class="overflow-x-hidden whitespace-nowrap">Dashboard</span>
-          </a>
+          </router-link>
         </li>
         <li>
-          <a href="#" class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
+          <router-link to="/notifications"
+                       class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -41,7 +41,7 @@
               </svg>
             </div>
             <span class="overflow-x-hidden whitespace-nowrap">Notifications</span>
-          </a>
+          </router-link>
         </li>
         <li>
           <a href="#" class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
@@ -119,6 +119,9 @@
 <script>
 export default {
   name: "SidebarComponent",
+  emits: [
+      'isMenuOpen'
+  ],
   data() {
     return {
       isMenuOpen: true,
@@ -127,6 +130,7 @@ export default {
   methods: {
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
+      this.$emit('isMenuOpen', this.isMenuOpen);
     }
   }
 }
