@@ -4,6 +4,6 @@ Dashboard
 
 <script>
 export default {
-  name: "DashboardComponent"
+  name: "DashboardIndex"
 }
 </script>
