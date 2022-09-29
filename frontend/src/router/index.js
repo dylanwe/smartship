@@ -3,7 +3,7 @@ import DashboardComponent from "@/components/DashboardComponent";
 import UnknownRoute from "@/components/UnknownRoute";
 
 const routes = [
-    {path: "/", component: DashboardComponent},
+    {path: "/", redirect: "/dashboard"},
     {path: "/dashboard", component: DashboardComponent},
     {path: "/:pathMatch(.*)", component: UnknownRoute},
 ];
