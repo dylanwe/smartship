@@ -87,6 +87,16 @@
 
       <ul>
         <li>
+          <router-link to="/dashboard/profile"
+                       class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
+            <div class="mr-2">
+              <div class="h-[24px] w-[24px] bg-slate-200 rounded-full animate-pulse"></div>
+            </div>
+            <span class="overflow-x-hidden whitespace-nowrap">Profile</span>
+          </router-link>
+        </li>
+
+        <li>
           <router-link to="/dashboard/settings"
                        class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
             <div class="mr-2">
@@ -100,6 +110,7 @@
             <span class="overflow-x-hidden whitespace-nowrap">Settings</span>
           </router-link>
         </li>
+        
         <li>
           <router-link to="/dashboard/check-out"
                        class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
@@ -113,15 +124,7 @@
             <span class="overflow-x-hidden whitespace-nowrap">Check out</span>
           </router-link>
         </li>
-        <li>
-          <router-link to="/dashboard/profile"
-                       class="flex items-center hover:bg-slate-100 -mx-2 px-2 py-2 rounded-lg transition-colors">
-            <div class="mr-2">
-              <div class="h-[24px] w-[24px] bg-slate-200 rounded-full animate-pulse"></div>
-            </div>
-            <span class="overflow-x-hidden whitespace-nowrap">Profile</span>
-          </router-link>
-        </li>
+       
       </ul>
     </div>
   </div>
