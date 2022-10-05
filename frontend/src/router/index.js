@@ -3,13 +3,15 @@ import DashboardComponent from "@/components/dashboard/DashboardComponent";
 import DashboardIndex from "@/components/dashboard/DashboardIndex";
 import ProfileIndex from "@/components/dashboard/profile/ProfileIndex";
 import UnknownRoute from "@/components/UnknownRoute";
+import SettingsIndex from "@/components/dashboard/settings/SettingsIndex";
 
 const routes = [
     {path: "/", component: UnknownRoute},
     {path: "/dashboard", component: DashboardComponent, children: [
             {path: "", component: DashboardIndex},
             {path: "profile", component: ProfileIndex},
-            {path: "/dashboard/:pathMatch(.*)", component: UnknownRoute}
+            {path: "settings", component: SettingsIndex},
+            {path: ":pathMatch(.*)", component: UnknownRoute}
         ]
     },
     {path: "/:pathMatch(.*)", component: UnknownRoute},
