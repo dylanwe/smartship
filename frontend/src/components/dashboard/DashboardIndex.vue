@@ -1,5 +1,5 @@
 <template>
-Dashboard
+asas
 </template>
 
 <script>

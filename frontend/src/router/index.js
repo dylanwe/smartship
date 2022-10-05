@@ -8,7 +8,7 @@ const routes = [
     {path: "/", component: UnknownRoute},
     {path: "/dashboard", component: DashboardComponent, children: [
             {path: "", component: DashboardIndex},
-            {path: "notifications", component: NotificationIndex},
+            {path: "/notifications", component: NotificationIndex},
             {path: "/dashboard/:pathMatch(.*)", component: UnknownRoute}
         ]
     },
