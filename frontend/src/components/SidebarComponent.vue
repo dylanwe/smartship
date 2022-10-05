@@ -2,7 +2,7 @@
   <div :class="(isMenuOpen) ? 'w-[240px]' : 'w-[56px]'"
        class="bg-white h-screen p-4 transition-all duration-500 flex flex-col fixed top-0">
 
-    <div class="flex justify-between my-4 ">
+    <div class="flex justify-between my-4">
       <h3 :class="(isMenuOpen) ? '' : ''" class="overflow-x-hidden text-xl text-slate-800 font-bold ">SmartShip</h3>
 
       <!--Hamburger-->
