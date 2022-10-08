@@ -5,6 +5,8 @@ import com.smartship.backend.app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(path = "/users")
 public class UserController {
@@ -16,8 +18,13 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
+    @GetMapping(path = "")
+    public List<User> findAllUser() {
+        return userRepository.findAll();
+    }
+
     @GetMapping(path = "{id}")
     public User findUserById(@PathVariable long id) {
-        return userRepository.findUserById(id);
+        return userRepository.findById(id);
     }
 }

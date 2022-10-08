@@ -1,7 +1,11 @@
 package com.smartship.backend.app.models;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 
+@Entity
+@NamedQuery(name = "find_all_users", query = "select u from User u")
+@Table(name = "users")
 public class User {
     public enum ROLE {
         Admin,
@@ -9,6 +13,8 @@ public class User {
         Operator
     }
 
+    @Id
+    @GeneratedValue
     private long id;
     private String firstname;
     private String lastname;
@@ -18,7 +24,21 @@ public class User {
     private ROLE role;
     private String bio;
 
-    public User(long id, String firstname, String lastname, String email, String password, LocalDate birthday, ROLE role, String bio) {
+    public User() {
+    }
+
+    public User(String firstname, String lastname, String email, String password, LocalDate birthday, ROLE role, String bio) {
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.password = password;
+        this.birthday = birthday;
+        this.role = role;
+        this.bio = bio;
+    }
+
+    public User(long id, String firstname, String lastname, String email, String password, LocalDate birthday,
+                ROLE role, String bio) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
