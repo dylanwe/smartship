@@ -12,33 +12,48 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="mb-4">
             <label class="block mb-2 text-sm font-medium text-slate-900">First name</label>
-            <input type="text"
+            <input type="text" v-if="user" v-model="user.firstname"
+                   class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5"
+                   placeholder="Jane" required="">
+            <input type="text" v-else
                    class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5"
                    placeholder="Jane" required="">
           </div>
           <div class="mb-4">
             <label class="block mb-2 text-sm font-medium text-slate-900">Last Name</label>
-            <input type="text"
+            <input type="text" v-if="user" v-model="user.lastname"
                    class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5"
                    placeholder="Smith" required="">
+            <input type="text" v-else
+                   class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5"
+                   placeholder="Jane" required="">
           </div>
           <div class="mb-4">
             <label class="block mb-2 text-sm font-medium text-slate-900">Email</label>
-            <input type="email"
+            <input type="email" v-if="user" v-model="user.email"
                    class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5"
                    placeholder="janesmith@mail.com" required="">
+            <input type="text" v-else
+                   class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5"
+                   placeholder="Jane" required="">
           </div>
           <div class="mb-4">
             <label class="block mb-2 text-sm font-medium text-slate-900">Birthday</label>
-            <input type="date"
+            <input type="date" v-if="user" v-model="user.birthday"
                    class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5"
-                   placeholder="Smith" required="">
+                   required="">
+            <input type="text" v-else
+                   class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5"
+                   placeholder="Jane" required="">
           </div>
         </div>
 
         <label for="Bio" class="block mb-2 text-sm font-medium text-slate-900">Bio</label>
-        <textarea id="Bio" rows="4"
-                  class="block p-2.5 w-full text-sm text-slate-900 bg-slate-50 rounded-lg border border-slate-300 focus:ring-sky-500 focus:border-sky-500"
+        <textarea id="Bio" rows="2" v-if="user" v-model="user.bio"
+                  class="block p-2.5 w-full text-sm resize-none text-slate-900 bg-slate-50 rounded-lg border border-slate-300 focus:ring-sky-500 focus:border-sky-500"
+                  placeholder="Tell us about yourself"></textarea>
+        <textarea id="Bio" rows="2" v-else
+                  class="block p-2.5 w-full text-sm resize-none text-slate-900 bg-slate-50 rounded-lg border border-slate-300 focus:ring-sky-500 focus:border-sky-500"
                   placeholder="Tell us about yourself"></textarea>
 
 
@@ -80,56 +95,22 @@
       <p class="text-slate-600">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
         mollit anim id est
         laborum.</p>
-      <form class="mt-4 space-x-2">
-        <div>
-          <h3 class="text-lg text-slate-800 font-bold">Ship</h3>
+      <form v-if="notificationSettings" class="mt-4">
+        <div v-for="setting in notificationSettings.notifications" :key="setting.id">
+          <h3 class="text-lg text-slate-800 font-bold">{{ setting.name }}</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div>
-              <p class="text-slate-600">These are notifications to alert you
-                on changes of the ship.</p>
+              <p class="text-slate-600">{{ setting.description }}</p>
             </div>
             <div>
-              <div>
-                <label for="default-toggle" class="inline-flex relative items-center mb-4 cursor-pointer">
-                  <input type="checkbox" value="" id="default-toggle" class="sr-only peer">
+              <div v-for="(notification, index) in setting.options" :key="`${setting.id}-${index}`">
+                <label :for="setting.id + '-' + index"
+                       class="inline-flex relative items-center mb-4 cursor-pointer">
+                  <input type="checkbox" value="" :id="setting.id + '-' + index" class="sr-only peer"
+                         :checked="notification.on">
                   <div
-                      class="w-11 h-6 bg-slate-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-sky-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500"></div>
-                  <span class="ml-3 text-sm font-medium text-slate-500">In app</span>
-                </label>
-              </div>
-              <div>
-                <label for="e-mail" class="inline-flex relative items-center mb-4 cursor-pointer">
-                  <input type="checkbox" value="" id="e-mail" class="sr-only peer">
-                  <div
-                      class="w-11 h-6 bg-slate-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-sky-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500"></div>
-                  <span class="ml-3 text-sm font-medium text-slate-500">E-mail</span>
-                </label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <h3 class="text-lg text-slate-800 font-bold">Tasks</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-            <div>
-              <p class="text-slate-600">These are notifications to remind you of any task
-                and when someone assigns you a new task.</p>
-            </div>
-            <div>
-              <div>
-                <label for="task-app" class="inline-flex relative items-center mb-4 cursor-pointer">
-                  <input type="checkbox" value="" id="task-app" class="sr-only peer">
-                  <div
-                      class="w-11 h-6 bg-slate-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-sky-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500"></div>
-                  <span class="ml-3 text-sm font-medium text-slate-500">In app</span>
-                </label>
-              </div>
-              <div>
-                <label for="task-email" class="inline-flex relative items-center mb-4 cursor-pointer">
-                  <input type="checkbox" value="" id="task-email" class="sr-only peer">
-                  <div
-                      class="w-11 h-6 bg-slate-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-sky-500 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500"></div>
-                  <span class="ml-3 text-sm font-medium text-slate-500">E-mail</span>
+                      class="w-11 h-6 bg-slate-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-sky-200 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-sky-500"></div>
+                  <span class="ml-3 text-sm font-medium text-slate-500">{{ notification.name }}</span>
                 </label>
               </div>
             </div>
@@ -141,6 +122,7 @@
           Save
         </button>
       </form>
+      <div v-else class="h-64"></div>
 
     </div>
   </div>
@@ -149,10 +131,19 @@
 <script>
 export default {
   name: "SettingsIndex",
+  inject: ["userService"],
+
   data() {
     return {
+      user: null,
+      notificationSettings: null,
       password: ''
     }
-  }
+  },
+
+  async created() {
+    this.user = await this.userService.findUserById(1);
+    this.notificationSettings = await this.userService.findNotificationSettings(1);
+  },
 }
 </script>
