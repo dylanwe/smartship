@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       strokeWidth: {
-        '2': '1.5px',
+        '1.5': '1.5px',
       }
     },
   },
