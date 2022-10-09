@@ -8,7 +8,10 @@ import java.util.List;
 @Repository
 public interface UserRepository {
     User findById(long id);
+
     List<User> findAll();
+
     User save(User user);
+
     User deleteById(long id);
 }

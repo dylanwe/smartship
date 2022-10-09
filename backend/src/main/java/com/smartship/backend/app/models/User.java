@@ -7,12 +7,6 @@ import java.time.LocalDate;
 @NamedQuery(name = "find_all_users", query = "select u from User u")
 @Table(name = "users")
 public class User {
-    public enum ROLE {
-        Admin,
-        Moderator,
-        Operator
-    }
-
     @Id
     @GeneratedValue
     private long id;
@@ -111,5 +105,11 @@ public class User {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public enum ROLE {
+        Admin,
+        Moderator,
+        Operator
     }
 }
