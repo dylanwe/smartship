@@ -1,9 +1,9 @@
 <template>
-  <div class="h-screen p-8 flex justify-around">
-    <div class="bg-sky-500 w-1/3 p-8 rounded-2xl">
-      <div class="mb-16">
-        <h3 class="text-2xl text-white font-bold mb-16">SmartShip</h3>
-        <h2 class="text-4xl text-white font-bold mb-4">Start your journey and enable a sustainable maritime future</h2>
+  <div class="h-screen p-4 lg:p-8 flex justify-evenly">
+    <div class="bg-sky-500 hidden sm:block sm:w-1/2 lg:w-1/2 xl:w-1/3 p-8 rounded-2xl">
+      <div class="mb-4 md:mb-6 2xl:mb-16">
+        <h3 class="text-lg xl:text-xl 2xl:text-2xl text-white font-bold mb-8 xl:mb-16">SmartShip</h3>
+        <h2 class="text-xl xl:text-2xl 2xl:text-4xl text-white font-bold mb-4">Start your journey and enable a sustainable maritime future</h2>
         <p class="text-slate-100 text-base">
           At Smart-Ship, we make force-feedback control levers for the maritime industry.
           By bridging the gap in information transfer we aim to enable a sustainable maritime future
@@ -13,7 +13,7 @@
 
       <div>
         <div class="block p-5 max-w bg-sky-700 rounded-xl">
-          <p class="font-normal text-slate-200 mb-2">
+          <p class="text-sm md:text-base font-normal text-slate-200 mb-2">
             Our maritime control levers enable operators to sail environmentally friendly,
             by transferring the vessel’s optimal speed, acceleration rate and rate of turn,
             without requiring visual feedback.
@@ -22,7 +22,7 @@
       </div>
 
     </div>
-    <div class="w-1/3 p-8">
+    <div class="w-full sm:w-1/2 lg:w-1/3 p-8">
       <h3 class="text-2xl text-slate-800 font-bold">Sign up</h3>
       <p class="text-md text-slate-500 mb-4">Login to get started</p>
       <form>
@@ -30,9 +30,12 @@
           <label for="email" class="block mb-1 text-sm font-medium text-slate-500">E-mail</label>
           <input type="email" id="email" class="bg-white border border-2 border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
         </div>
-        <div class="mb-8">
+        <div class="mb-1">
           <label for="password" class="block mb-1 text-sm font-medium text-slate-500">Password</label>
           <input type="password" id="password" class="bg-white border border-2 border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
+        </div>
+        <div class="mb-8">
+          <a class="text-sm font-medium text-sky-500 cursor-pointer">Reset Password</a>
         </div>
         <button type="submit" class="text-white bg-sky-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Login</button>
       </form>
