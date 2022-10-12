@@ -24,23 +24,23 @@ public class User {
     public User() {
     }
 
-    public User(String firstname, String lastname, String email, String password, LocalDate birthday, ROLE role, String bio) {
+    public User(String firstname, String lastname, String email, String hashedPassword, LocalDate birthday, ROLE role, String bio) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
-        this.hashedPassword = password;
+        this.hashedPassword = hashedPassword;
         this.birthday = birthday;
         this.role = role;
         this.bio = bio;
     }
 
-    public User(long id, String firstname, String lastname, String email, String password, LocalDate birthday,
+    public User(long id, String firstname, String lastname, String email, String hashedPassword, LocalDate birthday,
                 ROLE role, String bio) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
-        this.hashedPassword = password;
+        this.hashedPassword = hashedPassword;
         this.birthday = birthday;
         this.role = role;
         this.bio = bio;
