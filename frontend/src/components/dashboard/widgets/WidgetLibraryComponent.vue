@@ -42,8 +42,8 @@ export default {
         return {
             search:null,
             data:[
-                {icon:"📈", title: "Line Chart", component:"WidgetTest", config: {}, restrictTo:[ROLES.ADMIN]},
-                {icon: "📊", title:"Bar Chart", component:"WidgetTest"}
+                {icon:"📈", title: "Line Chart", component:"WidgetLine", config: {}, restrictTo:[ROLES.ADMIN]},
+                {icon: "📊", title:"Bar Chart", component:"WidgetBar"}
             ],
         }
     },

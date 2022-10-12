@@ -38,7 +38,7 @@
     </div>
     <!-- Widget Library -->
     <WidgetLibraryComponent @addWidget="addWidget" :showWidgetbar="showWidgetbar" @closeWidgetMenu="toggleWidgetbar"/>
-    <div class="container">
+    <div class="container select-none">
         <grid-layout v-model:layout="layout"
                  :col-num="numberOfColumns"
                  :row-height="100"
@@ -48,7 +48,8 @@
                  :use-css-transforms="true"
                  :responsive="false"
                  :maxRows="5"
-            class="border-2 border-sky-600 mt-4 rounded-2xl"
+                 :autoSize="false"
+                
         >
         <!-- Grid Item -->
             <grid-item v-for="(item,index) in layout"
@@ -78,7 +79,8 @@
 
 import {GridLayout,GridItem} from 'vue3-grid-layout';
 import WidgetLibraryComponent from './widgets/WidgetLibraryComponent.vue';
-import WidgetTest from './widgets/WidgetTest.vue';
+import WidgetBar from './widgets/WidgetBar.vue';
+import WidgetLine from './widgets/WidgetLine.vue';
 
 export default {
   name: "DashboardIndex",
@@ -86,16 +88,17 @@ export default {
     GridLayout: GridLayout,
     GridItem: GridItem,
     WidgetLibraryComponent,
-    WidgetTest,
+    WidgetBar,
+    WidgetLine
 },
   data(){
     return{
         // Temp stored widgets
       layout: [
-                {"x":0,"y":0,"w":3,"h":2,"i":"test"},
+                {"x":0,"y":0,"w":3,"h":2,"i":"0"},
                 {"x":1,"y":0,"w":1,"h":1,"i":"1"},
                 {"x":2,"y":2,"w":1,"h":1,"i":"2"},
-                {"x":2,"y":5,"w":2,"h":1,"i":"3"},
+                // {"x":2,"y":5,"w":2,"h":1,"i":"3"},
              
             ],
             // Grid options
