@@ -37,4 +37,11 @@ public class UserRepositoryJpa implements UserRepository {
     public User deleteById(long id) {
         throw new UnsupportedOperationException("Deletion of users not implemented yet");
     }
+
+    @Override
+    public User findByEmail(String email) {
+        return entityManager.createNamedQuery("find_by_email", User.class)
+                .setParameter("email", email)
+                .getSingleResult();
+    }
 }

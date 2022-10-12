@@ -2,6 +2,7 @@ package com.smartship.backend.app;
 
 import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.UserRepository;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -45,12 +46,13 @@ public class BackendApplication implements CommandLineRunner {
         if (users.size() > 0) return;
 
         System.out.println("Adding a initial users");
+        String password = BCrypt.hashpw("secret", BCrypt.gensalt());
         userRepository.save(
                 new User(
                         "Takehiko",
                         "Inoue",
                         "takehiko@hiko.com",
-                        "hidden",
+                        password,
                         LocalDate.now(),
                         User.ROLE.Operator,
                         "See everything in it's entirety... effortlessly. That is what it means to truly see."

@@ -1,12 +1,14 @@
 package com.smartship.backend.app.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.mindrot.jbcrypt.BCrypt;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
 @NamedQuery(name = "find_all_users", query = "select u from User u")
+@NamedQuery(name = "find_by_email", query = "select u from User u where u.email = :email")
 @Table(name = "users")
 public class User {
     @Id
@@ -14,6 +16,7 @@ public class User {
     private long id;
     private String firstname;
     private String lastname;
+    @Column(unique=true)
     private String email;
     @JsonIgnore
     private String hashedPassword;
@@ -24,23 +27,23 @@ public class User {
     public User() {
     }
 
-    public User(String firstname, String lastname, String email, String hashedPassword, LocalDate birthday, ROLE role, String bio) {
+    public User(String firstname, String lastname, String email, String password, LocalDate birthday, ROLE role, String bio) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
-        this.hashedPassword = hashedPassword;
+        this.hashedPassword = password;
         this.birthday = birthday;
         this.role = role;
         this.bio = bio;
     }
 
-    public User(long id, String firstname, String lastname, String email, String hashedPassword, LocalDate birthday,
+    public User(long id, String firstname, String lastname, String email, String password, LocalDate birthday,
                 ROLE role, String bio) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
-        this.hashedPassword = hashedPassword;
+        this.hashedPassword = password;
         this.birthday = birthday;
         this.role = role;
         this.bio = bio;
