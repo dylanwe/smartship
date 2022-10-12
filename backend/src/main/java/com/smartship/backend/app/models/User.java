@@ -1,5 +1,7 @@
 package com.smartship.backend.app.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -13,7 +15,8 @@ public class User {
     private String firstname;
     private String lastname;
     private String email;
-    private String password;
+    @JsonIgnore
+    private String hashedPassword;
     private LocalDate birthday;
     private ROLE role;
     private String bio;
@@ -25,7 +28,7 @@ public class User {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
-        this.password = password;
+        this.hashedPassword = password;
         this.birthday = birthday;
         this.role = role;
         this.bio = bio;
@@ -37,7 +40,7 @@ public class User {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
-        this.password = password;
+        this.hashedPassword = password;
         this.birthday = birthday;
         this.role = role;
         this.bio = bio;
@@ -75,12 +78,12 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getHashedPassword() {
+        return hashedPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setHashedPassword(String password) {
+        this.hashedPassword = password;
     }
 
     public LocalDate getBirthday() {
