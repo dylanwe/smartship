@@ -4,9 +4,10 @@ import DashboardIndex from "@/components/dashboard/DashboardIndex";
 import ProfileIndex from "@/components/dashboard/profile/ProfileIndex";
 import UnknownRoute from "@/components/UnknownRoute";
 import SettingsIndex from "@/components/dashboard/settings/SettingsIndex";
+import LoginForm from "@/components/LoginForm";
 
 const routes = [
-    {path: "/", component: UnknownRoute},
+    {path: "/", component: LoginForm},
     {path: "/dashboard", component: DashboardComponent, children: [
             {path: "", component: DashboardIndex},
             {path: "profile", component: ProfileIndex},
