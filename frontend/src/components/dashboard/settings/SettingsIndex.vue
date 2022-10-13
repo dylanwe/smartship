@@ -131,7 +131,7 @@
 <script>
 export default {
   name: "SettingsIndex",
-  inject: ["userService"],
+  inject: ["sessionService", "userService"],
 
   data() {
     return {
@@ -142,8 +142,9 @@ export default {
   },
 
   async created() {
-    this.user = await this.userService.findUserById(1);
-    this.notificationSettings = await this.userService.findNotificationSettings(1);
+    const jsonUser = this.sessionService.getUser();
+    this.user = await this.userService.findUserById(jsonUser.id);
+    this.notificationSettings = await this.userService.findNotificationSettings(jsonUser.id);
   },
 }
 </script>

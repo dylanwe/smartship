@@ -69,4 +69,20 @@ export default class SessionSbService {
         localStorage.getItem("user");
         return localStorage.getItem("token");
     }
+
+    getUser() {
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+        return storedUser;
+    }
+
+    getCurrentToken() {
+        return localStorage.getItem("token");
+    }
+
+    /**
+     * Check if a user is authenticated
+     */
+    isAuthenticated() {
+        return !!localStorage.getItem("token");
+    }
 }
