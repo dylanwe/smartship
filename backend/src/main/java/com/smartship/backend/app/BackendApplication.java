@@ -49,9 +49,9 @@ public class BackendApplication implements CommandLineRunner {
         String password = BCrypt.hashpw("secret", BCrypt.gensalt());
         userRepository.save(
                 new User(
-                        "Takehiko",
-                        "Inoue",
-                        "takehiko@hiko.com",
+                        "John",
+                        "Smith",
+                        "test@mail.com",
                         password,
                         LocalDate.now(),
                         User.ROLE.Operator,
