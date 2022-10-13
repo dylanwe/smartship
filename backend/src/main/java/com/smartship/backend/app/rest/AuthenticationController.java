@@ -45,7 +45,7 @@ public class AuthenticationController {
         // validate password
         if (!email.isEmpty() && !password.isEmpty() && BCrypt.checkpw(password, foundUser.getHashedPassword())) {
             // Create a new JWT token for the user
-            JWToken jwToken = new JWToken(foundUser.getFirstname(), foundUser.getId(), foundUser.getRole().toString());
+            JWToken jwToken = new JWToken(foundUser.getFirstname(), foundUser.getId(), foundUser.getRole());
             String tokenString = jwToken.encode(globalConfig.issuer, globalConfig.getPassphrase(),
                     globalConfig.tokenDurationOfValidity);
 

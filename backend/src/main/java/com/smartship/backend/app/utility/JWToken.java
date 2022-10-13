@@ -1,5 +1,6 @@
 package com.smartship.backend.app.utility;
 
+import com.smartship.backend.app.models.User;
 import io.jsonwebtoken.*;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -16,18 +17,10 @@ public class JWToken {
 
     private String callName;
     private Long userId;
-    private String role;
+    private User.ROLE role;
     private String ipAddress;
 
-    public String getIpAddress() {
-        return ipAddress;
-    }
-
-    public void setIpAddress(String ipAddress) {
-        this.ipAddress = ipAddress;
-    }
-
-    public JWToken(String callname, Long userId, String role) {
+    public JWToken(String callname, Long userId, User.ROLE role) {
         this.callName = callname;
         this.userId = userId;
         this.role = role;
@@ -44,15 +37,32 @@ public class JWToken {
         Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
         Claims claims = jws.getBody();
 
+        // Destruct token to something readable
         JWToken jwToken = new JWToken(
-          claims.get(JWT_CALLNAME_CLAIM).toString(),
-          Long.valueOf(claims.get(JWT_USERID_CLAIM).toString()),
-          claims.get(JWT_ROLE_CLAIM).toString()
+                claims.get(JWT_CALLNAME_CLAIM).toString(),
+                Long.valueOf(claims.get(JWT_USERID_CLAIM).toString()),
+                User.ROLE.valueOf(claims.get(JWT_ROLE_CLAIM).toString())
         );
         jwToken.setIpAddress((String) claims.get(JWT_IPADDRESS_CLAIM));
         return jwToken;
     }
 
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    /**
+     * Encode the data to a secure JWT token
+     *
+     * @param issuer Who it came from
+     * @param passphrase The secret with which to encrypt this data with
+     * @param expiration When the token becomes invalid again
+     * @return A secure encoded JWT token
+     */
     public String encode(String issuer, String passphrase, int expiration) {
         Key key = getKey(passphrase);
 

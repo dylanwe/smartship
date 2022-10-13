@@ -35,11 +35,13 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 
         String encryptedToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
+        // Check if we can find the authorization header
         if (encryptedToken == null) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "NO token provided. You need to login first.");
             return;
         }
 
+        // Decode the token
         JWToken jwToken = null;
         try {
             jwToken = JWToken.decode(encryptedToken.replace("Bearer ", ""), this.globalConfig.getPassphrase());
