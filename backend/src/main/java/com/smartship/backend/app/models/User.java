@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class User {
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
     private String firstname;
     private String lastname;
     @Column(unique=true)
@@ -37,7 +37,7 @@ public class User {
         this.bio = bio;
     }
 
-    public User(long id, String firstname, String lastname, String email, String password, LocalDate birthday,
+    public User(Long id, String firstname, String lastname, String email, String password, LocalDate birthday,
                 ROLE role, String bio) {
         this.id = id;
         this.firstname = firstname;
@@ -49,11 +49,11 @@ public class User {
         this.bio = bio;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

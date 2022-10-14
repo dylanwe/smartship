@@ -72,7 +72,7 @@ public class JWToken {
                 .claim(JWT_ROLE_CLAIM, this.role)
                 .setIssuer(issuer)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
