@@ -1,12 +1,33 @@
 export default class SessionSbService {
     BROWSER_STORAGE_ITEM_NAME;
     RESOURCE_URL;
-    isLoggedIn;
+    static isLoggedIn;
 
     constructor(resourceUrl, browserStorageItemName) {
         this.BROWSER_STORAGE_ITEM_NAME = browserStorageItemName;
         this.RESOURCE_URL = resourceUrl;
-        this.getTokenFromBrowserStorage();
+        SessionSbService.isLoggedIn = this.signInFromBrowserStorage();
+    }
+
+    signInFromBrowserStorage() {
+        const token = localStorage.getItem("token");
+        const refreshToken = localStorage.getItem("refreshToken");
+        const user = this.getCurrentUser();
+
+        if (!token && !refreshToken && !user) {
+            this.signOut();
+            return false;
+        }
+
+        if (this.isTokenExpired(token)) {
+            return this.refreshJWT().then(token => !!token);
+        }
+
+        return true;
+    }
+
+    isLoggedIn() {
+        return SessionSbService.isLoggedIn;
     }
 
     /**
@@ -31,7 +52,7 @@ export default class SessionSbService {
             // Store data locally
             this.saveTokensIntoBrowserStorage(data.jwtToken, data.refreshToken);
             localStorage.setItem("user", JSON.stringify(data.user));
-            this.isLoggedIn = true;
+            SessionSbService.isLoggedIn = true;
 
             return data;
         } else {
@@ -62,7 +83,7 @@ export default class SessionSbService {
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem("token", data.jwtToken);
-            this.isLoggedIn = true;
+            SessionSbService.isLoggedIn = true;
             return data.jwtToken;
         } else {
             this.signOut();
@@ -94,7 +115,7 @@ export default class SessionSbService {
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
-        this.isLoggedIn = false;
+        SessionSbService.isLoggedIn = false;
     }
 
     /**

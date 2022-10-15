@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import SidebarComponent from "@/components/SidebarComponent";
+import SidebarComponent from "@/components/dashboard/SidebarComponent";
 
 export default {
   name: "DashboardComponent",

@@ -5,9 +5,15 @@ import ProfileIndex from "@/components/dashboard/profile/ProfileIndex";
 import UnknownRoute from "@/components/UnknownRoute";
 import SettingsIndex from "@/components/dashboard/settings/SettingsIndex";
 import LoginForm from "@/components/LoginForm";
+import SessionSbService from "@/services/SessionSbService";
 
 const routes = [
-    {path: "/", component: LoginForm},
+    {path: "/", name: 'login', component: LoginForm, beforeEnter: () => {
+            if (SessionSbService.isLoggedIn) {
+                return '/dashboard'
+            }
+        }
+    },
     {path: "/dashboard", component: DashboardComponent, children: [
             {path: "", component: DashboardIndex},
             {path: "profile", component: ProfileIndex},
@@ -24,3 +30,9 @@ export const router = createRouter({
     history: createWebHistory(),
     routes
 });
+
+// Protect all pages except for login
+router.beforeEach((to, from, next) => {
+    if (to.name !== 'login' && !SessionSbService.isLoggedIn) next({name: 'login'})
+    else next();
+})

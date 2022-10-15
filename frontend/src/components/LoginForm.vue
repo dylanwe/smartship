@@ -56,12 +56,6 @@ export default {
   name: "LoginForm",
   inject: ["sessionService"],
 
-  created() {
-    if (this.sessionService.isLoggedIn) {
-      this.$router.push('/dashboard');
-    }
-  },
-
   data() {
     return {
       email: "",
@@ -74,7 +68,7 @@ export default {
       await this.sessionService.signIn(this.email, this.password);
 
       // redirect to dashboard if user is authenticated
-      if (this.sessionService.isLoggedIn) {
+      if (this.sessionService.isLoggedIn()) {
         this.$router.push('/dashboard');
       }
     },
