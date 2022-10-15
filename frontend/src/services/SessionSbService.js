@@ -37,6 +37,52 @@ export default class SessionSbService {
     }
 
     /**
+     * Refresh the JWT token
+     *
+     * @return {Promise<null|*>}
+     */
+    async refreshJWT() {
+        const refreshToken = this.getRefreshTokenFromBrowserStorage();
+        // Remove current tokens
+        this.signOut();
+
+        // Get the new token
+        const body = JSON.stringify({refreshToken});
+        const response = await fetch(`${this.RESOURCE_URL}/refresh-token`, {
+           method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body,
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            this.saveTokensIntoBrowserStorage(data.jwtToken, refreshToken);
+            return data.jwtToken;
+        } else {
+            this.signOut();
+            return null;
+        }
+    }
+
+    /**
+     * Check if the JWT token is expired
+     *
+     * @param token The token to check the expiration of
+     * @return {boolean} If the token is expired or not
+     */
+    isTokenExpired(token) {
+        // Check if token exists
+        if (token != null) {
+            const payload = atob(token.split('.')[1]);
+            const expiration = JSON.parse(payload).exp;
+            return expiration < (Date.now() / 1000);
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Discards user details and the JWT authentication token from the service.
      */
     signOut() {
@@ -75,6 +121,6 @@ export default class SessionSbService {
      * Check if a user is authenticated
      */
     isAuthenticated() {
-        return !!localStorage.getItem("token");
+        return !!this.isTokenExpired(this.getTokenFromBrowserStorage());
     }
 }

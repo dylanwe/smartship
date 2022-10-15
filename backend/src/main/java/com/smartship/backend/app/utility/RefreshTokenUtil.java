@@ -32,6 +32,10 @@ public class RefreshTokenUtil {
      * @return The newly generated refresh token
      */
     public RefreshToken createRefreshToken(Long userId) {
+        // First delete if user already has a refreshToken
+        refreshTokenRepository.deleteAllByUserId(userId);
+
+        // Give new token
         RefreshToken refreshToken = new RefreshToken();
 
         refreshToken.setUser(userRepository.findById(userId).get());

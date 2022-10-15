@@ -16,8 +16,13 @@ export default class FetchInterceptor {
         this.unregister = fetchIntercept.register(this);
     }
 
-    request(url, options) {
+    async request(url, options) {
         let token = FetchInterceptor.theInstance.session.getTokenFromBrowserStorage();
+
+        // Check if token is expired
+        if (FetchInterceptor.theInstance.session.isTokenExpired(token)) {
+            token = await FetchInterceptor.theInstance.session.refreshJWT();
+        }
 
         if (token == null) {
             // No change
@@ -30,7 +35,6 @@ export default class FetchInterceptor {
             let newOptions = {...options};
             newOptions.headers = {
                 Authorization: token
-                // TODO combine new Authorization header with existing headers
             }
             return [url, newOptions];
         }
@@ -41,14 +45,15 @@ export default class FetchInterceptor {
     }
 
     response(response) {
-        // Check for 401 error
-        if (response.status === 401) {
-            FetchInterceptor.theInstance.session.signOut();
-            FetchInterceptor.theInstance.router.push("/");
-            return Promise.reject(response);
+        switch (response.status) {
+            case 401:
+                // Redirect home
+                FetchInterceptor.theInstance.session.signOut();
+                FetchInterceptor.theInstance.router.push("/");
+                return Promise.reject(response);
+            default:
+                return response
         }
-
-        return response;
     }
 
     responseError(error) {

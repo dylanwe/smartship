@@ -37,7 +37,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
 
         // Check if we can find the authorization header
         if (encryptedToken == null) {
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "NO token provided. You need to login first.");
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No token provided. You need to login first.");
             return;
         }
 
