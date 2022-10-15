@@ -121,6 +121,6 @@ export default class SessionSbService {
      * Check if a user is authenticated
      */
     isAuthenticated() {
-        return !!this.isTokenExpired(this.getTokenFromBrowserStorage());
+        return !this.isTokenExpired(this.getTokenFromBrowserStorage());
     }
 }

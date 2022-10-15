@@ -65,9 +65,10 @@ export default {
 
   methods: {
     async login() {
-      const resp = await this.sessionService.signIn(this.email, this.password);
+      await this.sessionService.signIn(this.email, this.password);
 
-      if (resp.jwtToken) {
+      // redirect to dashboard if user is authenticated
+      if (this.sessionService.isAuthenticated()) {
         this.$router.push("/dashboard");
       }
     },
