@@ -16,12 +16,21 @@ public class RefreshTokenUtil {
     @Value("${smart.app.jwtRefreshExpirationMs}")
     private long refreshTokenDuration;
 
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    public RefreshTokenUtil(RefreshTokenRepository refreshTokenRepository, UserRepository userRepository) {
+        this.refreshTokenRepository = refreshTokenRepository;
+        this.userRepository = userRepository;
+    }
 
+    /**
+     * Create a new random refresh token
+     *
+     * @param userId The id of the user
+     * @return The newly generated refresh token
+     */
     public RefreshToken createRefreshToken(Long userId) {
         RefreshToken refreshToken = new RefreshToken();
 
@@ -33,6 +42,12 @@ public class RefreshTokenUtil {
         return refreshToken;
     }
 
+    /**
+     * Check if the refresh token is expired
+     *
+     * @param token The token to check expiration of
+     * @return The checked refresh token if it hasn't expired
+     */
     public RefreshToken verifyExpiration(RefreshToken token) {
         // check if refresh is expired
         if (token.getExpiryDate().compareTo(Instant.now()) < 0) {

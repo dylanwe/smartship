@@ -4,15 +4,18 @@ import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/users")
+@RequestMapping(path = "/api/v1/users")
 public class UserController {
 
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public UserController(UserRepository userRepository) {
@@ -28,9 +31,8 @@ public class UserController {
 
     @GetMapping(path = "{id}")
     public ResponseEntity<User> findUserById(@PathVariable Long id) {
-        User foundUser = userRepository.findById(id).orElseThrow(() -> {
-            throw new NullPointerException("User with id wasn't found");
-        });
+        User foundUser = userRepository.findById(id)
+                .orElseThrow(() -> new NullPointerException("User with id wasn't found"));
 
         return ResponseEntity.ok().body(foundUser);
     }

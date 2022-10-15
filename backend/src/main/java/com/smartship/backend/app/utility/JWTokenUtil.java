@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
-public class JWToken {
+public class JWTokenUtil {
     public static final String JWT_ATTRIBUTE_NAME = "attribute";
     private static final String JWT_CALLNAME_CLAIM = "sub";
     private static final String JWT_USERID_CLAIM = "id";
@@ -20,7 +20,7 @@ public class JWToken {
     private User.ROLE role;
     private String ipAddress;
 
-    public JWToken(String callname, Long userId, User.ROLE role) {
+    public JWTokenUtil(String callname, Long userId, User.ROLE role) {
         this.callName = callname;
         this.userId = userId;
         this.role = role;
@@ -31,20 +31,20 @@ public class JWToken {
         return new SecretKeySpec(hmacKey, SignatureAlgorithm.HS512.getJcaName());
     }
 
-    public static JWToken decode(String token, String passphrase) throws ExpiredJwtException, MalformedJwtException {
+    public static JWTokenUtil decode(String token, String passphrase) throws ExpiredJwtException, MalformedJwtException {
         // Validate the token
         Key key = getKey(passphrase);
         Jws<Claims> jws = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
         Claims claims = jws.getBody();
 
         // Destruct token to something readable
-        JWToken jwToken = new JWToken(
+        JWTokenUtil jwTokenUtil = new JWTokenUtil(
                 claims.get(JWT_CALLNAME_CLAIM).toString(),
                 Long.valueOf(claims.get(JWT_USERID_CLAIM).toString()),
                 User.ROLE.valueOf(claims.get(JWT_ROLE_CLAIM).toString())
         );
-        jwToken.setIpAddress((String) claims.get(JWT_IPADDRESS_CLAIM));
-        return jwToken;
+        jwTokenUtil.setIpAddress((String) claims.get(JWT_IPADDRESS_CLAIM));
+        return jwTokenUtil;
     }
 
     public String getIpAddress() {

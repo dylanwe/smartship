@@ -1,7 +1,6 @@
 package com.smartship.backend.app.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.mindrot.jbcrypt.BCrypt;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -14,8 +13,8 @@ public class User {
     @Id
     @GeneratedValue
     private Long id;
-    private String firstname;
-    private String lastname;
+    private String firstName;
+    private String lastName;
     @Column(unique=true)
     private String email;
     @JsonIgnore
@@ -27,9 +26,9 @@ public class User {
     public User() {
     }
 
-    public User(String firstname, String lastname, String email, String password, LocalDate birthday, ROLE role, String bio) {
-        this.firstname = firstname;
-        this.lastname = lastname;
+    public User(String firstName, String lastName, String email, String password, LocalDate birthday, ROLE role, String bio) {
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.hashedPassword = password;
         this.birthday = birthday;
@@ -37,11 +36,11 @@ public class User {
         this.bio = bio;
     }
 
-    public User(Long id, String firstname, String lastname, String email, String password, LocalDate birthday,
+    public User(Long id, String firstName, String lastName, String email, String password, LocalDate birthday,
                 ROLE role, String bio) {
         this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.hashedPassword = password;
         this.birthday = birthday;
@@ -57,20 +56,20 @@ public class User {
         this.id = id;
     }
 
-    public String getFirstname() {
-        return firstname;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
+    public void setFirstName(String firstname) {
+        this.firstName = firstname;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastname) {
+        this.lastName = lastname;
     }
 
     public String getEmail() {

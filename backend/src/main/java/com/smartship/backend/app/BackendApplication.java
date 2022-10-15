@@ -15,8 +15,7 @@ import java.util.List;
 @SpringBootApplication
 public class BackendApplication implements CommandLineRunner {
 
-    // add repos for creating initial users
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public BackendApplication(UserRepository userRepository) {
@@ -30,11 +29,10 @@ public class BackendApplication implements CommandLineRunner {
     /**
      * Add initial data
      * @param args incoming main method arguments
-     * @throws Exception
      */
     @Override
     @Transactional
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         this.createInitialUsers();
     }
 
@@ -46,6 +44,7 @@ public class BackendApplication implements CommandLineRunner {
         if (users.size() > 0) return;
 
         System.out.println("Adding a initial users");
+        // Encrypt the password
         String password = BCrypt.hashpw("secret", BCrypt.gensalt());
         userRepository.save(
                 new User(

@@ -8,11 +8,10 @@ import com.smartship.backend.app.models.RefreshToken;
 import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.RefreshTokenRepository;
 import com.smartship.backend.app.repositories.UserRepository;
-import com.smartship.backend.app.utility.JWToken;
+import com.smartship.backend.app.utility.JWTokenUtil;
 import com.smartship.backend.app.utility.RefreshTokenUtil;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,13 +23,13 @@ import java.util.Hashtable;
 import java.util.Map;
 
 @RestController
-@RequestMapping(path = "/authentication")
+@RequestMapping(path = "/api/v1/auth")
 public class AuthenticationController {
 
-    UserRepository userRepository;
-    RefreshTokenRepository refreshTokenRepository;
-    RefreshTokenUtil refreshTokenUtil;
-    GlobalConfig globalConfig;
+    private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenUtil refreshTokenUtil;
+    private final GlobalConfig globalConfig;
 
     @Autowired
     public AuthenticationController(UserRepository userRepository, RefreshTokenRepository refreshTokenRepository,
@@ -43,23 +42,27 @@ public class AuthenticationController {
 
     @PostMapping(path = "login")
     public ResponseEntity<?> loginUser(@RequestBody ObjectNode body) {
-        // Convert request to JsonNode
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.valueToTree(body);
 
-        // Get info from JSON request
+        // Get email and password from JSON request
         String email = node.findValue("email").asText();
         String password = node.findValue("password").asText();
 
-        // Find user with given email
-        User foundUser = userRepository.findByEmail(email).orElse(null);
+        // Check email and password where given
+        if (email.isEmpty() || password.isEmpty())
+            throw new NotAcceptableException("Email or password where not provided");
 
-        // validate password
-        if (!email.isEmpty() && !password.isEmpty() && foundUser != null && BCrypt.checkpw(password,
-                foundUser.getHashedPassword())) {
+        // Find user with given email
+        User foundUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotAcceptableException(
+                        String.format("User with email %s wasn't found", email)));
+
+        // Validate password
+        if (BCrypt.checkpw(password, foundUser.getHashedPassword())) {
             // Create a new JWT token for the user
-            JWToken jwToken = new JWToken(foundUser.getEmail(), foundUser.getId(), foundUser.getRole());
-            String tokenString = jwToken.encode(globalConfig.issuer, globalConfig.getPassphrase(),
+            JWTokenUtil jwTokenUtil = new JWTokenUtil(foundUser.getEmail(), foundUser.getId(), foundUser.getRole());
+            String tokenString = jwTokenUtil.encode(globalConfig.issuer, globalConfig.getPassphrase(),
                     globalConfig.tokenDurationOfValidity);
 
             // Get the refresh token
@@ -75,25 +78,25 @@ public class AuthenticationController {
                     .body(requestBody);
         } else {
             // Password was incorrect
-            throw new NotAcceptableException("Wrong login information provided");
+            throw new NotAcceptableException("Provided password wasn't correct with the given email");
         }
     }
 
-    @PostMapping(path = "refreshtoken")
+    @PostMapping(path = "refresh-token")
     public ResponseEntity<?> refreshToken(@RequestBody ObjectNode body) {
-        // Convert request to JsonNode
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.valueToTree(body);
 
+        // Get refreshToken from JSON request
         String refreshToken = node.findValue("refreshToken").asText();
 
         // Get token and check if it's valid
         return refreshTokenRepository.findByToken(refreshToken)
-                .map((token) -> refreshTokenUtil.verifyExpiration(token))
+                .map(refreshTokenUtil::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
-                    JWToken jwToken = new JWToken(user.getEmail(), user.getId(), user.getRole());
-                    String tokenString = jwToken.encode(globalConfig.issuer, globalConfig.getPassphrase(),
+                    JWTokenUtil jwTokenUtil = new JWTokenUtil(user.getEmail(), user.getId(), user.getRole());
+                    String tokenString = jwTokenUtil.encode(globalConfig.issuer, globalConfig.getPassphrase(),
                             globalConfig.tokenDurationOfValidity);
 
                     // Create the body of the request
