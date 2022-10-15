@@ -1,5 +1,3 @@
-import User from "@/models/User";
-
 export default class UserAdapter {
     RESOURCE_URL;
 
@@ -27,17 +25,6 @@ export default class UserAdapter {
     }
 
     /**
-     * Find a User by its id
-     *
-     * @param {number} userId The users id
-     * @returns {Promise<User>} The User with the given id
-     */
-    async findUserById(userId) {
-        const data = await this.fetchJson(`${this.RESOURCE_URL}/${userId}`);
-        return User.createUserFromJson(data);
-    }
-
-    /**
      * Get the notification settings for the user with the given id
      *
      * @param {number} userId The user id
@@ -45,10 +32,8 @@ export default class UserAdapter {
      */
     async findNotificationSettings(userId) {
         // example stuff
-        const user = await this.findUserById(userId);
-
         return {
-            for: user.firstName,
+            for: userId,
             notifications: [
                 {
                     id: 1,

@@ -142,9 +142,8 @@ export default {
   },
 
   async created() {
-    // const jsonUser = this.sessionService.getUser();
-    this.user = await this.userService.findUserById(9);
-    this.notificationSettings = await this.userService.findNotificationSettings(9);
+    this.user = await this.sessionService.getCurrentUser();
+    this.notificationSettings = await this.userService.findNotificationSettings(this.user.id);
   },
 }
 </script>

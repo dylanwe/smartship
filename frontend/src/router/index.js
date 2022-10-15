@@ -18,6 +18,8 @@ const routes = [
     {path: "/:pathMatch(.*)", component: UnknownRoute},
 ];
 
+
+
 export const router = createRouter({
     history: createWebHistory(),
     routes

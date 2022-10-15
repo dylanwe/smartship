@@ -8,6 +8,7 @@ import com.smartship.backend.app.models.RefreshToken;
 import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.RefreshTokenRepository;
 import com.smartship.backend.app.repositories.UserRepository;
+import com.smartship.backend.app.response.LoginResponse;
 import com.smartship.backend.app.utility.JWTokenUtil;
 import com.smartship.backend.app.utility.RefreshTokenUtil;
 import org.mindrot.jbcrypt.BCrypt;
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 @RestController
@@ -68,14 +68,8 @@ public class AuthenticationController {
             // Get the refresh token
             RefreshToken refreshToken = refreshTokenUtil.createRefreshToken(foundUser.getId());
 
-            // Create body of request
-            Map<String, String> requestBody = new Hashtable<>();
-            requestBody.put("jwtToken", tokenString);
-            requestBody.put("type", "Bearer");
-            requestBody.put("refreshToken", refreshToken.getToken());
-
             return ResponseEntity.accepted()
-                    .body(requestBody);
+                    .body(new LoginResponse(tokenString, "Bearer", refreshToken.getToken(), foundUser));
         } else {
             // Password was incorrect
             throw new NotAcceptableException("Provided password wasn't correct with the given email");

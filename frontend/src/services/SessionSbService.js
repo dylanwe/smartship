@@ -1,6 +1,7 @@
 export default class SessionSbService {
     BROWSER_STORAGE_ITEM_NAME;
     RESOURCE_URL;
+    isLoggedIn;
 
     constructor(resourceUrl, browserStorageItemName) {
         this.BROWSER_STORAGE_ITEM_NAME = browserStorageItemName;
@@ -27,11 +28,14 @@ export default class SessionSbService {
 
         if (response.ok) {
             const data = await response.json();
+            // Store data locally
             this.saveTokensIntoBrowserStorage(data.jwtToken, data.refreshToken);
+            localStorage.setItem("user", JSON.stringify(data.user));
+            this.isLoggedIn = true;
 
             return data;
         } else {
-            console.log(response);
+            this.signOut();
             return null;
         }
     }
@@ -44,7 +48,7 @@ export default class SessionSbService {
     async refreshJWT() {
         const refreshToken = this.getRefreshTokenFromBrowserStorage();
         // Remove current tokens
-        this.signOut();
+        localStorage.removeItem("token");
 
         // Get the new token
         const body = JSON.stringify({refreshToken});
@@ -57,7 +61,8 @@ export default class SessionSbService {
 
         if (response.ok) {
             const data = await response.json();
-            this.saveTokensIntoBrowserStorage(data.jwtToken, refreshToken);
+            localStorage.setItem("token", data.jwtToken);
+            this.isLoggedIn = true;
             return data.jwtToken;
         } else {
             this.signOut();
@@ -88,6 +93,8 @@ export default class SessionSbService {
     signOut() {
         localStorage.removeItem("token");
         localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+        this.isLoggedIn = false;
     }
 
     /**
@@ -116,11 +123,7 @@ export default class SessionSbService {
         return localStorage.getItem("refreshToken");
     }
 
-
-    /**
-     * Check if a user is authenticated
-     */
-    isAuthenticated() {
-        return !this.isTokenExpired(this.getTokenFromBrowserStorage());
+    getCurrentUser() {
+        return JSON.parse(localStorage.getItem("user"));
     }
 }
