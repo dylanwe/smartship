@@ -1,8 +1,8 @@
 export default class User {
-    constructor(id, firstname, lastname, email, birthday, bio) {
+    constructor(id, firstName, lastName, email, birthday, bio) {
         this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.birthday = birthday;
         this.bio = bio;
@@ -11,8 +11,8 @@ export default class User {
     static createUserFromJson(data) {
         return new User(
             data.id,
-            data.firstname,
-            data.lastname,
+            data.firstName,
+            data.lastName,
             data.email,
             data.birthday,
             data.bio

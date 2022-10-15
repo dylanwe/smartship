@@ -1,6 +1,11 @@
 import User from "@/models/User";
 
 export default class UserAdapter {
+    RESOURCE_URL;
+
+    constructor(resourceUrl) {
+        this.RESOURCE_URL = resourceUrl;
+    }
 
     /**
      * Do the request with the URL to fetch the JSON
@@ -28,7 +33,7 @@ export default class UserAdapter {
      * @returns {Promise<User>} The User with the given id
      */
     async findUserById(userId) {
-        const data = await this.fetchJson(`http://localhost:8087/users/${userId}`);
+        const data = await this.fetchJson(`${this.RESOURCE_URL}/${userId}`);
         return User.createUserFromJson(data);
     }
 
@@ -43,7 +48,7 @@ export default class UserAdapter {
         const user = await this.findUserById(userId);
 
         return {
-            for: user.firstname,
+            for: user.firstName,
             notifications: [
                 {
                     id: 1,

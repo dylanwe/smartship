@@ -12,7 +12,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="mb-4">
             <label class="block mb-2 text-sm font-medium text-slate-900">First name</label>
-            <input type="text" v-if="user" v-model="user.firstname"
+            <input type="text" v-if="user" v-model="user.firstName"
                    class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5"
                    placeholder="Jane" required="">
             <input type="text" v-else
@@ -21,7 +21,7 @@
           </div>
           <div class="mb-4">
             <label class="block mb-2 text-sm font-medium text-slate-900">Last Name</label>
-            <input type="text" v-if="user" v-model="user.lastname"
+            <input type="text" v-if="user" v-model="user.lastName"
                    class="bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5"
                    placeholder="Smith" required="">
             <input type="text" v-else
@@ -142,9 +142,9 @@ export default {
   },
 
   async created() {
-    const jsonUser = this.sessionService.getUser();
-    this.user = await this.userService.findUserById(jsonUser.id);
-    this.notificationSettings = await this.userService.findNotificationSettings(jsonUser.id);
+    // const jsonUser = this.sessionService.getUser();
+    this.user = await this.userService.findUserById(9);
+    this.notificationSettings = await this.userService.findNotificationSettings(9);
   },
 }
 </script>

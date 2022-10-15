@@ -14,7 +14,7 @@ export default class SessionSbService {
      *
      * @param {string} email
      * @param {string} password
-     * @returns {Promise<User>}
+     * @returns {Promise<Object>}
      */
     async signIn(email, password) {
         const body = JSON.stringify({email, password});
@@ -26,13 +26,10 @@ export default class SessionSbService {
         });
 
         if (response.ok) {
-            const user = await response.json();
-            this.saveTokenIntoBrowserStorage(
-                response.headers.get('Authorization'),
-                user
-            );
+            const data = await response.json();
+            this.saveTokensIntoBrowserStorage(data.jwtToken, data.refreshToken);
 
-            return user;
+            return data;
         } else {
             console.log(response);
             return null;
@@ -44,7 +41,7 @@ export default class SessionSbService {
      */
     signOut() {
         localStorage.removeItem("token");
-        localStorage.removeItem("user");
+        localStorage.removeItem("refreshToken");
     }
 
     /**
@@ -52,11 +49,11 @@ export default class SessionSbService {
      * storage for automatic retrieval after application or page reload.
      *
      * @param {string} token The JWT token to store
-     * @param {User} user The logged-in user
+     * @param {string} refreshToken The token to refresh the JWT with
      */
-    saveTokenIntoBrowserStorage(token, user) {
+    saveTokensIntoBrowserStorage(token, refreshToken) {
         localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("refreshToken", refreshToken);
     }
 
     /**
@@ -66,18 +63,13 @@ export default class SessionSbService {
      * @returns {string}
      */
     getTokenFromBrowserStorage() {
-        localStorage.getItem("user");
         return localStorage.getItem("token");
     }
 
-    getUser() {
-        const storedUser = JSON.parse(localStorage.getItem("user"));
-        return storedUser;
+    getRefreshTokenFromBrowserStorage() {
+        return localStorage.getItem("refreshToken");
     }
 
-    getCurrentToken() {
-        return localStorage.getItem("token");
-    }
 
     /**
      * Check if a user is authenticated

@@ -11,7 +11,7 @@ import java.util.List;
 @Component
 public class GlobalConfig implements WebMvcConfigurer {
 
-    public final List<String> SECURED_PATHS = List.of("/users");
+    public final List<String> SECURED_PATHS = List.of("/api/v1/users");
     @Value("HvA")
     public String issuer;
     @Value("${smart.app.jwtExpirationMs}")

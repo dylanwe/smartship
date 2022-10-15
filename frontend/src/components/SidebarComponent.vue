@@ -20,7 +20,7 @@
       <ul>
         <li>
           <router-link to="/dashboard"
-                       class="flex items-center hover:bg-slate-100 -mx-2 p rounded-lg transition-colors">
+                       class="flex items-center hover:bg-slate-100 -mx-2 p-2 rounded-lg transition-colors">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">

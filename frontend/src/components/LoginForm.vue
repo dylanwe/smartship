@@ -64,8 +64,12 @@ export default {
   },
 
   methods: {
-    login() {
-      this.sessionService.signIn(this.email, this.password);
+    async login() {
+      const resp = await this.sessionService.signIn(this.email, this.password);
+
+      if (resp.jwtToken) {
+        this.$router.push("/dashboard");
+      }
     },
   }
 }
