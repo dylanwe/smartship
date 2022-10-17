@@ -142,7 +142,7 @@ export default {
   },
 
   async created() {
-    this.user = await this.sessionService.getCurrentUser();
+    this.user = this.sessionService.getCurrentUser();
     this.notificationSettings = await this.userService.findNotificationSettings(this.user.id);
   },
 }

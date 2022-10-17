@@ -1,3 +1,5 @@
+import User from "@/models/User";
+
 export default class SessionSbService {
     BROWSER_STORAGE_ITEM_NAME;
     RESOURCE_URL;
@@ -7,23 +9,6 @@ export default class SessionSbService {
         this.BROWSER_STORAGE_ITEM_NAME = browserStorageItemName;
         this.RESOURCE_URL = resourceUrl;
         SessionSbService.isLoggedIn = this.signInFromBrowserStorage();
-    }
-
-    signInFromBrowserStorage() {
-        const token = localStorage.getItem("token");
-        const refreshToken = localStorage.getItem("refreshToken");
-        const user = this.getCurrentUser();
-
-        if (!token && !refreshToken && !user) {
-            this.signOut();
-            return false;
-        }
-
-        if (this.isTokenExpired(token)) {
-            return this.refreshJWT().then(token => !!token);
-        }
-
-        return true;
     }
 
     isLoggedIn() {
@@ -62,6 +47,28 @@ export default class SessionSbService {
     }
 
     /**
+     * Attempt to sign in with info still in the browser
+     *
+     * @return {boolean|Promise<boolean>}
+     */
+    signInFromBrowserStorage() {
+        const token = localStorage.getItem("token");
+        const refreshToken = localStorage.getItem("refreshToken");
+        const user = this.getCurrentUser();
+
+        if (!token && !refreshToken && !user) {
+            this.signOut();
+            return false;
+        }
+
+        if (this.isTokenExpired()) {
+            return this.refreshJWT().then(token => !!token);
+        }
+
+        return true;
+    }
+
+    /**
      * Refresh the JWT token
      *
      * @return {Promise<null|*>}
@@ -94,10 +101,10 @@ export default class SessionSbService {
     /**
      * Check if the JWT token is expired
      *
-     * @param token The token to check the expiration of
      * @return {boolean} If the token is expired or not
      */
-    isTokenExpired(token) {
+    isTokenExpired() {
+        const token = this.getTokenFromBrowserStorage();
         // Check if token exists
         if (token != null) {
             const payload = atob(token.split('.')[1]);
@@ -131,8 +138,7 @@ export default class SessionSbService {
     }
 
     /**
-     * Retrieves the JWT authentication token and user details from the browser storage
-     * into the service after application or page reload.
+     * Retrieves the JWT authentication token from the browser storage
      *
      * @returns {string}
      */
@@ -144,7 +150,21 @@ export default class SessionSbService {
         return localStorage.getItem("refreshToken");
     }
 
+    /**
+     * Get the user stored in the browser
+     *
+     * @return {User} the current logged-in user
+     */
     getCurrentUser() {
-        return JSON.parse(localStorage.getItem("user"));
+        const storedUser = JSON.parse(localStorage.getItem("user"));
+
+        return new User(
+            storedUser.id,
+            storedUser.firstName,
+            storedUser.lastName,
+            storedUser.email,
+            storedUser.birthday,
+            storedUser.bio
+        );
     }
 }

@@ -7,15 +7,4 @@ export default class User {
         this.birthday = birthday;
         this.bio = bio;
     }
-
-    static createUserFromJson(data) {
-        return new User(
-            data.id,
-            data.firstName,
-            data.lastName,
-            data.email,
-            data.birthday,
-            data.bio
-        );
-    }
 }
