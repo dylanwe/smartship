@@ -1,9 +1,6 @@
 package com.smartship.backend.app.rest;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.smartship.backend.app.config.GlobalConfig;
 import com.smartship.backend.app.models.RefreshToken;
 import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.RefreshTokenRepository;
@@ -28,26 +25,23 @@ public class AuthenticationController {
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final JWTokenUtil jwTokenUtil;
     private final RefreshTokenUtil refreshTokenUtil;
-    private final GlobalConfig globalConfig;
 
     @Autowired
     public AuthenticationController(UserRepository userRepository, RefreshTokenRepository refreshTokenRepository,
-                                    RefreshTokenUtil refreshTokenUtil, GlobalConfig globalConfig) {
+                                    JWTokenUtil jwTokenUtil, RefreshTokenUtil refreshTokenUtil) {
         this.userRepository = userRepository;
         this.refreshTokenRepository = refreshTokenRepository;
+        this.jwTokenUtil = jwTokenUtil;
         this.refreshTokenUtil = refreshTokenUtil;
-        this.globalConfig = globalConfig;
     }
 
     @PostMapping(path = "login")
     public ResponseEntity<?> loginUser(@RequestBody ObjectNode body) {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = mapper.valueToTree(body);
-
         // Get email and password from JSON request
-        String email = node.findValue("email").asText();
-        String password = node.findValue("password").asText();
+        String email = body.findValue("email").asText();
+        String password = body.findValue("password").asText();
 
         // Check email and password where given
         if (email.isEmpty() || password.isEmpty())
@@ -61,9 +55,7 @@ public class AuthenticationController {
         // Validate password
         if (BCrypt.checkpw(password, foundUser.getHashedPassword())) {
             // Create a new JWT token for the user
-            JWTokenUtil jwTokenUtil = new JWTokenUtil(foundUser.getEmail(), foundUser.getId(), foundUser.getRole());
-            String tokenString = jwTokenUtil.encode(globalConfig.issuer, globalConfig.getPassphrase(),
-                    globalConfig.tokenDurationOfValidity);
+            String tokenString = jwTokenUtil.encode(foundUser.getEmail(), foundUser.getId(), foundUser.getRole());
 
             // Get the refresh token
             RefreshToken refreshToken = refreshTokenUtil.createRefreshToken(foundUser.getId());
@@ -78,20 +70,15 @@ public class AuthenticationController {
 
     @PostMapping(path = "refresh-token")
     public ResponseEntity<?> refreshToken(@RequestBody ObjectNode body) {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = mapper.valueToTree(body);
-
         // Get refreshToken from JSON request
-        String refreshToken = node.findValue("refreshToken").asText();
+        String refreshToken = body.findValue("refreshToken").asText();
 
         // Get token and check if it's valid
         return refreshTokenRepository.findByToken(refreshToken)
                 .map(refreshTokenUtil::verifyExpiration)
                 .map(RefreshToken::getUser)
                 .map(user -> {
-                    JWTokenUtil jwTokenUtil = new JWTokenUtil(user.getEmail(), user.getId(), user.getRole());
-                    String tokenString = jwTokenUtil.encode(globalConfig.issuer, globalConfig.getPassphrase(),
-                            globalConfig.tokenDurationOfValidity);
+                    String tokenString = jwTokenUtil.encode(user.getEmail(), user.getId(), user.getRole());
 
                     // Create the body of the request
                     Map<String, String> requestBody = new HashMap<>();

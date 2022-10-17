@@ -17,10 +17,12 @@ import java.io.IOException;
 public class JWTRequestFilter extends OncePerRequestFilter {
 
     private final GlobalConfig globalConfig;
+    private final JWTokenUtil jwTokenUtil;
 
     @Autowired
-    public JWTRequestFilter(GlobalConfig globalConfig) {
+    public JWTRequestFilter(GlobalConfig globalConfig, JWTokenUtil jwTokenUtil) {
         this.globalConfig = globalConfig;
+        this.jwTokenUtil = jwTokenUtil;
     }
 
     @Override
@@ -42,16 +44,15 @@ public class JWTRequestFilter extends OncePerRequestFilter {
         }
 
         // Decode the token
-        JWTokenUtil jwTokenUtil = null;
         try {
-            jwTokenUtil = JWTokenUtil.decode(encryptedToken.replace("Bearer ", ""), this.globalConfig.getPassphrase());
+            JWTokenInfo jwTokenInfo = jwTokenUtil.decode(encryptedToken.replace("Bearer ", ""),
+                    this.globalConfig.getPassphrase());
+            request.setAttribute(JWTokenInfo.KEY, jwTokenInfo);
+
+            filterChain.doFilter(request, response);
         } catch (RuntimeException e) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage() + " You need to login first");
-            return;
         }
 
-        request.setAttribute(JWTokenUtil.JWT_ATTRIBUTE_NAME, jwTokenUtil);
-
-        filterChain.doFilter(request, response);
     }
 }

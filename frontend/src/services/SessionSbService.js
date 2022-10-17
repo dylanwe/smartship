@@ -158,6 +158,12 @@ export default class SessionSbService {
     getCurrentUser() {
         const storedUser = JSON.parse(localStorage.getItem("user"));
 
+        // Sign out if user isn't stored
+        if (storedUser === null) {
+            this.signOut();
+            return;
+        }
+
         return new User(
             storedUser.id,
             storedUser.firstName,
