@@ -1,13 +1,16 @@
 import User from "@/models/User";
+import {router} from "@/router";
 
 export default class SessionSbService {
     BROWSER_STORAGE_ITEM_NAME;
     RESOURCE_URL;
+    router;
     static isLoggedIn;
 
-    constructor(resourceUrl, browserStorageItemName) {
+    constructor(resourceUrl, browserStorageItemName, router) {
         this.BROWSER_STORAGE_ITEM_NAME = browserStorageItemName;
         this.RESOURCE_URL = resourceUrl;
+        this.router = router;
         SessionSbService.isLoggedIn = this.signInFromBrowserStorage();
     }
 
@@ -123,6 +126,7 @@ export default class SessionSbService {
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
         SessionSbService.isLoggedIn = false;
+        router.push("/");
     }
 
     /**
@@ -153,7 +157,7 @@ export default class SessionSbService {
     /**
      * Get the user stored in the browser
      *
-     * @return {User} the current logged-in user
+     * @return {User|void} the current logged-in user
      */
     getCurrentUser() {
         const storedUser = JSON.parse(localStorage.getItem("user"));

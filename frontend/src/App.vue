@@ -15,7 +15,7 @@ export default {
   name: 'App',
   provide() {
     this.theSessionService = shallowReactive(
-        new SessionSbService(`${API_URL}/auth`, JWT_STORAGE_ITEM)
+        new SessionSbService(`${API_URL}/auth`, JWT_STORAGE_ITEM, this.$router)
     )
     this.FetchInterceptor = new FetchInterceptor(this.theSessionService, this.$router);
     return {
