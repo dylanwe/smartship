@@ -6,8 +6,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@NamedQuery(name = "find_all_users", query = "select u from User u")
-@NamedQuery(name = "find_by_email", query = "select u from User u where u.email = :email")
 @Table(name = "users")
 public class User {
     @Id

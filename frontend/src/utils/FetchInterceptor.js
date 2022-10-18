@@ -20,7 +20,7 @@ export default class FetchInterceptor {
         let token = FetchInterceptor.theInstance.session.getTokenFromBrowserStorage();
 
         // Check if token is expired
-        if (FetchInterceptor.theInstance.session.isTokenExpired(token)) {
+        if (FetchInterceptor.theInstance.session.isTokenExpired()) {
             token = await FetchInterceptor.theInstance.session.refreshJWT();
         }
 

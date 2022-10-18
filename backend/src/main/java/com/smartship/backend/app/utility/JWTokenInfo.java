@@ -4,6 +4,12 @@ import com.smartship.backend.app.models.User;
 
 import java.util.Date;
 
-public record JWTokenInfo(String email, Long userId, User.ROLE role, Date issuedAt, Date expiration) {
+public record JWTokenInfo(
+        String email,
+        Long userId,
+        User.ROLE role,
+        Date issuedAt,
+        Date expiration
+) {
     public static final String KEY = "tokenInfo";
 }

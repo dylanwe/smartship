@@ -31,6 +31,7 @@ public class UserController {
 
     @GetMapping(path = "{id}")
     public ResponseEntity<User> findUserById(@PathVariable Long id) {
+
         User foundUser = userRepository.findById(id)
                 .orElseThrow(() -> new NullPointerException("User with id wasn't found"));
 

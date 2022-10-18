@@ -116,10 +116,12 @@ class RefreshTokenRepositoryTest {
                 "I am the night"));
         Instant time = Instant.now();
         RefreshToken refreshToken = new RefreshToken(bruce, "testToken", time);
+        RefreshToken refreshToken2 = new RefreshToken(bruce, "testToken2", time);
 
         // When
         bruce = userRepository.save(bruce);
         refreshTokenRepository.save(refreshToken);
+        refreshTokenRepository.save(refreshToken2);
         refreshTokenRepository.deleteAllByUserId(bruce.getId());
         boolean tokenExists = refreshTokenRepository.existsByUserId(bruce.getId());
 

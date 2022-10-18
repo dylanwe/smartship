@@ -39,39 +39,29 @@ public class AuthenticationController {
 
     @PostMapping(path = "login")
     public ResponseEntity<?> loginUser(@RequestBody ObjectNode body) {
-        // Get email and password from JSON request
-        String email = body.findValue("email").asText();
-        String password = body.findValue("password").asText();
+        String email = body.path("email").asText();
+        String password = body.path("password").requireNonNull().asText();
 
-        // Check email and password where given
-        if (email.isEmpty() || password.isEmpty())
-            throw new NotAcceptableException("Email or password where not provided");
-
-        // Find user with given email
         User foundUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotAcceptableException(
                         String.format("User with email %s wasn't found", email)));
 
         // Validate password
         if (BCrypt.checkpw(password, foundUser.getHashedPassword())) {
-            // Create a new JWT token for the user
             String tokenString = jwTokenUtil.encode(foundUser.getEmail(), foundUser.getId(), foundUser.getRole());
-
-            // Get the refresh token
+            refreshTokenRepository.deleteAllByUserId(foundUser.getId());
             RefreshToken refreshToken = refreshTokenUtil.createRefreshToken(foundUser.getId());
 
             return ResponseEntity.accepted()
                     .body(new LoginResponse(tokenString, "Bearer", refreshToken.getToken(), foundUser));
         } else {
-            // Password was incorrect
             throw new NotAcceptableException("Provided password wasn't correct with the given email");
         }
     }
 
     @PostMapping(path = "refresh-token")
     public ResponseEntity<?> refreshToken(@RequestBody ObjectNode body) {
-        // Get refreshToken from JSON request
-        String refreshToken = body.findValue("refreshToken").asText();
+        String refreshToken = body.path("refreshToken").asText();
 
         // Get token and check if it's valid
         return refreshTokenRepository.findByToken(refreshToken)
