@@ -3,6 +3,7 @@ import DashboardComponent from "@/components/dashboard/DashboardComponent";
 import DashboardIndex from "@/components/dashboard/DashboardIndex";
 import UnknownRoute from "@/components/UnknownRoute";
 import LoginComponent from "@/components/login/LoginComponent";
+import ResetPasswordComponent from "@/components/passwordReset/ResetPasswordComponent";
 
 const routes = [
     {path: "/", component: UnknownRoute},
@@ -12,6 +13,7 @@ const routes = [
         ]
     },
     {path: "/login", component: LoginComponent},
+    {path: "/resetPassword", component: ResetPasswordComponent},
     {path: "/:pathMatch(.*)", component: UnknownRoute},
 ];
 

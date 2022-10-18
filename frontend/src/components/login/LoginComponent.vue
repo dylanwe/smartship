@@ -35,7 +35,7 @@
           <input type="password" id="password" class="bg-white border border-2 border-slate-200 text-slate-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" required>
         </div>
         <div class="mb-8">
-          <a class="text-sm font-medium text-sky-500 cursor-pointer">Reset Password</a>
+          <router-link to="/resetPassword" class="text-sm font-medium text-sky-500 cursor-pointer">Reset Password</router-link>
         </div>
         <button type="submit" class="text-white bg-sky-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center">Login</button>
       </form>
@@ -48,7 +48,3 @@ export default {
   name: "LoginComponent"
 }
 </script>
-
-<style scoped>
-
-</style>
