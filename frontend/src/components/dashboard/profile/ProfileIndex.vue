@@ -90,48 +90,46 @@
       <div class="flex-1">
         <div class="bg-white w-full rounded-2xl p-4 mb-4">
           <h2 class="text-2xl font-bold text-slate-900">Graph 1</h2>
-          <div class="w-full">
+          <div class="w-[98%]">
             <Bar
                 :chart-options="chartOptions"
                 :chart-data="chartData"
                 :chart-id="chartId"
                 :dataset-id-key="datasetIdKey"
                 :height="250"
-                class="w-full"
             />
           </div>
         </div>
         <div class="bg-white w-full rounded-2xl p-4">
           <h2 class="text-2xl font-bold text-slate-900">Graph 2</h2>
-          <div class="w-full">
+          <div class="w-[98%]">
             <Bar
                 :chart-options="chartOptions"
                 :chart-data="chartData"
                 :chart-id="chartId"
                 :dataset-id-key="datasetIdKey"
                 :height="250"
-                class="w-full"
             />
           </div>
         </div>
       </div>
 
       <!-- To-do List -->
-<!--      <div class="bg-white flex-1 lg:flex-none lg:w-96 rounded-2xl p-4">-->
-<!--        <div class="flex space-x-2">-->
-<!--          <h2 class="font-bold text-2xl text-slate-900">Tasks</h2>-->
-<!--          <span class="bg-sky-100 text-sky-700 pt-1 pb-1 pl-2 pr-2 rounded-md font-bold">{{ getSelectedAmount }}</span>-->
-<!--          <div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <div class="mt-3">-->
-<!--          <li class="list-none mb-4" v-for="todo in todos" :key="todo.id">-->
-<!--            <input type="checkbox" v-model="todo.done"/>-->
-<!--            <label id="checkbox" for="checkbox" :class="(todo.done) ? 'text-slate-300 line-through' : 'text-slate-900'"-->
-<!--                   class="ml-3">{{ todo.title }}</label>-->
-<!--          </li>-->
-<!--        </div>-->
-<!--      </div>-->
+      <div class="bg-white flex-1 lg:flex-none lg:w-96 rounded-2xl p-4">
+        <div class="flex space-x-2">
+          <h2 class="font-bold text-2xl text-slate-900">Tasks</h2>
+          <span class="bg-sky-100 text-sky-700 pt-1 pb-1 pl-2 pr-2 rounded-md font-bold">{{ getSelectedAmount }}</span>
+          <div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <li class="list-none mb-4" v-for="todo in todos" :key="todo.id">
+            <input type="checkbox" v-model="todo.done"/>
+            <label id="checkbox" for="checkbox" :class="(todo.done) ? 'text-slate-300 line-through' : 'text-slate-900'"
+                   class="ml-3">{{ todo.title }}</label>
+          </li>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -201,7 +199,6 @@ export default {
   },
   async created() {
     this.user = this.sessionService.getCurrentUser();
-    console.log(this.user)
   }
 }
 
