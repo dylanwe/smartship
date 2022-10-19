@@ -112,7 +112,7 @@ public class User {
 
     public enum ROLE {
         Admin,
-        Moderator,
+        Manager,
         Operator
     }
 }
