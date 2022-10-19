@@ -173,6 +173,7 @@ export default class SessionSbService {
             storedUser.firstName,
             storedUser.lastName,
             storedUser.email,
+            storedUser.role,
             storedUser.birthday,
             storedUser.bio
         );
