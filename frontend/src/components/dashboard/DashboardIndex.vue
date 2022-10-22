@@ -135,11 +135,13 @@ export default {
               this.layout.push({
                 x: (this.layout.length * 2) % (this.numberOfColumns),
                 y: this.layout.length + (this.numberOfColumns), // puts it at the bottom
-                w: 1,
-                h: 1,
+                w: widget.config.width || 1,
+                h: widget.config.height || 1,
                 i: this.index,
                 widget:widget,
                 data:widget.data
+                
+
             });
             // Increment the counter to ensure key is always unique.
             this.index++;
