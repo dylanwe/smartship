@@ -1,19 +1,17 @@
 <template>
   <div class="mt-6">
-    <h1 class="text-xl font-bold">Profile</h1>
-    <!--Profile picture and bio-->
-    <div class="flex space-x-4">
+    <div class="flex flex-col lg:flex-row lg:space-y-0 space-y-4 lg:space-x-4 mb-4">
       <div class="bg-white flex-1 h-full rounded-2xl p-4">
         <div class="profile-picture flex inline-block items-center">
           <img class="w-20 h-20 object-none object-top rounded-2xl mr-6" src="@/assets/img/profile_picture.jpeg" alt=""
                style="object-fit: cover">
           <div>
-            <h2 class="text-4xl font-bold text-slate-900"> John Smith</h2>
-            <p class="text-slate-500">I wanna see the ship that ships all the ship shipping ships</p>
+            <h2 class="text-4xl font-bold text-slate-900">{{ (user) ? `${user.firstName} ${user.lastName}` : '' }}</h2>
+            <p class="text-slate-500">{{ (user) ? `${user.bio}` : '' }}</p>
           </div>
         </div>
         <!--User info, email-->
-        <div class="grid grid-cols-4 gap-4 pt-6 pb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 pb-6">
           <div class="flex space-x-4">
             <div class="w-12 h-12 bg-sky-100 rounded-lg text-sky-700 flex items-center justify-center">
               <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
@@ -23,7 +21,7 @@
               </svg>
             </div>
             <div>
-              <p class="text-slate-700">{{ email }} test@mail.com</p>
+              <p class="text-slate-700">{{ (user) ? `${user.email}` : '' }}</p>
               <p class="text-slate-400">E-mail</p>
             </div>
           </div>
@@ -38,7 +36,7 @@
                 </svg>
               </div>
               <div>
-                <p class="text-slate-700">{{ birthday }} 13 July 2000</p>
+                <p class="text-slate-700">{{ (user) ? `${user.birthday}` : '' }}</p>
                 <p class="text-slate-400">Birthday</p>
               </div>
             </div>
@@ -53,35 +51,155 @@
                 </svg>
               </div>
               <div>
-                <p class="text-slate-700">{{ "" }} Captain</p>
+                <p class="text-slate-700">{{ (user) ? `${user.role}` : '' }}</p>
                 <p class="text-slate-400">Function</p>
               </div>
-
             </div>
           </div>
         </div>
       </div>
-
-      <div class="bg-white w-96 rounded-2xl p-4">
+      <!-- Notifications -->
+      <div class="bg-white flex-1 lg:flex-none lg:w-96 rounded-2xl p-4 text-slate-900">
         <div class="flex space-x-2">
-          <h2 class="font-bold text-2xl text-slate-900">Notifications</h2>
-          <span class="bg-sky-100 text-sky-700 pt-1 pb-1 pl-2 pr-2 rounded-md font-bold">{{ notifAmount }} 2</span>
-        </div>
-        <svg class="text-sky-500 w-6 h-6 stroke-1.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-          <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-        </svg>
+          <h2 class="font-bold text-2xl">Notifications</h2>
+          <span class="bg-sky-100 text-sky-700 py-1 px-2 rounded-md font-bold">{{
+              notifications.length
+            }}</span>
 
+        </div>
+        <ul>
+          <li class="flex items-center border-b border-slate-200 py-2" v-for="notification in notifications"
+              :key="notification.id">
+            <svg class="text-sky-500 w-6 h-6 stroke-1.5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none"
+                 viewBox="0 0 24 24"
+                 strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round"
+                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+            </svg>
+            <div>
+              <h4 class="text-lg font-bold">{{ notification.title }}</h4>
+              <p class="text-slate-700">{{ notification.desc }}</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!--Block 2-->
+    <div class="flex flex-col lg:flex-row lg:space-y-0 space-y-4 lg:space-x-4 mb-4">
+      <div class="flex-1">
+        <div class="bg-white w-full rounded-2xl p-4 mb-4">
+          <h2 class="text-2xl font-bold text-slate-900">Graph 1</h2>
+          <div class="w-[98%]">
+            <Bar
+                :chart-options="chartOptions"
+                :chart-data="chartData"
+                :chart-id="chartId"
+                :dataset-id-key="datasetIdKey"
+                :height="250"
+            />
+          </div>
+        </div>
+        <div class="bg-white w-full rounded-2xl p-4">
+          <h2 class="text-2xl font-bold text-slate-900">Graph 2</h2>
+          <div class="w-[98%]">
+            <Bar
+                :chart-options="chartOptions"
+                :chart-data="chartData"
+                :chart-id="chartId"
+                :dataset-id-key="datasetIdKey"
+                :height="250"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- To-do List -->
+      <div class="bg-white flex-1 lg:flex-none lg:w-96 rounded-2xl p-4">
+        <div class="flex space-x-2">
+          <h2 class="font-bold text-2xl text-slate-900">Tasks</h2>
+          <span class="bg-sky-100 text-sky-700 pt-1 pb-1 pl-2 pr-2 rounded-md font-bold">{{ getSelectedAmount }}</span>
+          <div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <li class="list-none mb-4" v-for="todo in todos" :key="todo.id">
+            <input type="checkbox" v-model="todo.done"/>
+            <label id="checkbox" for="checkbox" :class="(todo.done) ? 'text-slate-300 line-through' : 'text-slate-900'"
+                   class="ml-3">{{ todo.title }}</label>
+          </li>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import {Bar} from 'vue-chartjs';
+import {Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale} from 'chart.js';
+
+ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 export default {
-  name: "ProfileIndex"
+  name: "ProfileIndex",
+  inject: ["sessionService", "userService"],
+  chartName: 'BarChart',
+  components: {Bar},
+  props: {
+    chartId: {
+      type: String,
+      default: 'bar-chart'
+    },
+    datasetIdKey: {
+      type: String,
+      default: 'label'
+    },
+  },
+  data() {
+    return {
+      user: null,
+      todos: [
+        {id: 1, title: "Clean the floor", done: false},
+        {id: 2, title: "Mop the floor", done: false},
+        {id: 3, title: "Organize the floor", done: false},
+        {id: 4, title: "Cook the floor", done: false},
+        {id: 5, title: "Smell the floor", done: false},
+        {id: 6, title: "Eat the floor", done: false},
+        {id: 7, title: "Sniff the floor", done: true},
+        {id: 8, title: "Feel the floor", done: true},
+        {id: 9, title: "Laugh at the floor", done: true},
+        {id: 10, title: "Sing to the floor", done: true},
+        {id: 11, title: "floor", done: true},
+      ],
+      notifications: [
+        {id: 1, title: "System info", desc: "You have a new task"},
+        {id: 2, title: "Parameter alert!", desc: "Alert alert alert"},
+      ],
+      chartData: {
+        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        datasets: [
+          {
+            backgroundColor: '#92D1F880',
+            data: [40, 20, 12, 90, 51, 32, 9],
+            borderRadius: 10,
+            borderColor: '#0EA5E9',
+            borderWidth: 2,
+          }
+        ]
+      },
+      chartOptions: {
+        responsive: true,
+        maintainAspectRatio: false,
+      }
+    }
+  },
+  computed: {
+    getSelectedAmount() {
+      return this.todos.filter(todo => todo.done === false).length
+    }
+  },
+  async created() {
+    this.user = this.sessionService.getCurrentUser();
+  }
 }
+
 </script>
-
-<style scoped>
-
-</style>
