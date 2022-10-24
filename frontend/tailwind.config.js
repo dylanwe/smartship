@@ -2,7 +2,11 @@
 module.exports = {
   content: ['./public/**/*.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      strokeWidth: {
+        '1.5': '1.5px',
+      }
+    },
   },
   plugins: [],
 }

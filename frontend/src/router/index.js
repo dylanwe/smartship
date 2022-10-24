@@ -1,21 +1,38 @@
 import {createRouter, createWebHistory} from "vue-router";
 import DashboardComponent from "@/components/dashboard/DashboardComponent";
 import DashboardIndex from "@/components/dashboard/DashboardIndex";
+import ProfileIndex from "@/components/dashboard/profile/ProfileIndex";
 import UnknownRoute from "@/components/UnknownRoute";
-import NotificationIndex from "@/components/notification/NotificationIndex";
+import SettingsIndex from "@/components/dashboard/settings/SettingsIndex";
+import LoginForm from "@/components/LoginForm";
+import SessionSbService from "@/services/SessionSbService";
 
 const routes = [
-    {path: "/", component: UnknownRoute},
+    {path: "/", name: 'login', component: LoginForm, beforeEnter: () => {
+            if (SessionSbService.isLoggedIn) {
+                return '/dashboard'
+            }
+        }
+    },
     {path: "/dashboard", component: DashboardComponent, children: [
             {path: "", component: DashboardIndex},
-            {path: "/notifications", component: NotificationIndex},
-            {path: "/dashboard/:pathMatch(.*)", component: UnknownRoute}
+            {path: "profile", component: ProfileIndex},
+            {path: "settings", component: SettingsIndex},
+            {path: ":pathMatch(.*)", component: UnknownRoute}
         ]
     },
     {path: "/:pathMatch(.*)", component: UnknownRoute},
 ];
 
+
+
 export const router = createRouter({
     history: createWebHistory(),
     routes
 });
+
+// Protect all pages except for login
+router.beforeEach((to, from, next) => {
+    if (to.name !== 'login' && !SessionSbService.isLoggedIn) next({name: 'login'})
+    else next();
+})
