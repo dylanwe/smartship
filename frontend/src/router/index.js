@@ -22,7 +22,7 @@ const routes = [
             {path: ":pathMatch(.*)", component: UnknownRoute}
         ]
     },
-    {path: "/resetPassword", component: ResetPasswordComponent},
+    {path: "/resetPassword", name: 'resetPassword', component: ResetPasswordComponent},
     {path: "/:pathMatch(.*)", component: UnknownRoute},
 ];
 
@@ -33,6 +33,6 @@ export const router = createRouter({
 
 // Protect all pages except for login
 router.beforeEach((to, from, next) => {
-    if (to.name !== 'login' && !SessionSbService.isLoggedIn) next({name: 'login'})
+    if (to.name !== 'login' && to.name !== 'resetPassword' && !SessionSbService.isLoggedIn) next({name: 'login'})
     else next();
 })

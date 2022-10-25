@@ -48,7 +48,7 @@
           Login
         </button>
       </form>
-      <p class="hidden mt-5 text-sm font-medium text-rose-500" id="error"><span id="empty-field"></span> can't be empty
+      <p class="hidden mt-5 text-sm font-medium text-rose-500" id="error">Incorrect email or password
       </p>
     </div>
   </div>
@@ -72,7 +72,10 @@ export default {
 
       // redirect to dashboard if user is authenticated
       if (this.sessionService.isLoggedIn()) {
+        document.getElementById('error').classList.add('hidden');
         this.$router.push('/dashboard');
+      } else {
+        document.getElementById('error').classList.remove('hidden');
       }
     },
   }
