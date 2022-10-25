@@ -11,10 +11,10 @@ export default class SessionSbService {
         this.BROWSER_STORAGE_ITEM_NAME = browserStorageItemName;
         this.RESOURCE_URL = resourceUrl;
         this.router = router;
-        SessionSbService.isLoggedIn = this.signInFromBrowserStorage();
+        // SessionSbService.isLoggedIn = this.signInFromBrowserStorage();
     }
 
-    isLoggedIn() {
+    getLoggedIn() {
         return SessionSbService.isLoggedIn;
     }
 
@@ -41,7 +41,7 @@ export default class SessionSbService {
             this.saveTokensIntoBrowserStorage(data.jwtToken, data.refreshToken);
             localStorage.setItem("user", JSON.stringify(data.user));
             SessionSbService.isLoggedIn = true;
-
+            router.push("/dashboard");
             return data;
         } else {
             this.signOut();
