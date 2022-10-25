@@ -52,17 +52,8 @@ export default {
             search: null,
             data: [
                 { icon: "📈", title: "Line Chart", component: "WidgetLine", config: {}, restrictTo: [ROLES.ADMIN] },
-                { icon: "📊", title: "Bar Chart", component: "WidgetBar" },
-                {
-                    icon: "📈", title: "Battery Pack", component: "BatteryTemperatureChart", config: {
-                        minHeight: 1,
-                        maxHeight: 3,
-                        minWidth: 1,
-                        maxWidth: 4,
-                        height: 2,
-                        width: 2,
-                    }
-                }
+                { icon: "📊", title: "Bar Chart", component: "WidgetBar", config: {}, },
+                { icon: "📈", title: "Battery Temperature", component: "BatteryTemperature", config: {} }
             ],
         }
     },

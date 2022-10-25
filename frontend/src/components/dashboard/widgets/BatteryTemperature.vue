@@ -1,10 +1,10 @@
 <template >
-    <div>
-        
-    </div>
+     <HalfDonutChart/>
 </template>
 <script>
+import HalfDonutChart from '@/components/charts/HalfDonutChart.vue';
 export default {
-    name: "BatteryTemperature"
+    name: "BatteryTemperature",
+    components: { HalfDonutChart }
 }
 </script>
