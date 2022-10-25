@@ -61,7 +61,10 @@
       <!-- Notifications -->
       <div class="bg-white flex-1 lg:flex-none lg:w-96 rounded-2xl p-4 text-slate-900">
         <div class="flex space-x-2">
-          <h2 class="font-bold text-2xl">Notifications</h2>
+          <router-link to="/dashboard/notifications">
+          <h2 class="font-bold text-2xl hover:underline">Notifications</h2>
+          </router-link>
+
           <span class="bg-sky-100 text-sky-700 py-1 px-2 rounded-md font-bold">{{
               notifications.length
             }}</span>
