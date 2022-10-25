@@ -8,6 +8,8 @@ import ResetPasswordComponent from "@/components/passwordReset/ResetPasswordComp
 import SettingsIndex from "@/components/dashboard/settings/SettingsIndex";
 import SessionSbService from "@/services/SessionSbService";
 
+const savePages = ["login"];
+
 const routes = [
     {path: "/", name: 'login', component: LoginComponent, beforeEnter: () => {
             if (SessionSbService.isLoggedIn) {
@@ -33,6 +35,10 @@ export const router = createRouter({
 
 // Protect all pages except for login
 router.beforeEach((to, from, next) => {
-    if (to.name !== 'login' && to.name !== 'resetPassword' && !SessionSbService.isLoggedIn) next({name: 'login'})
-    else next();
+    savePages.forEach(page => {
+        if (to.name !== page && !SessionSbService.isLoggedIn) next({name: page});
+        return;
+    });
+    // if (to.name !== 'login' && !SessionSbService.isLoggedIn) next({name: 'login'})
+    next();
 })
