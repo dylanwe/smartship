@@ -9,19 +9,19 @@
                class="h-2 w-2 rounded-full mt-2.5"></div>
           <div class="flex-1 pl-4">
             <h3 class="text-lg font-semibold text-slate-900">{{ notification.title }}</h3>
-            <time class="mb-1 text-sm font-normal leading-none text-slate-400 dark:text-slate-500">
+            <time class="mb-1 text-sm font-normal leading-none text-slate-400">
               {{ notification.date }}
             </time>
-            <p class="mb-1 text-base font-normal text-slate-500 dark:text-slate-400">{{
+            <p class="mb-1 text-base font-normal text-slate-500">{{
                 notification.text.substring(0, 80)
               }}...</p>
 
             <span v-if="notification.notifiicationType === 'INFO'"
-                  class="bg-sky-200 text-sky-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full dark:bg-blue-200 dark:text-blue-800">Info</span>
+                  class="bg-sky-200 text-sky-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Info</span>
             <span v-else-if="notification.notifiicationType === 'ERROR'"
-                  class="bg-red-200 text-red-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full dark:bg-blue-200 dark:text-blue-800">Error</span>
+                  class="bg-red-200 text-red-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Error</span>
             <span v-else
-                  class="bg-slate-200 text-slate-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full dark:bg-blue-200 dark:text-blue-800">Message</span>
+                  class="bg-slate-200 text-slate-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Message</span>
           </div>
         </li>
       </ol>
