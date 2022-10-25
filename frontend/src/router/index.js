@@ -11,18 +11,22 @@ import SessionSbService from "@/services/SessionSbService";
 const savePages = ["login", "resetPassword"];
 
 const routes = [
-    {path: "/", name: 'login', component: LoginComponent, beforeEnter: () => {
+    {
+        path: "/", name: 'login', component: LoginComponent, beforeEnter: () => {
             if (SessionSbService.isLoggedIn) {
                 return '/dashboard'
             }
         }
     },
-    {path: "/resetPassword", name: 'resetPassword', component: ResetPasswordComponent, beforeEnter: () => {
+    {
+        path: "/resetPassword", name: 'resetPassword', component: ResetPasswordComponent, beforeEnter: () => {
             if (SessionSbService.isLoggedIn) {
                 return '/dashboard'
             }
-        } },
-    {path: "/dashboard", component: DashboardComponent, children: [
+        }
+    },
+    {
+        path: "/dashboard", component: DashboardComponent, children: [
             {path: "", component: DashboardIndex},
             {path: "profile", component: ProfileIndex},
             {path: "settings", component: SettingsIndex},
@@ -41,7 +45,7 @@ export const router = createRouter({
 router.beforeEach((to, from, next) => {
     if (!savePages.includes(to.name) && !SessionSbService.isLoggedIn) {
         next({name: 'login'})
+        return;
     }
-    // if (to.name !== 'login' && !SessionSbService.isLoggedIn) next({name: 'login'})
     next();
 })

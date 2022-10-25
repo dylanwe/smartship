@@ -66,11 +66,6 @@ export default {
     }
   },
 
-  created() {
-    this.sessionService.isLoggedIn = this.sessionService.signInFromBrowserStorage();
-
-  },
-
   methods: {
     async login() {
       await this.sessionService.signIn(this.email, this.password);
