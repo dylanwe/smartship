@@ -17,7 +17,7 @@
       <span v-else
             class="bg-slate-200 text-slate-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full dark:bg-blue-200 dark:text-blue-800">Message</span>
     </div>
-    <p>
+    <p class="mb-1 text-base font-normal text-slate-500">
       {{ selectedNotification.text }}
     </p>
   </div>
