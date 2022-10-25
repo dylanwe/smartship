@@ -40,7 +40,7 @@ public class AuthenticationController {
     @PostMapping(path = "login")
     public ResponseEntity<?> loginUser(@RequestBody ObjectNode body) {
         String email = body.path("email").asText();
-        String password = body.path("password").requireNonNull().asText();
+        String password = body.path("password").asText();
 
         User foundUser = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotAcceptableException(
