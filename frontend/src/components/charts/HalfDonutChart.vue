@@ -1,31 +1,30 @@
 <template>
-  <Bar
-    :chart-options="chartOptions"
-    :chart-data="chartData"
-    class="bg-green-200"
-  />
+  <Doughnut :chart-options="chartOptions" :chart-data="chartData" class="bg-green-200" />
 </template>
 
 <script>
-import { Bar } from 'vue-chartjs'
+import { Doughnut } from 'vue-chartjs'
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js'
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
 
 export default {
   name: 'HalfDonutChart',
-  components: { Bar },
+  components: { Doughnut },
   props: {
   },
   data() {
     return {
       chartData: {
-        labels: [ 'January', 'February', 'March' ],
-        datasets: [ { data: [40, 20, 12] } ]
+        labels: ['January', 'Februar'],
+        datasets: [{
+          data: [40, 20,], backgroundColor: ["#Cf1", '#FF331']
+        }]
       },
       chartOptions: {
+     
         responsive: true,
-        maintainAspectRatio:false
+        maintainAspectRatio: false
       }
     }
   }

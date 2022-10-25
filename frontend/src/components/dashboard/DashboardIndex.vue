@@ -14,7 +14,7 @@
                 class="text-white bg-sky-500 disabled:bg-slate-300 hover:bg-sky-600 focus:ring-2 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"  
                    @click="toggleWidgetbar" 
                 >
-                Widgets
+                Open Widget Library
             </button>
             <button 
                 class="text-white bg-sky-500 disabled:bg-slate-300 hover:bg-sky-600 focus:ring-2 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"  
@@ -25,7 +25,7 @@
             <button 
                 class="text-white bg-gray-400 hover:bg-gray-600 focus:ring-2 focus:outline-none focus:ring-gray-300  rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center font-bold transition-colors"  
                 @click="cancelChanges">
-                x
+                Cancel
             </button>
             </div>
             <button  v-else
@@ -67,7 +67,7 @@
             <!-- TODO remove this -->
             <span v-else>{{item.i}}</span>
                 
-                <span v-if="editMode" class="remove absolute right-1 top-1 cursor-pointer bg-red-300 px-3 rounded-md items-center" @click="removeItem(item.i)">x</span>
+                <span v-if="editMode" class="remove absolute right-1 top-1 hover:bg-red-400 bg-red-300 px-4 rounded-lg text-red-700 font-semibold items-center cursor-default" @click="removeItem(item.i)">X</span>
              </grid-item>
    
         </grid-layout>
@@ -79,8 +79,10 @@
 
 import {GridLayout,GridItem} from 'vue3-grid-layout';
 import WidgetLibraryComponent from './widgets/WidgetLibraryComponent.vue';
-import WidgetBar from './widgets/WidgetBar.vue';
-import WidgetLine from './widgets/WidgetLine.vue';
+import WidgetTemperature from './widgets/temperature/WidgetTemperature.vue';
+import BatteryLevel from './widgets/battery/BatteryLevel.vue';
+import BigLineChart from './widgets/base/BigLineChart.vue';
+import SmallLineChart from './widgets/base/SmallLineChart.vue';
 
 export default {
   name: "DashboardIndex",
@@ -88,16 +90,15 @@ export default {
     GridLayout: GridLayout,
     GridItem: GridItem,
     WidgetLibraryComponent,
-    WidgetBar,
-    WidgetLine
+   WidgetTemperature, BatteryLevel,BigLineChart,SmallLineChart
 },
   data(){
     return{
         // Temp stored widgets
       layout: [
-                {"x":0,"y":0,"w":3,"h":2,"i":"0"},
-                {"x":1,"y":0,"w":1,"h":1,"i":"1"},
-                {"x":2,"y":2,"w":1,"h":1,"i":"2"},
+                // {"x":0,"y":0,"w":3,"h":2,"i":"0"},
+                // {"x":1,"y":0,"w":1,"h":1,"i":"1"},
+                // {"x":2,"y":2,"w":1,"h":1,"i":"2"},
                 // {"x":2,"y":5,"w":2,"h":1,"i":"3"},
              
             ],
@@ -137,6 +138,7 @@ export default {
                 y: this.layout.length + (this.numberOfColumns), // puts it at the bottom
                 w: widget.config.width || 1,
                 h: widget.config.height || 1,
+                minH: widget.config.minHeight ?? null,
                 i: this.index,
                 widget:widget,
                 data:widget.data
