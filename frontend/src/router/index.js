@@ -6,6 +6,7 @@ import UnknownRoute from "@/components/UnknownRoute";
 import SettingsIndex from "@/components/dashboard/settings/SettingsIndex";
 import LoginForm from "@/components/LoginForm";
 import SessionSbService from "@/services/SessionSbService";
+import NotificationIndex from "@/components/notification/NotificationIndex";
 
 const routes = [
     {path: "/", name: 'login', component: LoginForm, beforeEnter: () => {
@@ -18,6 +19,7 @@ const routes = [
             {path: "", component: DashboardIndex},
             {path: "profile", component: ProfileIndex},
             {path: "settings", component: SettingsIndex},
+            {path: "notifications", component: NotificationIndex},
             {path: ":pathMatch(.*)", component: UnknownRoute}
         ]
     },
