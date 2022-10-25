@@ -1,5 +1,5 @@
 import User from "@/models/User";
-import {router} from "@/router";
+// import {router} from "@/router";
 
 export default class SessionSbService {
     BROWSER_STORAGE_ITEM_NAME;
@@ -14,7 +14,7 @@ export default class SessionSbService {
         SessionSbService.isLoggedIn = this.signInFromBrowserStorage();
     }
 
-    isLoggedIn() {
+    getLoggedIn() {
         return SessionSbService.isLoggedIn;
     }
 
@@ -126,7 +126,6 @@ export default class SessionSbService {
         localStorage.removeItem("refreshToken");
         localStorage.removeItem("user");
         SessionSbService.isLoggedIn = false;
-        router.push("/");
     }
 
     /**
