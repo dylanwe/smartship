@@ -16,20 +16,25 @@ export default class Notification {
      * @param {Date} date
      * @param {string} title
      * @param {string} text
-     * @param {Type} notifiicationType
+     * @param {Type} notificationType
      */
-    constructor(id, status, date, title, text, notifiicationType) {
+    constructor(id, status, date, title, text, notificationType) {
         this.id = id;
         this.status = status;
         this.date = date;
         this.title = title;
         this.text = text;
-        this.notifiicationType = notifiicationType;
+        this.notifiicationType = notificationType;
 
     }
 
     static createMockNotification(id) {
-        const titles = ["Engine alert", "Man over boord"];
+        const titles = [
+            "Engine alert",
+            "Man overboard",
+            "Pirates spotted in the area",
+            "Your workday is almost over"
+        ];
         const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut " +
             "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud";
         const date = new Date();

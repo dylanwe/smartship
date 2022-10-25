@@ -9,7 +9,8 @@
                class="h-2 w-2 rounded-full mt-2.5"></div>
           <div class="flex-1 pl-4">
             <h3 class="text-lg font-semibold text-slate-900">{{ notification.title }}</h3>
-            <time class="mb-1 text-sm font-normal leading-none text-slate-400 dark:text-slate-500">2023, July 13, 10:30 AM
+            <time class="mb-1 text-sm font-normal leading-none text-slate-400 dark:text-slate-500">
+              {{ notification.date }}
             </time>
             <p class="mb-1 text-base font-normal text-slate-500 dark:text-slate-400">{{
                 notification.text.substring(0, 80)

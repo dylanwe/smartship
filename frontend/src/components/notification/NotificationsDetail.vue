@@ -3,7 +3,9 @@
   <div v-if="selectedNotification" class="bg-white rounded-2xl p-4">
     <div class="flex">
     <h2 class="text-2xl font-semibold text-slate-900">{{ selectedNotification.title }}</h2>
+      <time class="mb-1 text-sm font-normal leading-none text-slate-400 dark:text-slate-500">
       {{selectedNotification.date}}
+      </time>
     </div>
     <div class="pt-1 pb-7">
       <span v-if="selectedNotification.notifiicationType === 'INFO'"

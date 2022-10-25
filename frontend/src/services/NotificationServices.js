@@ -7,7 +7,9 @@ export default class NotificationServices {
         this.notifications = [
             Notification.createMockNotification(1),
             Notification.createMockNotification(2),
-            Notification.createMockNotification(3)
+            Notification.createMockNotification(3),
+            Notification.createMockNotification(4)
+
         ];
     }
 
