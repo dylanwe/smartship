@@ -1,10 +1,12 @@
 <template>
   <!-- SELECTED NOTIFICATION -->
   <div v-if="selectedNotification" class="bg-white rounded-2xl p-4">
-    <div class="flex">
-    <h2 class="text-2xl font-semibold text-slate-900">{{ selectedNotification.title }}</h2>
-      <time class="mb-1 text-sm font-normal leading-none text-slate-400 dark:text-slate-500 pl-10">
-      {{selectedNotification.date}}
+    <div class="flex justify-between">
+      <h2 class="text-2xl font-semibold text-slate-900">
+        {{ selectedNotification.title }}
+      </h2>
+      <time class="mb-1 text-sm font-normal leading-none text-slate-400 dark:text-slate-500 mt-2.5">
+        {{ selectedNotification.date }}
       </time>
     </div>
     <div class="pt-1 pb-7">
