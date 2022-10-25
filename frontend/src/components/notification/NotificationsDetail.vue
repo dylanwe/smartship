@@ -5,7 +5,7 @@
       <h2 class="text-2xl font-semibold text-slate-900">
         {{ selectedNotification.title }}
       </h2>
-      <time class="mb-1 text-sm font-normal leading-none text-slate-400 dark:text-slate-500 mt-3">
+      <time class="mb-1 text-sm font-normal leading-none text-slate-400 dark:text-slate-500 mt-2.5">
         {{ selectedNotification.date }}
       </time>
     </div>

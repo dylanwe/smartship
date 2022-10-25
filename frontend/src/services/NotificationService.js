@@ -1,6 +1,6 @@
 import Notification from "@/models/notifications/Notification";
 
-export default class NotificationServices {
+export default class NotificationService {
     notifications;
 
     constructor() {
