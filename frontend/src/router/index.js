@@ -6,11 +6,10 @@ import UnknownRoute from "@/components/UnknownRoute";
 import LoginComponent from "@/components/login/LoginComponent";
 import ResetPasswordComponent from "@/components/passwordReset/ResetPasswordComponent";
 import SettingsIndex from "@/components/dashboard/settings/SettingsIndex";
-import LoginForm from "@/components/LoginForm";
 import SessionSbService from "@/services/SessionSbService";
 
 const routes = [
-    {path: "/", name: 'login', component: LoginForm, beforeEnter: () => {
+    {path: "/", name: 'login', component: LoginComponent, beforeEnter: () => {
             if (SessionSbService.isLoggedIn) {
                 return '/dashboard'
             }
@@ -23,12 +22,9 @@ const routes = [
             {path: ":pathMatch(.*)", component: UnknownRoute}
         ]
     },
-    {path: "/login", component: LoginComponent},
     {path: "/resetPassword", component: ResetPasswordComponent},
     {path: "/:pathMatch(.*)", component: UnknownRoute},
 ];
-
-
 
 export const router = createRouter({
     history: createWebHistory(),
