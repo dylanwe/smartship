@@ -1,0 +1,42 @@
+export default class Notification {
+    static Status = Object.freeze({
+        READ: "READ",
+        UNREAD: "UNREAD"
+    });
+
+    static Type = Object.freeze({
+        INFO: "INFO",
+        ERROR: "ERROR",
+        DEFAULT: "DEFAULT"
+    })
+
+    /**
+     * @param {number} id
+     * @param {Status} status
+     * @param {Date} date
+     * @param {string} title
+     * @param {string} text
+     * @param {Type} notifiicationType
+     */
+    constructor(id, status, date, title, text, notifiicationType) {
+        this.id = id;
+        this.status = status;
+        this.date = date;
+        this.title = title;
+        this.text = text;
+        this.notifiicationType = notifiicationType;
+
+    }
+
+    static createMockNotification(id) {
+        const titles = ["Engine alert", "Man over boord"];
+        const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut " +
+            "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud";
+        const date = new Date();
+        const randomTitle = titles[Math.floor(Math.random() * titles.length)];
+        const random = Math.floor(Math.random() * Object.keys(this.Type).length);
+        const randomType = this.Type[Object.keys(this.Type)[random]];
+
+        return new Notification(id, this.Status.UNREAD, date, randomTitle, text, randomType);
+    }
+}
