@@ -4,7 +4,7 @@
     <div class="bg-white rounded-2xl flex-1 md:flex-none md:w-[400px]">
       <ol class="p-2 space-y-1">
         <li v-for="notification in notifications" :key="notification.id" @click="selectNotification(notification)"
-            class="hover:bg-sky-50 rounded-md flex p-2 rounded-2xl cursor-pointer">
+            class="hover:bg-sky-50 rounded-md flex p-2 rounded-2xl cursor-pointer transition-colors">
           <div :class="(notification.status === 'READ') ? 'bg-slate-200' : 'bg-sky-500'"
                class="h-2 w-2 rounded-full mt-2.5"></div>
           <div class="flex-1 pl-4">
@@ -36,7 +36,7 @@
 
 <script>
 import Notification from "@/models/notifications/Notification";
-import NotificationsDetail from "@/components/notification/NotificationsDetail";
+import NotificationsDetail from "@/components/dashboard/notification/NotificationsDetail";
 
 export default {
   inject: ["notificationService", "userService"],
