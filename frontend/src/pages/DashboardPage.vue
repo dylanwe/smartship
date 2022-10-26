@@ -89,11 +89,11 @@
 <script>
 
 import {GridLayout,GridItem} from 'vue3-grid-layout';
-import WidgetLibraryComponent from './widgets/WidgetLibraryComponent.vue';
-import WidgetTemperature from './widgets/temperature/WidgetTemperature.vue';
-import BatteryLevel from './widgets/battery/BatteryLevel.vue';
-import BigLineChart from './widgets/base/BigLineChart.vue';
-import SmallLineChart from './widgets/base/SmallLineChart.vue';
+import WidgetLibraryComponent from '../components/dashboard/widgets/WidgetLibraryComponent.vue';
+import WidgetTemperature from '../components/dashboard/widgets/temperature/WidgetTemperature.vue';
+import BatteryLevel from '../components/dashboard/widgets/battery/BatteryLevel.vue';
+import BigLineChart from '../components/dashboard/widgets/base/BigLineChart.vue';
+import SmallLineChart from '../components/dashboard/widgets/base/SmallLineChart.vue';
 
 export default {
   name: "DashboardIndex",

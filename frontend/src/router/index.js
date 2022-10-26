@@ -1,13 +1,13 @@
 import {createRouter, createWebHistory} from "vue-router";
 import DashboardComponent from "@/components/dashboard/DashboardComponent";
-import DashboardIndex from "@/components/dashboard/DashboardIndex";
-import ProfileIndex from "@/components/dashboard/profile/ProfileIndex";
-import UnknownRoute from "@/components/UnknownRoute";
-import LoginComponent from "@/components/login/LoginComponent";
-import ResetPasswordComponent from "@/components/passwordReset/ResetPasswordComponent";
-import SettingsIndex from "@/components/dashboard/settings/SettingsIndex";
+import DashboardIndex from "@/pages/DashboardPage";
+import ProfileIndex from "@/pages/ProfilePage";
+import UnknownRoute from "@/pages/UnknownPage";
+import LoginComponent from "@/pages/LoginPage";
+import ResetPasswordComponent from "@/pages/ResetPasswordPage";
+import SettingsIndex from "@/pages/SettingsPage";
 import SessionSbService from "@/services/SessionSbService";
-import NotificationIndex from "@/components/notification/NotificationIndex";
+import NotificationIndex from "@/pages/NotificationPage";
 
 const savePages = ["login", "resetPassword"];
 
