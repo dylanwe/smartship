@@ -7,7 +7,7 @@ import LoginComponent from "@/components/login/LoginComponent";
 import ResetPasswordComponent from "@/components/passwordReset/ResetPasswordComponent";
 import SettingsIndex from "@/components/dashboard/settings/SettingsIndex";
 import SessionSbService from "@/services/SessionSbService";
-import NotificationIndex from "@/components/notification/NotificationIndex";
+import NotificationIndex from "@/components/dashboard/notification/NotificationIndex";
 
 const savePages = ["login", "resetPassword"];
 
