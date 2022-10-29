@@ -32,7 +32,7 @@ export default class UserAdapter {
      */
     async findNotificationSettings(userId) {
         // example stuff
-        return {
+        return Promise.resolve({
             for: userId,
             notifications: [
                 {
@@ -66,7 +66,7 @@ export default class UserAdapter {
                     ]
                 },
             ]
-        };
+        });
     }
 
     async updateUserInfo() {
