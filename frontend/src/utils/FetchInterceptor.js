@@ -34,8 +34,6 @@ export default class FetchInterceptor {
             // Add authorization header to other options
             let newOptions = {...options};
             newOptions.headers = {
-                // TODO MIX WITH GIVEN HEADERS
-                'Content-Type': 'application/json',
                 Authorization: token
             }
             return [url, newOptions];

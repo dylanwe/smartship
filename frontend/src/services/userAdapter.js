@@ -68,4 +68,16 @@ export default class UserAdapter {
             ]
         };
     }
+
+    async updateUserInfo() {
+        // TODO update user info
+    }
+
+    async updatePassword() {
+        // TODO update password
+    }
+
+    async updateNotificationSettings() {
+        // TODO update notification settings
+    }
 }
