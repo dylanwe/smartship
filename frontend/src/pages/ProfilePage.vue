@@ -6,14 +6,14 @@
           <img class="w-20 h-20 object-none object-top rounded-2xl mr-6" src="@/assets/img/profile_picture.jpeg" alt=""
                style="object-fit: cover">
           <div>
-            <h2 class="text-4xl font-bold text-slate-900">{{ (user) ? `${user.firstName} ${user.lastName}` : '' }}</h2>
-            <p class="text-slate-500">{{ (user) ? `${user.bio}` : '' }}</p>
+            <h2 class="text-4xl font-bold text-neutral-900">{{ (user) ? `${user.firstName} ${user.lastName}` : '' }}</h2>
+            <p class="text-neutral-500">{{ (user) ? `${user.bio}` : '' }}</p>
           </div>
         </div>
         <!--User info, email-->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 pb-6">
           <div class="flex space-x-4">
-            <div class="w-12 h-12 bg-sky-100 rounded-lg text-sky-700 flex items-center justify-center">
+            <div class="w-12 h-12 bg-primary-100 rounded-lg text-primary-700 flex items-center justify-center">
               <svg class="w-8 h-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5}
                    stroke="#2D689D" className="w-6 h-6">
                 <path strokeLinecap="round" strokeLinejoin="round"
@@ -21,14 +21,14 @@
               </svg>
             </div>
             <div>
-              <p class="text-slate-700">{{ (user) ? `${user.email}` : '' }}</p>
-              <p class="text-slate-400">E-mail</p>
+              <p class="text-neutral-700">{{ (user) ? `${user.email}` : '' }}</p>
+              <p class="text-neutral-400">E-mail</p>
             </div>
           </div>
           <div>
             <!--User info, Birthday-->
             <div class="flex space-x-4">
-              <div class="w-12 h-12 bg-sky-100 rounded-lg text-sky-700 flex items-center justify-center">
+              <div class="w-12 h-12 bg-primary-100 rounded-lg text-primary-700 flex items-center justify-center">
                 <svg class="w-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                      strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                   <path strokeLinecap="round" strokeLinejoin="round"
@@ -36,44 +36,44 @@
                 </svg>
               </div>
               <div>
-                <p class="text-slate-700">{{ (user) ? `${user.birthday}` : '' }}</p>
-                <p class="text-slate-400">Birthday</p>
+                <p class="text-neutral-700">{{ (user) ? `${user.birthday}` : '' }}</p>
+                <p class="text-neutral-400">Birthday</p>
               </div>
             </div>
           </div>
           <!--User info, function-->
           <div>
             <div class="flex space-x-4">
-              <div class="w-12 h-12 bg-sky-100 rounded-lg text-sky-700 flex items-center justify-center">
+              <div class="w-12 h-12 bg-primary-100 rounded-lg text-primary-700 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 24 24" width="24" fill="currentColor">
                   <path
                       d="M16.93 11.998A1 1 0 0 1 17 10h2a1 1 0 0 1 0 2h-.055a9.001 9.001 0 0 1-17.89 0H1a1 1 0 0 1 0-2h2a1 1 0 0 1 .07 1.998A7.005 7.005 0 0 0 9 17.929V7.874A4.002 4.002 0 0 1 10 0a4 4 0 0 1 1 7.874v10.055a7.005 7.005 0 0 0 5.93-5.931zM10 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"></path>
                 </svg>
               </div>
               <div>
-                <p class="text-slate-700">{{ (user) ? `${user.role}` : '' }}</p>
-                <p class="text-slate-400">Function</p>
+                <p class="text-neutral-700">{{ (user) ? `${user.role}` : '' }}</p>
+                <p class="text-neutral-400">Function</p>
               </div>
             </div>
           </div>
         </div>
       </div>
       <!-- Notifications -->
-      <div class="bg-white flex-1 lg:flex-none lg:w-96 rounded-2xl p-4 text-slate-900">
+      <div class="bg-white flex-1 lg:flex-none lg:w-96 rounded-2xl p-4 text-neutral-900">
         <div class="flex space-x-2">
           <router-link to="/dashboard/notifications">
           <h2 class="font-bold text-2xl hover:underline">Notifications</h2>
           </router-link>
 
-          <span class="bg-sky-100 text-sky-700 py-1 px-2 rounded-md font-bold">{{
+          <span class="bg-primary-100 text-primary-700 py-1 px-2 rounded-md font-bold">{{
               notifications.length
             }}</span>
 
         </div>
         <ul>
-          <li class="flex items-center border-b border-slate-200 py-2" v-for="notification in notifications"
+          <li class="flex items-center border-b border-neutral-200 py-2" v-for="notification in notifications"
               :key="notification.id">
-            <svg class="text-sky-500 w-6 h-6 stroke-1.5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none"
+            <svg class="text-primary-500 w-6 h-6 stroke-1.5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                  viewBox="0 0 24 24"
                  strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
               <path strokeLinecap="round" strokeLinejoin="round"
@@ -81,7 +81,7 @@
             </svg>
             <div>
               <h4 class="text-lg font-bold">{{ notification.title }}</h4>
-              <p class="text-slate-700">{{ notification.desc }}</p>
+              <p class="text-neutral-700">{{ notification.desc }}</p>
             </div>
           </li>
         </ul>
@@ -92,7 +92,7 @@
     <div class="flex flex-col lg:flex-row lg:space-y-0 space-y-4 lg:space-x-4 mb-4">
       <div class="flex-1">
         <div class="bg-white w-full rounded-2xl p-4 mb-4">
-          <h2 class="text-2xl font-bold text-slate-900">Graph 1</h2>
+          <h2 class="text-2xl font-bold text-neutral-900">Graph 1</h2>
           <div class="w-[98%]">
             <Bar
                 :chart-options="chartOptions"
@@ -104,7 +104,7 @@
           </div>
         </div>
         <div class="bg-white w-full rounded-2xl p-4">
-          <h2 class="text-2xl font-bold text-slate-900">Graph 2</h2>
+          <h2 class="text-2xl font-bold text-neutral-900">Graph 2</h2>
           <div class="w-[98%]">
             <Bar
                 :chart-options="chartOptions"
@@ -120,15 +120,15 @@
       <!-- To-do List -->
       <div class="bg-white flex-1 lg:flex-none lg:w-96 rounded-2xl p-4">
         <div class="flex space-x-2">
-          <h2 class="font-bold text-2xl text-slate-900">Tasks</h2>
-          <span class="bg-sky-100 text-sky-700 pt-1 pb-1 pl-2 pr-2 rounded-md font-bold">{{ getSelectedAmount }}</span>
+          <h2 class="font-bold text-2xl text-neutral-900">Tasks</h2>
+          <span class="bg-primary-100 text-primary-700 pt-1 pb-1 pl-2 pr-2 rounded-md font-bold">{{ getSelectedAmount }}</span>
           <div>
           </div>
         </div>
         <div class="mt-3">
           <li class="list-none mb-4" v-for="todo in todos" :key="todo.id">
             <input type="checkbox" v-model="todo.done"/>
-            <label id="checkbox" for="checkbox" :class="(todo.done) ? 'text-slate-300 line-through' : 'text-slate-900'"
+            <label id="checkbox" for="checkbox" :class="(todo.done) ? 'text-neutral-300 line-through' : 'text-neutral-900'"
                    class="ml-3">{{ todo.title }}</label>
           </li>
         </div>

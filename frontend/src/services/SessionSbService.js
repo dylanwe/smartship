@@ -59,7 +59,8 @@ export default class SessionSbService {
         const refreshToken = localStorage.getItem("refreshToken");
         const user = this.getCurrentUser();
 
-        if (!token && !refreshToken && !user) {
+        // logout if userInfo is missing
+        if (!token || !refreshToken || !user) {
             this.signOut();
             return false;
         }

@@ -1,5 +1,5 @@
 <template >
- <div class="flex flex-col text-slate-500 bg-slate-100 text-center p-2 lg:mx-3 rounded-lg" :class="{
+ <div class="flex flex-col text-neutral-500 bg-neutral-100 text-center p-2 lg:mx-3 rounded-lg" :class="{
         'text-red-600 bg-red-100': temperatureIsCritical()
     }">
         <h3 class="text-sm">{{itemName}}</h3>

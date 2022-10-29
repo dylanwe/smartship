@@ -3,9 +3,9 @@
     <!-- Header -->
     <div class="flex flex-col justify-between mb-4 sm:flex-row">
         <div class="flex flex-row gap-4">
-          <h1 class="text-4xl text-slate-800 font-bold">Dashboard</h1>
+          <h1 class="text-4xl text-neutral-800 font-bold">Dashboard</h1>
 
-          <span class="text-slate-500 font-semibold text-sm self-center flex gap-1">
+          <span class="text-neutral-500 font-semibold text-sm self-center flex gap-1">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
   <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
 </svg>
@@ -22,13 +22,13 @@
                 class="flex flex-row gap-1  "
             >
             <button 
-                class="text-white bg-sky-500 disabled:bg-slate-300 hover:bg-sky-600 focus:ring-2 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"  
+                class="text-white bg-primary-500 disabled:bg-neutral-300 hover:bg-primary-600 focus:ring-2 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"
                    @click="toggleWidgetbar" 
                 >
                 Open Widget Library
             </button>
             <button 
-                class="text-white bg-sky-500 disabled:bg-slate-300 hover:bg-sky-600 focus:ring-2 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"  
+                class="text-white bg-primary-500 disabled:bg-neutral-300 hover:bg-primary-600 focus:ring-2 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"
                 @click="saveChanges">
                 Save & Exit
             </button>
@@ -40,7 +40,7 @@
             </button>
             </div>
             <button  v-else
-                class="text-white bg-sky-500 hover:bg-sky-600 focus:ring-2 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"  
+                class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-2 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"
                 @click="toggleEditMode"
             >
             Edit Panels

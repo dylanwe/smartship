@@ -3,11 +3,11 @@
        class="bg-white h-screen p-4 transition-all duration-500 flex flex-col fixed top-0">
 
     <div class="flex justify-between my-4">
-      <h3 :class="(isMenuOpen) ? '' : ''" class="overflow-x-hidden text-xl text-slate-800 font-bold ">SmartShip</h3>
+      <h3 :class="(isMenuOpen) ? '' : ''" class="overflow-x-hidden text-xl text-neutral-800 font-bold ">SmartShip</h3>
 
       <!--Hamburger-->
       <button @click="toggleMenu"
-              class="-m-2 p-2 bg-white hover:bg-slate-100 rounded-lg transition-colors text-slate-500">
+              class="-m-2 p-2 bg-white hover:bg-neutral-100 rounded-lg transition-colors text-neutral-500">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
              class="w-6 h-6">
           <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
@@ -16,11 +16,11 @@
     </div>
 
     <!--Menu-->
-    <div class="flex flex-col justify-between h-full text-slate-500">
+    <div class="flex flex-col justify-between h-full text-neutral-500">
       <ul>
         <li>
           <router-link to="/dashboard"
-                       class="flex items-center hover:bg-slate-100 -mx-2 p-2 rounded-lg transition-colors">
+                       class="flex items-center hover:bg-neutral-100 -mx-2 p-2 rounded-lg transition-colors">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -33,7 +33,7 @@
         </li>
         <li>
           <router-link to="/dashboard/notifications"
-                       class="flex items-center hover:bg-slate-100 -mx-2 p-2 rounded-lg transition-colors">
+                       class="flex items-center hover:bg-neutral-100 -mx-2 p-2 rounded-lg transition-colors">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -46,7 +46,7 @@
         </li>
         <li>
           <router-link to="/dashboard/power-usage"
-                       class="flex items-center hover:bg-slate-100 -mx-2 p-2 rounded-lg transition-colors">
+                       class="flex items-center hover:bg-neutral-100 -mx-2 p-2 rounded-lg transition-colors">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -59,7 +59,7 @@
         </li>
         <li>
           <router-link to="/dashboard/information"
-                       class="flex items-center hover:bg-slate-100 -mx-2 p-2 rounded-lg transition-colors">
+                       class="flex items-center hover:bg-neutral-100 -mx-2 p-2 rounded-lg transition-colors">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -72,7 +72,7 @@
         </li>
         <li>
           <router-link to="/dashboard/rating"
-                       class="flex items-center hover:bg-slate-100 -mx-2 p-2 rounded-lg transition-colors">
+                       class="flex items-center hover:bg-neutral-100 -mx-2 p-2 rounded-lg transition-colors">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -88,9 +88,9 @@
       <ul>
         <li>
           <router-link to="/dashboard/profile"
-                       class="flex items-center hover:bg-slate-100 -mx-2 p-2 rounded-lg transition-colors">
+                       class="flex items-center hover:bg-neutral-100 -mx-2 p-2 rounded-lg transition-colors">
             <div class="mr-2">
-              <div class="h-[24px] w-[24px] bg-slate-200 rounded-full animate-pulse"></div>
+              <div class="h-[24px] w-[24px] bg-neutral-200 rounded-full animate-pulse"></div>
             </div>
             <span class="overflow-x-hidden whitespace-nowrap">Profile</span>
           </router-link>
@@ -98,7 +98,7 @@
 
         <li>
           <router-link to="/dashboard/settings"
-                       class="flex items-center hover:bg-slate-100 -mx-2 p-2 rounded-lg transition-colors">
+                       class="flex items-center hover:bg-neutral-100 -mx-2 p-2 rounded-lg transition-colors">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -112,7 +112,7 @@
         </li>
         <li class="-mr-4">
           <button @click="signOut"
-              class="flex items-center hover:bg-slate-100 -mx-2 -mr-4 p-2 rounded-lg transition-colors w-full">
+              class="flex items-center hover:bg-neutral-100 -mx-2 -mr-4 p-2 rounded-lg transition-colors w-full">
             <div class="mr-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">

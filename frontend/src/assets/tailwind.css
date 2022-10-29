@@ -5,9 +5,9 @@
 @tailwind utilities;
 
 body {
-    @apply bg-slate-100
+    @apply bg-neutral-100
 }
 
 .router-link-exact-active {
-    @apply bg-sky-100 text-sky-600
+    @apply bg-primary-100 text-primary-600
 }

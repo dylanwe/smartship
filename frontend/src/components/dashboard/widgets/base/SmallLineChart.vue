@@ -1,6 +1,6 @@
 <template >
     <div class="flex flex-col justify-center">
-        <h3 class="text-slate-400">{{title}}</h3>
+        <h3 class="text-neutral-400">{{title}}</h3>
         <div class="flex flex-row gap-3">
             <h1 class="text-4xl">{{value}}</h1>
             <LineChart :hideGrid="true" :data="data" :hidePointers="true" class="w-[70%] h-[90%] hidden md:block "/>

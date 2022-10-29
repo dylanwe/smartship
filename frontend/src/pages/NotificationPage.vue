@@ -4,24 +4,24 @@
     <div class="bg-white rounded-2xl flex-1 md:flex-none md:w-[400px]">
       <ol class="p-2 space-y-1">
         <li v-for="notification in notifications" :key="notification.id" @click="selectNotification(notification)"
-            class="hover:bg-sky-50 rounded-md flex p-2 rounded-2xl cursor-pointer transition-colors">
-          <div :class="(notification.status === 'READ') ? 'bg-slate-200' : 'bg-sky-500'"
+            class="hover:bg-primary-50 rounded-md flex p-2 rounded-2xl cursor-pointer transition-colors">
+          <div :class="(notification.status === 'READ') ? 'bg-neutral-200' : 'bg-primary-500'"
                class="h-2 w-2 rounded-full mt-2.5"></div>
           <div class="flex-1 pl-4">
-            <h3 class="text-lg font-semibold text-slate-900">{{ notification.title }}</h3>
-            <time class="mb-1 text-sm font-normal leading-none text-slate-400">
+            <h3 class="text-lg font-semibold text-neutral-900">{{ notification.title }}</h3>
+            <time class="mb-1 text-sm font-normal leading-none text-neutral-400">
               {{ notification.date }}
             </time>
-            <p class="mb-1 text-base font-normal text-slate-500">{{
+            <p class="mb-1 text-base font-normal text-neutral-500">{{
                 notification.text.substring(0, 80)
               }}...</p>
 
             <span v-if="notification.notifiicationType === 'INFO'"
-                  class="bg-sky-200 text-sky-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Info</span>
+                  class="bg-primary-200 text-primary-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Info</span>
             <span v-else-if="notification.notifiicationType === 'ERROR'"
                   class="bg-red-200 text-red-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Error</span>
             <span v-else
-                  class="bg-slate-200 text-slate-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Message</span>
+                  class="bg-neutral-200 text-neutral-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Message</span>
           </div>
         </li>
       </ol>

@@ -19,7 +19,7 @@
                     </svg>
                 </div>
                 <input v-model="search" type="text"
-                    class="bg-gray-50 border border-gray-300 text-slate-500 text-sm rounded-lg block w-full pl-10 p-2.5 "
+                    class="bg-gray-50 border border-gray-300 text-neutral-500 text-sm rounded-lg block w-full pl-10 p-2.5 "
                     placeholder="Search widget" required>
             </div>
         </div>
