@@ -1,6 +1,7 @@
 package com.smartship.backend.app.rest;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.smartship.backend.app.exceptions.NotAcceptableException;
 import com.smartship.backend.app.models.RefreshToken;
 import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.RefreshTokenRepository;

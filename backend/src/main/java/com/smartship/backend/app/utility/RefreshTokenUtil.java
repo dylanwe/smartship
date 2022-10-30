@@ -1,9 +1,9 @@
 package com.smartship.backend.app.utility;
 
+import com.smartship.backend.app.exceptions.NotAcceptableException;
 import com.smartship.backend.app.models.RefreshToken;
 import com.smartship.backend.app.repositories.RefreshTokenRepository;
 import com.smartship.backend.app.repositories.UserRepository;
-import com.smartship.backend.app.rest.NotAcceptableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
