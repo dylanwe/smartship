@@ -1,5 +1,6 @@
 package com.smartship.backend.app.rest;
 
+import com.smartship.backend.app.exceptions.NotFoundException;
 import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +34,7 @@ public class UserController {
     public ResponseEntity<User> findUserById(@PathVariable Long id) {
 
         User foundUser = userRepository.findById(id)
-                // TODO fix exception
-                .orElseThrow(() -> new NullPointerException("User with id wasn't found"));
+                .orElseThrow(() -> new NotFoundException(String.format("User with id %s wasn't found", id)));
 
         return ResponseEntity.ok().body(foundUser);
     }
