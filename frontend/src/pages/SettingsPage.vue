@@ -58,7 +58,9 @@
 
 
         <button type="submit"
-                class="text-white bg-primary-500 disabled:bg-neutral-300 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-4 transition-colors">Save</button>
+                class="text-white bg-primary-500 disabled:bg-neutral-300 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-4 transition-colors">
+          Save
+        </button>
       </form>
     </div>
 
@@ -85,7 +87,9 @@
         </div>
 
         <button type="submit" :disabled="password.length <= 0"
-                class="text-white bg-primary-500 disabled:bg-neutral-300 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-4 transition-colors">Save</button>
+                class="text-white bg-primary-500 disabled:bg-neutral-300 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-4 transition-colors">
+          Save
+        </button>
       </form>
     </div>
 
@@ -104,13 +108,12 @@
             </div>
             <div>
               <div v-for="(notification, index) in setting.options" :key="`${setting.id}-${index}`">
-                <label :for="setting.id + '-' + index"
-                       class="inline-flex relative items-center mb-4 cursor-pointer">
-                  <input type="checkbox" value="" :id="setting.id + '-' + index" class="sr-only peer"
+                <label :for="`${setting.id}-${index}`" class="inline-flex relative items-center cursor-pointer">
+                  <input type="checkbox" value="" :id="`${setting.id}-${index}`" class="sr-only peer"
                          :checked="notification.on">
                   <div
-                      class="w-11 h-6 bg-neutral-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-primary-200 peer-checked:after:tranneutral-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-500"></div>
-                  <span class="ml-3 text-sm font-medium text-neutral-500">{{ notification.name }}</span>
+                      class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-500"></div>
+                  <span class="ml-3 text-sm font-medium text-neutral-900">{{ notification.name }}</span>
                 </label>
               </div>
             </div>
@@ -123,7 +126,6 @@
         </button>
       </form>
       <div v-else class="h-64"></div>
-
     </div>
   </div>
 </template>
@@ -143,7 +145,7 @@ export default {
 
   async created() {
     this.user = this.sessionService.getCurrentUser();
-    this.notificationSettings = await this.userService.findNotificationSettings(this.user.id);
+    this.notificationSettings = await this.userService.findNotificationSettings();
   },
 }
 </script>

@@ -24,16 +24,27 @@ export default class UserAdapter {
         }
     }
 
+    async updateUserInfo() {
+        // TODO update user info
+        // return this.fetchJson(`${this.RESOURCE_URL}`)
+    }
+
+    async updatePassword() {
+        // TODO update password
+    }
+
+    async updateNotificationSettings() {
+        // TODO update notification settings
+    }
+
     /**
      * Get the notification settings for the user with the given id
      *
-     * @param {number} userId The user id
      * @returns The notification settings
      */
-    async findNotificationSettings(userId) {
+    async findNotificationSettings() {
         // example stuff
         return Promise.resolve({
-            for: userId,
             notifications: [
                 {
                     id: 1,
@@ -67,17 +78,5 @@ export default class UserAdapter {
                 },
             ]
         });
-    }
-
-    async updateUserInfo() {
-        // TODO update user info
-    }
-
-    async updatePassword() {
-        // TODO update password
-    }
-
-    async updateNotificationSettings() {
-        // TODO update notification settings
     }
 }
