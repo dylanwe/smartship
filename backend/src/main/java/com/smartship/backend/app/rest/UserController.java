@@ -3,12 +3,10 @@ package com.smartship.backend.app.rest;
 import com.smartship.backend.app.exceptions.NotFoundException;
 import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.UserRepository;
+import com.smartship.backend.app.utility.JWTokenInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,5 +35,23 @@ public class UserController {
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %s wasn't found", id)));
 
         return ResponseEntity.ok().body(foundUser);
+    }
+
+    @PutMapping()
+    public ResponseEntity<User> updateUser(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @RequestBody User updatedUser) {
+        User foundUser = userRepository.findById(jwTokenInfo.userId())
+                .orElseThrow(() -> new NotFoundException(String.format(
+                        "User with id %s wasn't found",
+                        jwTokenInfo.userId()
+                )));
+
+        foundUser.setFirstName(updatedUser.getFirstName());
+        foundUser.setLastName(updatedUser.getLastName());
+        foundUser.setEmail(updatedUser.getEmail());
+        // TODO save birthday
+        foundUser.setBio(updatedUser.getBio());
+
+        updatedUser = userRepository.save(foundUser);
+        return ResponseEntity.ok().body(updatedUser);
     }
 }

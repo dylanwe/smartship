@@ -5,59 +5,42 @@
     <!-- Profile -->
     <div class="bg-white p-4 rounded-2xl mb-4">
       <h2 class="text-xl font-bold text-neutral-800">Profile</h2>
-      <p class="text-neutral-600">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est
-        laborum.</p>
-      <form class="mt-4">
+      <p class="text-neutral-600">Change your personal information to make clear to us and your coworkers who you
+        are and how you may be contacted.</p>
+      <form class="mt-4" @submit.prevent="updateUserInfo" autocomplete="off">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="mb-4">
             <label class="block mb-2 text-sm font-medium text-neutral-900">First name</label>
-            <input type="text" v-if="user" v-model="user.firstName"
-                   class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
-                   placeholder="Jane" required="">
-            <input type="text" v-else
+            <input type="text" v-model.trim="userCopy.firstName"
                    class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
                    placeholder="Jane" required="">
           </div>
           <div class="mb-4">
             <label class="block mb-2 text-sm font-medium text-neutral-900">Last Name</label>
-            <input type="text" v-if="user" v-model="user.lastName"
+            <input type="text" v-model.trim="userCopy.lastName"
                    class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
                    placeholder="Smith" required="">
-            <input type="text" v-else
-                   class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
-                   placeholder="Jane" required="">
           </div>
           <div class="mb-4">
             <label class="block mb-2 text-sm font-medium text-neutral-900">Email</label>
-            <input type="email" v-if="user" v-model="user.email"
+            <input type="email" v-model.trim="userCopy.email"
                    class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
                    placeholder="janesmith@mail.com" required="">
-            <input type="text" v-else
-                   class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
-                   placeholder="Jane" required="">
           </div>
           <div class="mb-4">
             <label class="block mb-2 text-sm font-medium text-neutral-900">Birthday</label>
-            <input type="date" v-if="user" v-model="user.birthday"
+            <input type="date" v-model.trim="userCopy.birthday"
                    class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
                    required="">
-            <input type="text" v-else
-                   class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
-                   placeholder="Jane" required="">
           </div>
         </div>
 
         <label for="Bio" class="block mb-2 text-sm font-medium text-neutral-900">Bio</label>
-        <textarea id="Bio" rows="2" v-if="user" v-model="user.bio"
-                  class="block p-2.5 w-full text-sm resize-none text-neutral-900 bg-neutral-50 rounded-lg border border-neutral-300 focus:ring-primary-500 focus:border-primary-500"
-                  placeholder="Tell us about yourself"></textarea>
-        <textarea id="Bio" rows="2" v-else
+        <textarea id="Bio" rows="2" v-model.trim="userCopy.bio"
                   class="block p-2.5 w-full text-sm resize-none text-neutral-900 bg-neutral-50 rounded-lg border border-neutral-300 focus:ring-primary-500 focus:border-primary-500"
                   placeholder="Tell us about yourself"></textarea>
 
-
-        <button type="submit"
+        <button type="submit" :disabled="!userInfoHasChanged"
                 class="text-white bg-primary-500 disabled:bg-neutral-300 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-4 transition-colors">
           Save
         </button>
@@ -70,13 +53,13 @@
       <p class="text-neutral-600">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
         mollit anim id est
         laborum.</p>
-      <form class="mt-4">
+      <form class="mt-4" autocomplete="off">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="mb-4">
             <label class="block mb-2 text-sm font-medium text-neutral-900">Current Password*</label>
             <input type="password"
                    class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
-                   placeholder="••••••••" required="" v-model="password">
+                   placeholder="••••••••" required="" v-model.trim="password">
           </div>
           <div class="mb-4">
             <label class="block mb-2 text-sm font-medium text-neutral-900">New Password</label>
@@ -99,7 +82,7 @@
       <p class="text-neutral-600">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
         mollit anim id est
         laborum.</p>
-      <form v-if="notificationSettings" class="mt-4">
+      <form v-if="notificationSettings" class="mt-4" autocomplete="off">
         <div v-for="setting in notificationSettings.notifications" :key="setting.id">
           <h3 class="text-lg text-neutral-800 font-bold">{{ setting.name }}</h3>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
@@ -138,6 +121,7 @@ export default {
   data() {
     return {
       user: null,
+      userCopy: null,
       notificationSettings: null,
       password: ''
     }
@@ -145,7 +129,32 @@ export default {
 
   async created() {
     this.user = this.sessionService.getCurrentUser();
+    this.userCopy = {...this.user};
     this.notificationSettings = await this.userService.findNotificationSettings();
+  },
+
+  computed: {
+    userInfoHasChanged() {
+      return (
+          this.userCopy.firstName !== this.user.firstName ||
+          this.userCopy.lastName !== this.user.lastName ||
+          this.userCopy.email !== this.user.email ||
+          this.userCopy.birthday !== this.user.birthday ||
+          this.userCopy.bio !== this.user.bio
+      );
+    }
+  },
+
+  methods: {
+    async updateUserInfo() {
+      this.user = await this.userService.updateUserInfo(
+          this.userCopy.firstName,
+          this.userCopy.lastName,
+          this.userCopy.email,
+          this.userCopy.bio,
+          this.userCopy.birthday
+      );
+    },
   },
 }
 </script>

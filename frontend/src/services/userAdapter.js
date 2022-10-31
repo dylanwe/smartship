@@ -24,9 +24,31 @@ export default class UserAdapter {
         }
     }
 
-    async updateUserInfo() {
-        // TODO update user info
-        // return this.fetchJson(`${this.RESOURCE_URL}`)
+    /**
+     * Update the general user information
+     *
+     * @param {string} firstName
+     * @param {string} lastName
+     * @param {string} email
+     * @param {string} bio
+     * @param {string} birthday
+     * @return {Promise<*|null>}
+     */
+    async updateUserInfo(firstName, lastName, email, bio, birthday) {
+        const userInfo = { firstName, lastName, email, bio, birthday };
+
+        const updatedUser = await this.fetchJson(
+            `${this.RESOURCE_URL}`,
+            {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(userInfo),
+                credentials: 'include'
+            }
+        );
+
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+        return updatedUser;
     }
 
     async updatePassword() {

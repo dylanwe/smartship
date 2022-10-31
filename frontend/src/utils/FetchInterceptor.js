@@ -34,8 +34,10 @@ export default class FetchInterceptor {
             // Add authorization header to other options
             let newOptions = {...options};
             newOptions.headers = {
+                ...options?.headers,
                 Authorization: token
             }
+
             return [url, newOptions];
         }
     }
