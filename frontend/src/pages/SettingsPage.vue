@@ -1,4 +1,6 @@
 <template>
+  <SettingToast :show="isToastShown" :toastType="toastType" :text="toastText" />
+
   <div class="mt-6 max-w-4xl mx-auto">
     <h1 class="text-4xl text-neutral-800 font-bold mb-4">Settings</h1>
 
@@ -53,10 +55,10 @@
       <p class="text-neutral-600">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
         mollit anim id est
         laborum.</p>
-      <form class="mt-4" autocomplete="off">
+      <form class="mt-4" autocomplete="off" @submit.prevent="updateUserPassword">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div class="mb-4">
-            <label class="block mb-2 text-sm font-medium text-neutral-900">Current Password*</label>
+            <label class="block mb-2 text-sm font-medium text-neutral-900">Current Password</label>
             <input type="password"
                    class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
                    placeholder="••••••••" required="" v-model.trim="password">
@@ -65,11 +67,11 @@
             <label class="block mb-2 text-sm font-medium text-neutral-900">New Password</label>
             <input type="password"
                    class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
-                   placeholder="" required="">
+                   placeholder="" required="" v-model.trim="newPassword">
           </div>
         </div>
 
-        <button type="submit" :disabled="password.length <= 0"
+        <button type="submit" :disabled="password.length < 6 || newPassword.length < 6"
                 class="text-white bg-primary-500 disabled:bg-neutral-300 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-4 transition-colors">
           Save
         </button>
@@ -95,7 +97,7 @@
                   <input type="checkbox" value="" :id="`${setting.id}-${index}`" class="sr-only peer"
                          :checked="notification.on">
                   <div
-                      class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-500"></div>
+                      class="w-11 h-6 bg-neutral-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-neutral-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary-500"></div>
                   <span class="ml-3 text-sm font-medium text-neutral-900">{{ notification.name }}</span>
                 </label>
               </div>
@@ -114,16 +116,25 @@
 </template>
 
 <script>
+import SettingToast from "@/components/dashboard/settings/SettingToast";
+
 export default {
   name: "SettingsIndex",
   inject: ["sessionService", "userService"],
+  components: {
+    SettingToast,
+  },
 
   data() {
     return {
       user: null,
       userCopy: null,
       notificationSettings: null,
-      password: ''
+      password: '',
+      newPassword: '',
+      isToastShown: false,
+      toastText: '',
+      toastType: 'info',
     }
   },
 
@@ -146,6 +157,11 @@ export default {
   },
 
   methods: {
+    showToast() {
+      this.isToastShown = true;
+      setTimeout(() => this.isToastShown = false, 2000);
+    },
+
     async updateUserInfo() {
       this.user = await this.userService.updateUserInfo(
           this.userCopy.firstName,
@@ -154,6 +170,39 @@ export default {
           this.userCopy.bio,
           this.userCopy.birthday
       );
+
+      if (this.user !== null) {
+        this.toastType = 'succes';
+        this.toastText = 'User information saved'
+      } else {
+        this.toastType = 'succes';
+        this.toastText = 'Couldn\'t save information';
+      }
+
+      this.showToast();
+    },
+
+    async updateUserPassword() {
+      const response = await this.userService.updateUserPassword(
+          this.password,
+          this.newPassword
+      );
+
+      // empty inputs
+      this.password = "";
+      this.newPassword = "";
+
+      // handle response
+      if (response.ok) {
+        this.toastType = 'succes';
+        this.toastText = 'New password saved'
+      } else {
+        const data = await response.json();
+        this.toastType = 'error';
+        this.toastText = data.message;
+      }
+
+      this.showToast();
     },
   },
 }

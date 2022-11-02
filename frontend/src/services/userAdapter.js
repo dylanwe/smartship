@@ -35,7 +35,7 @@ export default class UserAdapter {
      * @return {Promise<*|null>}
      */
     async updateUserInfo(firstName, lastName, email, bio, birthday) {
-        const userInfo = { firstName, lastName, email, bio, birthday };
+        const userInfo = {firstName, lastName, email, bio, birthday};
 
         const updatedUser = await this.fetchJson(
             `${this.RESOURCE_URL}`,
@@ -51,8 +51,23 @@ export default class UserAdapter {
         return updatedUser;
     }
 
-    async updatePassword() {
-        // TODO update password
+    /**
+     * Update the password of the logged-in user
+     *
+     * @param {string} oldPassword
+     * @param {string} newPassword
+     * @return {Promise<Response<any, Record<string, any>, number>>}
+     */
+    async updateUserPassword(oldPassword, newPassword) {
+        return await fetch(
+            `${this.RESOURCE_URL}/password`,
+            {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({oldPassword, newPassword}),
+                credentials: 'include'
+            }
+        );
     }
 
     async updateNotificationSettings() {

@@ -1,9 +1,12 @@
 package com.smartship.backend.app.rest;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.smartship.backend.app.exceptions.NotAcceptableException;
 import com.smartship.backend.app.exceptions.NotFoundException;
 import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.UserRepository;
 import com.smartship.backend.app.utility.JWTokenInfo;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,5 +56,30 @@ public class UserController {
 
         updatedUser = userRepository.save(foundUser);
         return ResponseEntity.ok().body(updatedUser);
+    }
+
+    @PutMapping(path = "password")
+    public ResponseEntity<String> updateUserPassword(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @RequestBody ObjectNode body) {
+        String password = body.path("oldPassword").asText();
+        String newPassword = body.path("newPassword").asText();
+
+        User foundUser = userRepository.findById(jwTokenInfo.userId())
+                .orElseThrow(() -> new NotFoundException(String.format(
+                        "User with id %s wasn't found",
+                        jwTokenInfo.userId()
+                )));
+
+        // check the given password
+        if (BCrypt.checkpw(password, foundUser.getHashedPassword())) {
+            String newHashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+
+            // save the new password
+            foundUser.setHashedPassword(newHashedPassword);
+            userRepository.save(foundUser);
+
+            return ResponseEntity.accepted().body("Password updated");
+        } else {
+            throw new NotAcceptableException("Provided password doesn't match account");
+        }
     }
 }
