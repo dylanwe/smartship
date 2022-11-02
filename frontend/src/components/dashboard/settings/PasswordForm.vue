@@ -10,7 +10,8 @@
         <div class="mb-4">
           <label class="block mb-2 text-sm font-medium text-neutral-900">Current Password</label>
           <input type="password"
-                 class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
+                 class="block p-2.5 w-full text-sm resize-none rounded-lg border"
+                 :class="(v$.password.$error) ? errorInputStyle : goodInputStyle"
                  placeholder="••••••••" required="" v-model.trim="password">
           <div v-if="v$.password.$error" class="text-sm text-red-500 pt-2">{{
               v$.password.$errors[0]?.$message
@@ -19,7 +20,8 @@
         <div class="mb-4">
           <label class="block mb-2 text-sm font-medium text-neutral-900">New Password</label>
           <input type="password"
-                 class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
+                 class="block p-2.5 w-full text-sm resize-none rounded-lg border"
+                 :class="(v$.newPassword.$error) ? errorInputStyle : goodInputStyle"
                  placeholder="" required="" v-model.trim="newPassword">
           <div v-if="v$.newPassword.$error" class="text-sm text-red-500 pt-2">{{
               v$.newPassword.$errors[0]?.$message }} </div>
@@ -49,11 +51,12 @@ export default {
     return {
       password: '',
       newPassword: '',
+      errorInputStyle: 'bg-red-50 text-red-900 border-red-500 focus:ring-red-500 focus:border-red-500',
+      goodInputStyle: 'bg-neutral-50 border-neutral-300 text-neutral-900 focus:ring-primary-500 focus:border-primary-500'
     }
   },
 
-  validations() {
-    return {
+  validations: {
       password: {
         required,
         minlength: minLength(6),
@@ -67,7 +70,6 @@ export default {
       $validationGroups: {
         passwordGroup: ['password', 'newPassword']
       }
-    }
   },
 
   methods: {
