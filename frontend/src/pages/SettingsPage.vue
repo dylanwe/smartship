@@ -50,33 +50,7 @@
     </div>
 
     <!-- Privacy -->
-    <div class="bg-white p-4 rounded-2xl mb-4">
-      <h2 class="text-xl font-bold text-neutral-800">Privacy</h2>
-      <p class="text-neutral-600">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est
-        laborum.</p>
-      <form class="mt-4" autocomplete="off" @submit.prevent="updateUserPassword">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="mb-4">
-            <label class="block mb-2 text-sm font-medium text-neutral-900">Current Password</label>
-            <input type="password"
-                   class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
-                   placeholder="••••••••" required="" v-model.trim="password">
-          </div>
-          <div class="mb-4">
-            <label class="block mb-2 text-sm font-medium text-neutral-900">New Password</label>
-            <input type="password"
-                   class="bg-neutral-50 border border-neutral-300 text-neutral-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5"
-                   placeholder="" required="" v-model.trim="newPassword">
-          </div>
-        </div>
-
-        <button type="submit" :disabled="password.length < 6 || newPassword.length < 6"
-                class="text-white bg-primary-500 disabled:bg-neutral-300 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center mt-4 transition-colors">
-          Save
-        </button>
-      </form>
-    </div>
+    <PasswordForm @showToast="showToast" />
 
     <!-- Notifications -->
     <div class="bg-white p-4 rounded-2xl mb-4">
@@ -117,12 +91,14 @@
 
 <script>
 import SettingToast from "@/components/dashboard/settings/SettingToast";
+import PasswordForm from "@/components/dashboard/settings/PasswordForm";
 
 export default {
   name: "SettingsIndex",
   inject: ["sessionService", "userService"],
   components: {
     SettingToast,
+    PasswordForm,
   },
 
   data() {
@@ -130,8 +106,6 @@ export default {
       user: null,
       userCopy: null,
       notificationSettings: null,
-      password: '',
-      newPassword: '',
       isToastShown: false,
       toastText: '',
       toastType: 'info',
@@ -157,7 +131,9 @@ export default {
   },
 
   methods: {
-    showToast() {
+    showToast(type, text) {
+      this.toastType = type;
+      this.toastText = text;
       this.isToastShown = true;
       setTimeout(() => this.isToastShown = false, 2000);
     },
@@ -172,37 +148,10 @@ export default {
       );
 
       if (this.user !== null) {
-        this.toastType = 'succes';
-        this.toastText = 'User information saved'
+        this.showToast('succes', 'User information saved');
       } else {
-        this.toastType = 'succes';
-        this.toastText = 'Couldn\'t save information';
+        this.showToast('succes', 'Couldn\'t save information');
       }
-
-      this.showToast();
-    },
-
-    async updateUserPassword() {
-      const response = await this.userService.updateUserPassword(
-          this.password,
-          this.newPassword
-      );
-
-      // empty inputs
-      this.password = "";
-      this.newPassword = "";
-
-      // handle response
-      if (response.ok) {
-        this.toastType = 'succes';
-        this.toastText = 'New password saved'
-      } else {
-        const data = await response.json();
-        this.toastType = 'error';
-        this.toastText = data.message;
-      }
-
-      this.showToast();
     },
   },
 }

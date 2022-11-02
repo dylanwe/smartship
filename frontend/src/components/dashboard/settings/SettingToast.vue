@@ -33,7 +33,6 @@ export default {
     toastType: {
       type: String,
       validator(value) {
-        // The value must match one of these strings
         return ['succes', 'error', 'info'].includes(value)
       },
       default: 'info',
