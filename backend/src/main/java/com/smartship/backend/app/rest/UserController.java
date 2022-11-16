@@ -82,4 +82,10 @@ public class UserController {
             throw new NotAcceptableException("Provided password doesn't match account");
         }
     }
+
+    @GetMapping(path = "notification-prefrences")
+    public ResponseEntity<?> findAllNotificationPreferences(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
+        // TODO get all notification settings
+        return ResponseEntity.ok().body("Ayyyyy");
+    }
 }

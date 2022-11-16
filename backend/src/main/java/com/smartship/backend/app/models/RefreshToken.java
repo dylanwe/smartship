@@ -1,5 +1,8 @@
 package com.smartship.backend.app.models;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
 import java.time.Instant;
 
@@ -9,12 +12,13 @@ public class RefreshToken {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @OneToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
     @Column(unique = true)
     private String token;
     private Instant expiryDate;
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User user;
 
     public RefreshToken() {
     }
@@ -33,14 +37,6 @@ public class RefreshToken {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public String getToken() {
         return token;
     }
@@ -55,5 +51,13 @@ public class RefreshToken {
 
     public void setExpiryDate(Instant expiryDate) {
         this.expiryDate = expiryDate;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
