@@ -61,6 +61,8 @@
         </tbody>
       </table>
     </div>
+    <p class="hidden mt-5 text-sm font-medium text-rose-500" id="error">Something went wrong while adding a new operator
+    </p>
   </div>
 
   <add-operator-modal v-model="showModal" v-on:close="showModal=false"
@@ -75,9 +77,14 @@ import AddOperatorModal from "@/components/modals/AddOperatorModal";
 
 export default {
   name: "ManagerIndex",
-  inject: ['userService'],
+  inject: ['sessionService','userService'],
   components: {AddOperatorModal},
   async created() {
+    //If the user isn't a manager, send the user to the dashboard
+    if (this.sessionService.getCurrentUser().role !== 'Manager') {
+      this.$router.push(this.$route.matched[0].path)
+    }
+    //Get all the operators from the database via the backend
     this.operators = await this.userService.findOperators();
   },
   data() {
@@ -88,18 +95,31 @@ export default {
   },
   methods: {
     async refresh() {
+      //Get all the operators from the database via the backend.
       this.operators = await this.userService.findOperators();
     },
     async deleteUser(user) {
+      //Show a popup window asking if they really want to delete the user.
       const userSave = confirm('Are you sure you want to delete ' + user.firstName + ' ' + user.lastName
           + ' (id:' + user.id + ')?');
+      //Delete the user if they pressed confirm and call the refresh method, which gets the operators again.
       if (userSave) {
         await this.userService.deleteOperatorById(user.id);
         await this.refresh();
       }
     },
     async addUser(email, firstName, lastName, password) {
-      await this.userService.addOperator(email, firstName, lastName, password);
+      //Add a new operator with the given data via the backend
+      const addedUser = await this.userService.addOperator(email, firstName, lastName, password);
+
+      //Show an error message if a new user didn't get created.
+      if (addedUser == null) {
+        document.getElementById('error').classList.remove('hidden');
+      } else {
+        document.getElementById('error').classList.add('hidden');
+      }
+
+      //Call the refresh to get the operators again.
       await this.refresh();
     }
   }
