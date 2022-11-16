@@ -11,7 +11,6 @@
           with regard to people, equipment and the environment.
         </p>
       </div>
-
       <div>
         <div class="block p-5 max-w bg-primary-700 rounded-xl mb-4 md:mb-8 2xl:mb-12">
           <p class="text-sm md:text-base font-normal text-neutral-200 mb-2">
@@ -21,7 +20,6 @@
           </p>
         </div>
       </div>
-
     </div>
     <div class="w-full sm:w-1/2 lg:w-1/3 2xl:w-1/4 p-8">
       <h3 class="text-2xl text-neutral-800 font-bold">Sign in</h3>

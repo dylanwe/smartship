@@ -1,11 +1,14 @@
 <template>
   <div class="mt-6">
-    <h1 class="text-4xl text-neutral-800 font-bold">Manager panel</h1>
+    <h1 class="text-4xl text-neutral-800 font-bold">
+      Manager panel
+    </h1>
     <div class="overflow-x-auto relative shadow-md sm:rounded-lg mt-8">
       <table class="w-full text-sm text-left text-neutral-700">
         <caption class="p-5 text-neutral-700 bg-neutral-50">
           <h2 class="float-left text-3xl font-bold">Operators</h2>
           <button
+              @click="showModal = true"
               class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors flex float-right items-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                  stroke="currentColor" class="w-6 h-6">
@@ -31,21 +34,22 @@
         </tr>
         </thead>
         <tbody>
-          <tr v-for="user in users" :key="user.id" class="bg-white bg-neutral-50 text-base hover:bg-neutral-100">
+        <tr v-for="operator in operators" :key="operator.id" class="bg-neutral-50 text-base hover:bg-neutral-100">
           <th scope="row" class="flex items-center py-4 px-6 text-neutral-700 whitespace-nowrap">
             <img class="w-10 h-10 rounded-full" src="@/assets/img/profile_picture.jpeg" alt="Profile image">
             <div class="pl-3">
-              <div class="text-base font-semibold">{{ user.firstName }} {{ user.lastName }}</div>
+              <div class="text-base font-semibold">{{ operator.firstName }} {{ operator.lastName }}</div>
             </div>
           </th>
           <td class="py-4 px-6">
-            {{ user.email }}
+            {{ operator.email }}
           </td>
           <td class="py-4 px-6">
             Titanic
           </td>
           <td class="py-4 px-6">
-            <button type="button" @click="deleteUser(user)" class="font-medium text-rose-500 hover:underline float-right">
+            <button type="button" @click="deleteUser(operator)"
+                    class="font-medium text-rose-500 hover:underline float-right">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -58,26 +62,45 @@
       </table>
     </div>
   </div>
+
+  <add-operator-modal v-model="showModal" v-on:close="showModal=false"
+                      v-on:add="(email, firstName, lastName, password) => addUser(email, firstName, lastName, password)"
+  ></add-operator-modal>
+
 </template>
 
 <script>
+
+import AddOperatorModal from "@/components/modals/AddOperatorModal";
+
 export default {
   name: "ManagerIndex",
+  inject: ['userService'],
+  components: {AddOperatorModal},
+  async created() {
+    this.operators = await this.userService.findOperators();
+  },
   data() {
     return {
-      users: [
-        {id: 1, firstName: "John", lastName: "Smith", email: "test@mail.com", role: "Operator"},
-        {id: 2, firstName: "John", lastName: "Smith", email: "test@mail.com", role: "Operator"},
-        {id: 3, firstName: "John", lastName: "Smith", email: "test@mail.com", role: "Operator"},
-        {id: 4, firstName: "John", lastName: "Smith", email: "test@mail.com", role: "Operator"},
-        {id: 5, firstName: "John", lastName: "Smith", email: "test@mail.com", role: "Operator"},
-        {id: 6, firstName: "John", lastName: "Smith", email: "test@mail.com", role: "Operator"},
-      ],
+      showModal: false,
+      operators: [],
     }
   },
   methods: {
-    deleteUser(user){
-      console.log(user)
+    async refresh() {
+      this.operators = await this.userService.findOperators();
+    },
+    async deleteUser(user) {
+      const userSave = confirm('Are you sure you want to delete ' + user.firstName + ' ' + user.lastName
+          + ' (id:' + user.id + ')?');
+      if (userSave) {
+        await this.userService.deleteOperatorById(user.id);
+        await this.refresh();
+      }
+    },
+    async addUser(email, firstName, lastName, password) {
+      await this.userService.addOperator(email, firstName, lastName, password);
+      await this.refresh();
     }
   }
 }

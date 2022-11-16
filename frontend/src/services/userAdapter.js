@@ -24,6 +24,40 @@ export default class UserAdapter {
         }
     }
 
+    /**
+     * Finds all the accounts with the operator role
+     *
+     * @returns {Promise<*|null>}
+     */
+    async findOperators() {
+        return await this.fetchJson(this.RESOURCE_URL + "/operators");
+    }
+
+    /**
+     * Deletes an operator with the given id
+     *
+     * @param id
+     * @returns {Promise<*|null>}
+     */
+    async deleteOperatorById(id) {
+        return await this.fetchJson(this.RESOURCE_URL + "/" + id, {
+            method: 'DELETE'
+        });
+    }
+
+    /**
+     * Adds an operator with the given data
+     *
+     * @returns {Promise<*|null>}
+     */
+    async addOperator(email, firstName, lastName, password) {
+        return await this.fetchJson(this.RESOURCE_URL + '/addOperator', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({email, firstName, lastName, password})
+        });
+    }
+
     async updateUserInfo() {
         // TODO update user info
         // return this.fetchJson(`${this.RESOURCE_URL}`)
