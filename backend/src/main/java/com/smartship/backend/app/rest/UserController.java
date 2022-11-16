@@ -57,7 +57,7 @@ public class UserController {
         return ResponseEntity.ok().body(foundUser);
     }
 
-    @PostMapping(path = "/addOperator")
+    @PostMapping(path = "/operator")
     public ResponseEntity<User> addNewOperator(@RequestBody ObjectNode body) {
 
         String email = body.path("email").asText();

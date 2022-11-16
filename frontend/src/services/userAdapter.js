@@ -51,7 +51,7 @@ export default class UserAdapter {
      * @returns {Promise<*|null>}
      */
     async addOperator(email, firstName, lastName, password) {
-        return await this.fetchJson(this.RESOURCE_URL + '/addOperator', {
+        return await this.fetchJson(this.RESOURCE_URL + '/operator', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({email, firstName, lastName, password})
