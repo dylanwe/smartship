@@ -10,7 +10,7 @@
                 clip-rule="evenodd"></path>
         </svg>
         <span class="sr-only">Info</span>
-        <h3 class="text-lg font-medium text-red-900">Oops, this page doens't exist!</h3>
+        <h3 class="text-lg font-medium text-red-900">Oops, this page does not exist!</h3>
       </div>
       <div class="mt-2 mb-4 text-sm text-red-900">
         There is no component available for {{ this.$route.path }}
