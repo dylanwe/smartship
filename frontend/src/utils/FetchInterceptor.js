@@ -37,6 +37,7 @@ export default class FetchInterceptor {
                 ...options?.headers,
                 Authorization: token
             }
+
             return [url, newOptions];
         }
     }
