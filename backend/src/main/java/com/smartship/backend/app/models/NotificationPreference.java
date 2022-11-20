@@ -1,5 +1,6 @@
 package com.smartship.backend.app.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
@@ -15,6 +16,7 @@ public class NotificationPreference {
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private User user;
     @OneToOne
     @JoinColumn(name = "notification_setting", referencedColumnName = "id")
@@ -69,5 +71,16 @@ public class NotificationPreference {
 
     public void setNotificationSetting(NotificationSetting notificationSetting) {
         this.notificationSetting = notificationSetting;
+    }
+
+    @Override
+    public String toString() {
+        return "NotificationPreference{" +
+                "id=" + id +
+                ", isEmailActive=" + isEmailActive +
+                ", isPushActive=" + isPushActive +
+                ", user=" + user +
+                ", notificationSetting=" + notificationSetting +
+                '}';
     }
 }

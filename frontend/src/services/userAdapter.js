@@ -70,8 +70,16 @@ export default class UserAdapter {
         );
     }
 
-    async updateNotificationSettings() {
-        // TODO update notification settings
+    async updateNotificationSettings(preferences) {
+        return await fetch(
+            `${this.RESOURCE_URL}/notification-preferences`,
+            {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(preferences),
+                credentials: 'include'
+            }
+        );
     }
 
     /**
@@ -80,40 +88,27 @@ export default class UserAdapter {
      * @returns The notification settings
      */
     async findNotificationSettings() {
-        // example stuff
-        return Promise.resolve({
-            notifications: [
-                {
-                    id: 1,
-                    name: "Ship",
-                    description: "These are notifications to alert you on changes of the ship.",
-                    options: [
-                        {
-                            name: "In App",
-                            on: false,
-                        },
-                        {
-                            name: "E-mail",
-                            on: true,
-                        },
-                    ]
-                },
-                {
-                    id: 2,
-                    name: "Tasks",
-                    description: "These are notifications to remind you of any task and when someone assigns you a new task.",
-                    options: [
-                        {
-                            name: "In App",
-                            on: true,
-                        },
-                        {
-                            name: "E-mail",
-                            on: false,
-                        },
-                    ]
-                },
-            ]
+        const settings = await fetch(`${process.env.VUE_APP_API_URL}/notification-settings`)
+            .then(res => res.json());
+        const preferences = await fetch(`${this.RESOURCE_URL}/notification-preferences`)
+            .then(res => res.json());
+
+        // convert settings to map
+        const settingsMap = {};
+        settings?.forEach(setting => {
+            settingsMap[setting.id] = setting
+            settingsMap[setting.id].notificationPreferenceId = undefined;
+            settingsMap[setting.id].isEmailActive = false;
+            settingsMap[setting.id].isPushActive = false;
         });
+
+        // add preferences to map
+        preferences?.forEach(preference => {
+            settingsMap[preference.notificationSetting.id].notificationPreferenceId = preference.id;
+            settingsMap[preference.notificationSetting.id].isEmailActive = preference.emailActive;
+            settingsMap[preference.notificationSetting.id].isPushActive = preference.pushActive;
+        });
+
+        return settingsMap;
     }
 }

@@ -3,7 +3,10 @@ package com.smartship.backend.app.rest;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.smartship.backend.app.exceptions.NotAcceptableException;
 import com.smartship.backend.app.exceptions.NotFoundException;
+import com.smartship.backend.app.models.NotificationPreference;
 import com.smartship.backend.app.models.User;
+import com.smartship.backend.app.repositories.NotificationPreferenceRepository;
+import com.smartship.backend.app.repositories.NotificationSettingRepository;
 import com.smartship.backend.app.repositories.UserRepository;
 import com.smartship.backend.app.utility.JWTokenInfo;
 import org.mindrot.jbcrypt.BCrypt;
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -18,10 +22,16 @@ import java.util.List;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final NotificationPreferenceRepository notificationPreferenceRepository;
+    private final NotificationSettingRepository notificationSettingRepository;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository,
+                          NotificationPreferenceRepository notificationPreferenceRepository,
+                          NotificationSettingRepository notificationSettingRepository) {
         this.userRepository = userRepository;
+        this.notificationPreferenceRepository = notificationPreferenceRepository;
+        this.notificationSettingRepository = notificationSettingRepository;
     }
 
     @GetMapping(path = "")
@@ -83,9 +93,53 @@ public class UserController {
         }
     }
 
-    @GetMapping(path = "notification-prefrences")
-    public ResponseEntity<?> findAllNotificationPreferences(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
-        // TODO get all notification settings
-        return ResponseEntity.ok().body("Ayyyyy");
+    @GetMapping(path = "notification-preferences")
+    public ResponseEntity<List<NotificationPreference>> findAllNotificationPreferences(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
+        List<NotificationPreference> notificationPreferences =
+                notificationPreferenceRepository.findAllByUserId(jwTokenInfo.userId());
+
+        return ResponseEntity.ok().body(notificationPreferences);
+    }
+
+    @PutMapping(path = "notification-preferences")
+    public ResponseEntity<?> updateNotificationPreferences(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @RequestBody ObjectNode[] requestBodies) {
+        // create empty list
+        List<NotificationPreference> notificationPreferences = new ArrayList<>();
+        User user = userRepository.findById(jwTokenInfo.userId())
+                .orElseThrow(() -> new NotFoundException(String.format(
+                        "User with id %s wasn't found",
+                        jwTokenInfo.userId()
+                )));
+
+        // go through iterable object
+        for(ObjectNode body : requestBodies) {
+            Long notificationPreferenceId = (body.get("notificationPreferenceId") != null) ? body.get(
+                    "notificationPreferenceId").asLong() : null;
+            Long notificationSettingId = body.get("notificationSettingId").asLong();
+            boolean isEmailActive = body.get("isEmailActive").asBoolean();
+            boolean isPushActive = body.get("isPushActive").asBoolean();
+
+
+            System.out.println(body.get("notificationPreferenceId"));
+
+            NotificationPreference notificationPreference = new NotificationPreference(
+                    isEmailActive,
+                    isPushActive,
+                    user,
+                    notificationSettingRepository.findById(notificationSettingId).get()
+            );
+
+            if (notificationPreferenceId != null) {
+                notificationPreference.setId(notificationPreferenceId);
+            }
+
+            notificationPreferences.add(notificationPreference);
+        }
+
+        // save all to repository
+        List<NotificationPreference> savedPreferences =
+                notificationPreferenceRepository.saveAll(notificationPreferences);
+
+        return ResponseEntity.ok().body(savedPreferences);
     }
 }
