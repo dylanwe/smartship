@@ -6,25 +6,6 @@ export default class UserAdapter {
     }
 
     /**
-     * Do the request with the URL to fetch the JSON
-     *
-     * @param url From where you want to request
-     * @param options What you would like to send to that URL
-     * @returns {Promise<null|any>} The JSON response
-     */
-    async fetchJson(url, options = null) {
-        const response = await fetch(url, options);
-
-        if (response.ok) {
-            return await response.json();
-        } else {
-            // response got an error
-            console.log(response, !response.bodyUsed ? await response.text() : "");
-            return null;
-        }
-    }
-
-    /**
      * Update the general user information
      *
      * @param {string} firstName
@@ -37,7 +18,7 @@ export default class UserAdapter {
     async updateUserInfo(firstName, lastName, email, bio, birthday) {
         const userInfo = {firstName, lastName, email, bio, birthday};
 
-        const updatedUser = await this.fetchJson(
+        let updatedUser = await fetch(
             `${this.RESOURCE_URL}`,
             {
                 method: 'PUT',
@@ -47,8 +28,13 @@ export default class UserAdapter {
             }
         );
 
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        return updatedUser;
+        if (updatedUser.ok) {
+            updatedUser = await updatedUser.json();
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+            return updatedUser;
+        } else {
+            return null;
+        }
     }
 
     /**

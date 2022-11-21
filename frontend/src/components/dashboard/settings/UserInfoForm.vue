@@ -138,7 +138,7 @@ export default {
 
   methods: {
     async updateUserInfo() {
-      this.user = await this.userService.updateUserInfo(
+      const response = await this.userService.updateUserInfo(
           this.userCopy.firstName,
           this.userCopy.lastName,
           this.userCopy.email,
@@ -146,10 +146,11 @@ export default {
           this.userCopy.birthday
       );
 
-      if (this.user !== null) {
+      if (response !== null) {
+        this.user = response;
         this.$emit('showToast', 'succes', 'User information saved');
       } else {
-        this.$emit('showToast', 'succes', 'Couldn\'t save information');
+        this.$emit('showToast', 'error', 'Couldn\'t save information');
       }
     },
   },
