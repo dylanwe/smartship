@@ -58,10 +58,12 @@ public class UserController {
                         jwTokenInfo.userId()
                 )));
 
+        User.validateNewUserInformation(updatedUser);
+
         foundUser.setFirstName(updatedUser.getFirstName());
         foundUser.setLastName(updatedUser.getLastName());
         foundUser.setEmail(updatedUser.getEmail());
-        // TODO save birthday
+        foundUser.setBirthday(updatedUser.getBirthday());
         foundUser.setBio(updatedUser.getBio());
 
         updatedUser = userRepository.save(foundUser);
@@ -118,9 +120,6 @@ public class UserController {
             Long notificationSettingId = body.get("notificationSettingId").asLong();
             boolean isEmailActive = body.get("isEmailActive").asBoolean();
             boolean isPushActive = body.get("isPushActive").asBoolean();
-
-
-            System.out.println(body.get("notificationPreferenceId"));
 
             NotificationPreference notificationPreference = new NotificationPreference(
                     isEmailActive,
