@@ -9,7 +9,7 @@
           <h2 class="float-left text-3xl font-bold">Operators</h2>
           <button
               @click="showModal = true"
-              class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors flex float-right items-center">
+              class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center transition-colors flex float-right items-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                  stroke="currentColor" class="w-6 h-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6"/>
@@ -81,9 +81,9 @@ export default {
   components: {AddOperatorModal},
   async created() {
     //If the user isn't a manager, send the user to the dashboard
-    if (this.sessionService.getCurrentUser().role !== 'Manager') {
-      this.$router.push(this.$route.matched[0].path)
-    }
+    // if (this.sessionService.getCurrentUser().role !== 'Manager') {
+    //   this.$router.push(this.$route.matched[0].path)
+    // }
     //Get all the operators from the database via the backend
     this.operators = await this.userService.findOperators();
   },
@@ -109,18 +109,29 @@ export default {
       }
     },
     async addUser(email, firstName, lastName, password) {
-      //Add a new operator with the given data via the backend
-      const addedUser = await this.userService.addOperator(email, firstName, lastName, password);
 
-      //Show an error message if a new user didn't get created.
-      if (addedUser == null) {
-        document.getElementById('error').classList.remove('hidden');
-      } else {
-        document.getElementById('error').classList.add('hidden');
+      //Make a regex object that is used to check if the given email is valid.
+      const emailRegex =
+          new RegExp(/^[A-Za-z0-9_!#$%&'*+/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/, "gm");
+
+      //Check if everything is filled in and the email is valid.
+      if (emailRegex.test(email) && firstName !== '' && lastName !== '' && password !== '') {
+        let error = document.getElementById('error');
+
+        //Add a new operator with the given data via the backend
+        const addedUser = await this.userService.addOperator(email, firstName, lastName, password);
+
+        //Show an error message if a new user didn't get created.
+        if (addedUser == null) {
+          error.classList.remove('hidden');
+        } else {
+          error.classList.add('hidden');
+        }
+
+        //Call the refresh to get the operators again.
+        await this.refresh();
       }
 
-      //Call the refresh to get the operators again.
-      await this.refresh();
     }
   }
 }
