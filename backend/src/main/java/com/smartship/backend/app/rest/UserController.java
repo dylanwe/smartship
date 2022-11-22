@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/v1/operator")
+@RequestMapping(path = "/api/v1/users")
 public class UserController {
 
     private final UserRepository userRepository;

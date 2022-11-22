@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/v1/users")
+@RequestMapping(path = "/api/v1/manager")
 public class ManagerController {
 
     private final ManagerRepository managerRepository;
@@ -23,7 +23,7 @@ public class ManagerController {
         this.managerRepository = managerRepository;
     }
 
-    @GetMapping(path = "/operators")
+    @GetMapping(path = "")
     public ResponseEntity<List<User>> findAllOperators() {
         List<User> operators = managerRepository.findByRole(User.ROLE.Operator);
 

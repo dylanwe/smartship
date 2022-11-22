@@ -30,7 +30,8 @@ export default class ManagerAdapter {
      * @returns {Promise<*|null>}
      */
     async findOperators() {
-        return await this.fetchJson(this.RESOURCE_URL + "/operators");
+        console.log(this.RESOURCE_URL)
+        return await this.fetchJson(this.RESOURCE_URL);
     }
 
     /**

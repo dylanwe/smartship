@@ -24,7 +24,7 @@ export default {
       sessionService: this.theSessionService,
       userService: new UserAdapter(`${API_URL}/users`),
       notificationService: new NotificationService(),
-      managerService: new ManagerAdapter(`${API_URL}/operator`),
+      managerService: new ManagerAdapter(`${API_URL}/manager`),
     }
   },
 
