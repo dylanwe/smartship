@@ -10,7 +10,7 @@ import FetchInterceptor from "@/utils/FetchInterceptor";
 import NotificationService from "@/services/NotificationService";
 import ManagerAdapter from "@/services/managerAdapter";
 
-const API_URL = process.env.VUE_APP_API_URL;
+const API_URL = "http://localhost:8087/api/v1";
 let JWT_STORAGE_ITEM;
 
 export default {
