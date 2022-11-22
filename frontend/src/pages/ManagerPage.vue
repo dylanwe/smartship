@@ -77,7 +77,7 @@ import AddOperatorModal from "@/components/modals/AddOperatorModal";
 
 export default {
   name: "ManagerIndex",
-  inject: ['sessionService','userService'],
+  inject: ['sessionService','managerService'],
   components: {AddOperatorModal},
   async created() {
     //If the user isn't a manager, send the user to the dashboard
@@ -85,7 +85,7 @@ export default {
     //   this.$router.push(this.$route.matched[0].path)
     // }
     //Get all the operators from the database via the backend
-    this.operators = await this.userService.findOperators();
+    this.operators = await this.managerService.findOperators();
   },
   data() {
     return {
@@ -96,7 +96,7 @@ export default {
   methods: {
     async refresh() {
       //Get all the operators from the database via the backend.
-      this.operators = await this.userService.findOperators();
+      this.operators = await this.managerService.findOperators();
     },
     async deleteUser(user) {
       //Show a popup window asking if they really want to delete the user.
@@ -104,7 +104,7 @@ export default {
           + ' (id:' + user.id + ')?');
       //Delete the user if they pressed confirm and call the refresh method, which gets the operators again.
       if (userSave) {
-        await this.userService.deleteOperatorById(user.id);
+        await this.managerService.deleteOperatorById(user.id);
         await this.refresh();
       }
     },
@@ -119,7 +119,7 @@ export default {
         let error = document.getElementById('error');
 
         //Add a new operator with the given data via the backend
-        const addedUser = await this.userService.addOperator(email, firstName, lastName, password);
+        const addedUser = await this.managerService.addOperator(email, firstName, lastName, password);
 
         //Show an error message if a new user didn't get created.
         if (addedUser == null) {

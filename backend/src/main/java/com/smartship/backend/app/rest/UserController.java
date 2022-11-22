@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/v1/users")
+@RequestMapping(path = "/api/v1/operator")
 public class UserController {
 
     private final UserRepository userRepository;
@@ -37,47 +37,6 @@ public class UserController {
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %s wasn't found", id)));
 
         return ResponseEntity.ok().body(foundUser);
-    }
-
-    @GetMapping(path = "/operators")
-    public ResponseEntity<List<User>> findAllOperators() {
-        List<User> operators = userRepository.findByRole(User.ROLE.Operator);
-
-        return ResponseEntity.ok().body(operators);
-    }
-
-    @DeleteMapping(path = "/{id}")
-    public ResponseEntity<User> deleteUserById(@PathVariable long id) {
-
-        User foundUser = userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(String.format("User with id %s wasn't found", id)));
-
-        userRepository.deleteById(id);
-
-        return ResponseEntity.ok().body(foundUser);
-    }
-
-    @PostMapping(path = "/operator")
-    public ResponseEntity<User> addNewOperator(@RequestBody ObjectNode body) {
-
-        String email = body.path("email").asText();
-        String firstName = body.path("firstName").asText();
-        String lastName = body.path("lastName").asText();
-        String password = BCrypt.hashpw(body.path("password").asText(), BCrypt.gensalt());
-
-        User user = new User(
-                firstName,
-                lastName,
-                email,
-                password,
-                LocalDate.now(),
-                User.ROLE.Operator,
-                "See everything in it's entirety... effortlessly. That is what it means to truly see."
-        );
-
-        userRepository.save(user);
-
-        return ResponseEntity.ok().body(user);
     }
 
 }

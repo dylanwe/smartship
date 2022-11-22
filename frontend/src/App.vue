@@ -8,6 +8,7 @@ import SessionSbService from "@/services/SessionSbService";
 import {shallowReactive} from "vue";
 import FetchInterceptor from "@/utils/FetchInterceptor";
 import NotificationService from "@/services/NotificationService";
+import ManagerAdapter from "@/services/managerAdapter";
 
 const API_URL = 'http://localhost:8087/api/v1';
 let JWT_STORAGE_ITEM;
@@ -23,6 +24,7 @@ export default {
       sessionService: this.theSessionService,
       userService: new UserAdapter(`${API_URL}/users`),
       notificationService: new NotificationService(),
+      managerService: new ManagerAdapter(`${API_URL}/operator`),
     }
   },
 
