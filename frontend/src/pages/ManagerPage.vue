@@ -74,6 +74,7 @@
 <script>
 
 import AddOperatorModal from "@/components/modals/AddOperatorModal";
+import emailjs from 'emailjs-com';
 
 export default {
   name: "ManagerIndex",
@@ -126,6 +127,19 @@ export default {
           error.classList.remove('hidden');
         } else {
           error.classList.add('hidden');
+
+          let emailParams = {
+            name: addedUser.firstName,
+            email: addedUser.email
+          };
+
+          await emailjs.send("service_i66vivu", "template_ufzdlte", emailParams, "LB6axeycasCvaughh")
+              .then(function(response) {
+                console.log('SUCCESS!', response.status, response.text);
+              }, function(error) {
+                console.log('FAILED...', error);
+              });
+
         }
 
         //Call the refresh to get the operators again.
