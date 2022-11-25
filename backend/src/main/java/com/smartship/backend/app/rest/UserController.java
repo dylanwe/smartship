@@ -3,6 +3,7 @@ package com.smartship.backend.app.rest;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.smartship.backend.app.exceptions.NotAcceptableException;
 import com.smartship.backend.app.exceptions.NotFoundException;
+import com.smartship.backend.app.exceptions.UnauthorizedException;
 import com.smartship.backend.app.models.NotificationPreference;
 import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.NotificationPreferenceRepository;
@@ -42,7 +43,14 @@ public class UserController {
     }
 
     @GetMapping(path = "{id}")
-    public ResponseEntity<User> findUserById(@PathVariable Long id) {
+    public ResponseEntity<User> findUserById(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo,
+                                             @PathVariable Long id) {
+        // check if user is the same id as jwt if it's an operator
+        if (jwTokenInfo.role() == User.ROLE.Operator)
+            if (!id.equals(jwTokenInfo.userId()))
+                // not the same
+                throw new UnauthorizedException("User id doesn't match");
+
 
         User foundUser = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %s wasn't found", id)));
@@ -81,7 +89,7 @@ public class UserController {
                         jwTokenInfo.userId()
                 )));
 
-        // check the given password
+        // validate the given password
         if (BCrypt.checkpw(password, foundUser.getHashedPassword())) {
             String newHashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
 
@@ -114,7 +122,7 @@ public class UserController {
                 )));
 
         // go through iterable object
-        for(ObjectNode body : requestBodies) {
+        for (ObjectNode body : requestBodies) {
             Long notificationPreferenceId = (body.get("notificationPreferenceId") != null) ? body.get(
                     "notificationPreferenceId").asLong() : null;
             Long notificationSettingId = body.get("notificationSettingId").asLong();
