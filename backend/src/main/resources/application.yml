@@ -23,6 +23,6 @@ spring:
   # MYSQL CONFIG
   datasource:
     url: "jdbc:mysql://${MYSQL_HOST:localhost}:3306/smart-4"
-    username: ${MYSQL_USERNAME}
-    password: ${MYSQL_PASSWORD}
+    username: "root"
+    password: "root"
     driver-class-name: com.mysql.cj.jdbc.Driver

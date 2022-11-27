@@ -8,6 +8,7 @@ import SessionSbService from "@/services/SessionSbService";
 import {shallowReactive} from "vue";
 import FetchInterceptor from "@/utils/FetchInterceptor";
 import NotificationService from "@/services/NotificationService";
+import DashboardAdapter from "@/services/DashboardAdapter";
 
 const API_URL = 'http://localhost:8087/api/v1';
 let JWT_STORAGE_ITEM;
@@ -22,6 +23,7 @@ export default {
     return {
       sessionService: this.theSessionService,
       userService: new UserAdapter(`${API_URL}/users`),
+      dashboardService: new DashboardAdapter(`${API_URL}/dashboards`),
       notificationService: new NotificationService(),
     }
   },

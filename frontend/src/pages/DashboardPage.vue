@@ -60,6 +60,7 @@
                  :responsive="false"
                  :maxRows="5"
                  :autoSize="false"
+                     @layout-updated="layoutUpdatedEvent"
                 
         >
         <!-- Grid Item -->
@@ -71,6 +72,7 @@
                    :h="item.h"
                    :i="item.i"
                    :key="index"
+
                 class="bg-white border border-gray-600 rounded-md"
             >
           <!-- Widget Component -->
@@ -97,6 +99,7 @@ import SmallLineChart from '../components/dashboard/widgets/base/SmallLineChart.
 
 export default {
   name: "DashboardIndex",
+  inject: ["dashboardService"],
   components: {
     GridLayout: GridLayout,
     GridItem: GridItem,
@@ -127,8 +130,9 @@ export default {
     }
   },
   methods: {
-        toggleWidgetbar(){
+        async toggleWidgetbar(){
             this.showWidgetbar = !this.showWidgetbar
+          console.log(await this.dashboardService.getAll())
         },
         toggleEditMode() {
             this.editMode = !this.editMode;
@@ -139,9 +143,9 @@ export default {
             this.toggleEditMode()
         },
         saveChanges(){
-
             this.toggleEditMode()
         },
+
         addWidget(widget){
               // Add a new item. It must have a unique key!
               this.layout.push({
@@ -149,13 +153,12 @@ export default {
                 y: this.layout.length + (this.numberOfColumns), // puts it at the bottom
                 w: widget.config.width || 1,
                 h: widget.config.height || 1,
-                minH: widget.config.minHeight ?? null,
-                i: this.index,
                 widget:widget,
-                data:widget.data
-                
+                data:widget.data,
 
-            });
+                i: this.index,
+
+              });
             // Increment the counter to ensure key is always unique.
             this.index++;
         },
@@ -165,9 +168,30 @@ export default {
             if (confirm(`Are you sure you want to delete this widget?`)) this.layout.splice(index, 1);
            
         },
-    }
+    },
 
-
+  layoutUpdatedEvent: function(newLayout){
+    console.log("Updated layout: ", newLayout)
+  },
+  //
+  // layoutCreatedEvent: function(newLayout){
+  //   console.log("Created layout: ", newLayout)
+  // },
+  // moveEvent: function(i, newX, newY){
+  //   console.log("MOVE i=" + i + ", X=" + newX + ", Y=" + newY);
+  // },
+  // resizeEvent: function(i, newH, newW, newHPx, newWPx){
+  //   console.log("RESIZE i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
+  // },
+  // movedEvent: function(i, newX, newY){
+  //   console.log("MOVED i=" + i + ", X=" + newX + ", Y=" + newY);
+  // },
+  // resizedEvent: function(i, newH, newW, newHPx, newWPx){
+  //   console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
+  // },
+  // containerResizedEvent: function(i, newH, newW, newHPx, newWPx){
+  //   console.log("CONTAINER RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
+  // },
 }
 </script>
 
