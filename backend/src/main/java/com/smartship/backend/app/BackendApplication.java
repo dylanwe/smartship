@@ -1,8 +1,10 @@
 package com.smartship.backend.app;
 
+import com.smartship.backend.app.models.NotificationSetting;
 import com.smartship.backend.app.exceptions.NotAcceptableException;
 import com.smartship.backend.app.models.Dashboard;
 import com.smartship.backend.app.models.User;
+import com.smartship.backend.app.repositories.NotificationSettingRepository;
 import com.smartship.backend.app.repositories.DashboardRepository;
 import com.smartship.backend.app.repositories.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
@@ -14,18 +16,19 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootApplication
 public class BackendApplication implements CommandLineRunner {
 
     private final UserRepository userRepository;
+    private final NotificationSettingRepository notificationSettingRepository;
     private final DashboardRepository dashboardRepository;
 
     @Autowired
-    public BackendApplication(UserRepository userRepository, DashboardRepository dashboardRepository) {
+    public BackendApplication(UserRepository userRepository, DashboardRepository dashboardRepository,
+                              NotificationSettingRepository notificationSettingRepository) {
         this.userRepository = userRepository;
-
+        this.notificationSettingRepository = notificationSettingRepository;
         this.dashboardRepository = dashboardRepository;
     }
 
@@ -35,13 +38,13 @@ public class BackendApplication implements CommandLineRunner {
 
     /**
      * Add initial data
-     *
      * @param args incoming main method arguments
      */
     @Override
     @Transactional
     public void run(String... args) {
-        this.createInitialUsers();
+        createInitialUsers();
+        this.addNotificationSettings();
         this.createInitialDashboards();
     }
 
@@ -55,21 +58,32 @@ public class BackendApplication implements CommandLineRunner {
         System.out.println("Adding a initial users");
         // Encrypt the password
         String password = BCrypt.hashpw("secret", BCrypt.gensalt());
-
-        User user = new User(
-                "John",
-                "Smith",
-                "test@mail.com",
-                password,
-                LocalDate.now(),
-                User.ROLE.Operator,
-                "See everything in it's entirety... effortlessly. That is what it means to truly see."
+        userRepository.save(
+                new User(
+                        "John",
+                        "Smith",
+                        "test@mail.com",
+                        password,
+                        LocalDate.now(),
+                        User.ROLE.Operator,
+                        "See everything in it's entirety... effortlessly. That is what it means to truly see."
+                )
         );
-
-        userRepository.save(user);
-
     }
 
+    private void addNotificationSettings() {
+        List<NotificationSetting> settings = List.of(
+          new NotificationSetting("Ship", "These are notifications to alert you on changes on the ship"),
+          new NotificationSetting("Tasks", "These are notifications to remind you of any task and when someone assigns you a new task"),
+          new NotificationSetting("Shifts", "These are notifications to remind you of an upcoming shift")
+        );
+
+        List<NotificationSetting> savedSettings = notificationSettingRepository.findAll();
+
+        if (savedSettings.size() < settings.size()) {
+            notificationSettingRepository.saveAll(settings);
+        }
+    }
     /**
      * Create initial dashboards
      */
