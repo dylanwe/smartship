@@ -1,6 +1,8 @@
 package com.smartship.backend.app.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.*;
@@ -19,6 +21,7 @@ public class Dashboard {
     private Long shipId;
 
     @OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonBackReference
     private Set<DashboardItem> layout = new HashSet<>();
 
 
@@ -29,6 +32,12 @@ public class Dashboard {
         this.user = user;
     }
 
+    public void addAllToLayout(DashboardItem[] items){
+            for (DashboardItem dashboardItem : layout) {
+                boolean b = items == null ? removeItem(dashboardItem) : addToLayout(dashboardItem);
+
+            }
+    }
 
     /**
      * Associates the given item with this layout, if not yet associated

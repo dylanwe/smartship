@@ -1,5 +1,7 @@
 package com.smartship.backend.app.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -21,6 +23,7 @@ public class Widget {
     private int defaultWidth;
 
     @OneToOne
+    @JsonManagedReference
     private DashboardItem dashboardItem;
 
     @ManyToOne(fetch = FetchType.LAZY)

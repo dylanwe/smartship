@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface DashboardRepository extends JpaRepository<Dashboard, Long> {
     Optional<Dashboard> findByUserId(Long userId);
 
+    Boolean existsByUserId(Long userId);
+
 }
