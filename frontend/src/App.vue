@@ -9,7 +9,7 @@ import {shallowReactive} from "vue";
 import FetchInterceptor from "@/utils/FetchInterceptor";
 import NotificationService from "@/services/NotificationService";
 import ManagerAdapter from "@/services/managerAdapter";
-import DashboardAdapter from "@/services/DashboardAdapter";
+import DashboardAdapter from "@/services/dashboardAdapter";
 
 const API_URL = process.env.VUE_APP_API_URL;
 let JWT_STORAGE_ITEM;
