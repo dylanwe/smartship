@@ -1,4 +1,4 @@
-export default class ManagerAdapter {
+export default class UserManagementAdaptor {
     RESOURCE_URL;
 
     constructor(resourceUrl) {
@@ -25,33 +25,33 @@ export default class ManagerAdapter {
     }
 
     /**
-     * Finds all the accounts with the operator role
+     * Finds all the accounts with the given role
      *
      * @returns {Promise<*|null>}
      */
-    async findOperators() {
-        return await this.fetchJson(this.RESOURCE_URL);
+    async findAccountForRole(role) {
+        return await this.fetchJson(this.RESOURCE_URL + "/" + role);
     }
 
     /**
-     * Deletes an operator with the given id
+     * Deletes a user with the given id
      *
      * @param id
      * @returns {Promise<*|null>}
      */
-    async deleteOperatorById(id) {
+    async deleteUserById(id) {
         return await this.fetchJson(this.RESOURCE_URL + "/" + id, {
             method: 'DELETE'
         });
     }
 
     /**
-     * Adds an operator with the given data
+     * Adds a new user with the given data
      *
      * @returns {Promise<*|null>}
      */
-    async addOperator(email, firstName, lastName, password) {
-        return await this.fetchJson(this.RESOURCE_URL + '/operator', {
+    async addAccount(email, firstName, lastName, password, role) {
+        return await this.fetchJson(this.RESOURCE_URL + '/' + role, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({email, firstName, lastName, password})

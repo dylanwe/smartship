@@ -1,12 +1,12 @@
 <template>
   <div class="mt-6">
     <h1 class="text-4xl text-neutral-800 font-bold">
-      Manager panel
+      Admin panel
     </h1>
     <div class="overflow-x-auto relative shadow-md sm:rounded-lg mt-8">
       <table class="w-full text-sm text-left text-neutral-700">
         <caption class="p-5 text-neutral-700 bg-neutral-50">
-          <h2 class="float-left text-3xl font-bold">Operators</h2>
+          <h2 class="float-left text-3xl font-bold">Managers</h2>
           <button
               @click="showModal = true"
               class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center transition-colors flex float-right items-center">
@@ -14,7 +14,7 @@
                  stroke="currentColor" class="w-6 h-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6"/>
             </svg>
-            Add Operator
+            Add Manager
           </button>
         </caption>
         <thead class="text-sm text-neutral-900 uppercase bg-neutral-50 border-t-2 border-neutral-200">
@@ -34,21 +34,21 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="operator in operators" :key="operator.id" class="bg-neutral-50 text-base hover:bg-neutral-100">
+        <tr v-for="manager in managers" :key="manager.id" class="bg-neutral-50 text-base hover:bg-neutral-100">
           <th scope="row" class="flex items-center py-4 px-6 text-neutral-700 whitespace-nowrap">
             <img class="w-10 h-10 rounded-full" src="@/assets/img/profile_picture.jpeg" alt="Profile image">
             <div class="pl-3">
-              <div class="text-base font-semibold">{{ operator.firstName }} {{ operator.lastName }}</div>
+              <div class="text-base font-semibold">{{ manager.firstName }} {{ manager.lastName }}</div>
             </div>
           </th>
           <td class="py-4 px-6">
-            {{ operator.email }}
+            {{ manager.email }}
           </td>
           <td class="py-4 px-6">
             Titanic
           </td>
           <td class="py-4 px-6">
-            <button type="button" @click="deleteUser(operator)"
+            <button type="button" @click="deleteUser(manager)"
                     class="font-medium text-rose-500 hover:underline float-right">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -61,50 +61,50 @@
         </tbody>
       </table>
     </div>
-    <p class="hidden mt-5 text-sm font-medium text-rose-500" id="error">Something went wrong while adding a new operator
+    <p class="hidden mt-5 text-sm font-medium text-rose-500" id="error">Something went wrong while adding a new manager
     </p>
   </div>
 
-  <add-operator-modal v-model="showModal" v-on:close="showModal=false"
+  <add-account-modal v-model="showModal" v-on:close="showModal=false"
                       v-on:add="(email, firstName, lastName, password) => addUser(email, firstName, lastName, password)"
-  ></add-operator-modal>
+  ></add-account-modal>
 
 </template>
 
 <script>
 
-import AddOperatorModal from "@/components/modals/AddAccountModal";
+import AddAccountModal from "@/components/modals/AddAccountModal";
 import emailjs from 'emailjs-com';
 import User from "@/models/User";
 
 export default {
-  name: "ManagerIndex",
+  name: "AdminIndex",
   inject: ['sessionService','userManagementService'],
-  components: {AddOperatorModal},
+  components: {AddAccountModal},
   async created() {
-    //If the user isn't a manager, send the user to the dashboard
-    if (this.sessionService.getCurrentUser().role !== 'Manager') {
-      this.$router.push(this.$route.matched[0].path)
-    }
-    //Get all the operators from the database via the backend
-    this.operators = await this.userManagementService.findAccountForRole(User.ROLE.Operator);
+    //If the user isn't an admin, send the user to the dashboard
+    // if (this.sessionService.getCurrentUser().role !== 'Admin') {
+    //   this.$router.push(this.$route.matched[0].path)
+    // }
+    //Get all the managers from the database via the backend
+    this.managers = await this.userManagementService.findAccountForRole(User.ROLE.Manager);
   },
   data() {
     return {
       showModal: false,
-      operators: [],
+      managers: [],
     }
   },
   methods: {
     async refresh() {
-      //Get all the operators from the database via the backend.
-      this.operators = await this.userManagementService.findAccountForRole(User.ROLE.Operator);
+      //Get all the managers from the database via the backend.
+      this.managers = await this.userManagementService.findAccountForRole(User.ROLE.Manager);
     },
     async deleteUser(user) {
       //Show a popup window asking if they really want to delete the user.
       const userSave = confirm('Are you sure you want to delete ' + user.firstName + ' ' + user.lastName
           + ' (id:' + user.id + ')?');
-      //Delete the user if they pressed confirm and call the refresh method, which gets the operators again.
+      //Delete the user if they pressed confirm and call the refresh method, which gets the managers again.
       if (userSave) {
         await this.userManagementService.deleteUserById(user.id);
         await this.refresh();
@@ -120,8 +120,8 @@ export default {
       if (emailRegex.test(email) && firstName !== '' && lastName !== '' && password !== '') {
         let error = document.getElementById('error');
 
-        //Add a new operator with the given data via the backend
-        const addedUser = await this.userManagementService.addAccount(email, firstName, lastName, password, User.ROLE.Operator);
+        //Add a new manager with the given data via the backend
+        const addedUser = await this.userManagementService.addAccount(email, firstName, lastName, password, User.ROLE.Manager);
 
         //Show an error message if a new user didn't get created.
         if (addedUser == null) {
@@ -134,7 +134,6 @@ export default {
             email: addedUser.email
           };
 
-          //Send an email to the new user.
           await emailjs.send("service_i66vivu", "template_ufzdlte", emailParams, "LB6axeycasCvaughh")
               .then(function(response) {
                 console.log('SUCCESS!', response.status, response.text);
@@ -144,7 +143,7 @@ export default {
 
         }
 
-        //Call the refresh to get the operators again.
+        //Call the refresh to get the managers again.
         await this.refresh();
       }
 

@@ -3,7 +3,7 @@ package com.smartship.backend.app.rest;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.smartship.backend.app.exceptions.NotFoundException;
 import com.smartship.backend.app.models.User;
-import com.smartship.backend.app.repositories.ManagerRepository;
+import com.smartship.backend.app.repositories.UserManagementRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,37 +13,36 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "/api/v1/manager")
-public class ManagerController {
+@RequestMapping(path = "/api/v1/userManagement")
+public class UserManagementController {
 
-    private final ManagerRepository managerRepository;
+    private final UserManagementRepository userManagementRepository;
 
     @Autowired
-    public ManagerController(ManagerRepository managerRepository) {
-        this.managerRepository = managerRepository;
+    public UserManagementController(UserManagementRepository userManagementRepository) {
+        this.userManagementRepository = userManagementRepository;
     }
 
-    @GetMapping(path = "")
-    public ResponseEntity<List<User>> findAllOperators() {
-        List<User> operators = managerRepository.findByRole(User.ROLE.Operator);
+    @GetMapping(path = "/{role}")
+    public ResponseEntity<List<User>> findAllAccountsForRole(@PathVariable String role) {
+        List<User> foundUsers = userManagementRepository.findByRole(User.ROLE.valueOf(role));
 
-        return ResponseEntity.ok().body(operators);
+        return ResponseEntity.ok().body(foundUsers);
     }
 
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<User> deleteUserById(@PathVariable long id) {
 
-        User foundUser = managerRepository.findById(id)
+        User foundUser = userManagementRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %s wasn't found", id)));
 
-        managerRepository.deleteById(id);
+        userManagementRepository.deleteById(id);
 
         return ResponseEntity.ok().body(foundUser);
     }
 
-    @PostMapping(path = "/operator")
-    public ResponseEntity<User> addNewOperator(@RequestBody ObjectNode body) {
-
+    @PostMapping(path = "/{role}")
+    public ResponseEntity<User> addNewAccount(@RequestBody ObjectNode body, @PathVariable String role) {
         String email = body.path("email").asText();
         String firstName = body.path("firstName").asText();
         String lastName = body.path("lastName").asText();
@@ -55,11 +54,11 @@ public class ManagerController {
                 email,
                 password,
                 LocalDate.now(),
-                User.ROLE.Operator,
+                User.ROLE.valueOf(role),
                 "See everything in it's entirety... effortlessly. That is what it means to truly see."
         );
 
-        managerRepository.save(user);
+        userManagementRepository.save(user);
 
         return ResponseEntity.ok().body(user);
     }
