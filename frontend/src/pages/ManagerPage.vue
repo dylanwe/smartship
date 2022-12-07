@@ -26,10 +26,10 @@
             EMAIL ADDRESS
           </th>
           <th scope="col" class="py-3 px-6">
-            BOAT
+            SHIP
           </th>
           <th scope="col" class="py-3 px-6">
-            <span class="sr-only">Edit</span>
+            <span class="sr-only">Delete</span>
           </th>
         </tr>
         </thead>
@@ -133,6 +133,7 @@ export default {
             email: addedUser.email
           };
 
+          //Send an email to the new user.
           await emailjs.send("service_i66vivu", "template_ufzdlte", emailParams, "LB6axeycasCvaughh")
               .then(function(response) {
                 console.log('SUCCESS!', response.status, response.text);
