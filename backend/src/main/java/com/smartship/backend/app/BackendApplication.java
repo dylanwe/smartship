@@ -1,6 +1,8 @@
 package com.smartship.backend.app;
 
+import com.smartship.backend.app.models.NotificationSetting;
 import com.smartship.backend.app.models.User;
+import com.smartship.backend.app.repositories.NotificationSettingRepository;
 import com.smartship.backend.app.repositories.UserRepository;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,13 @@ import java.util.List;
 public class BackendApplication implements CommandLineRunner {
 
     private final UserRepository userRepository;
+    private final NotificationSettingRepository notificationSettingRepository;
 
     @Autowired
-    public BackendApplication(UserRepository userRepository) {
+    public BackendApplication(UserRepository userRepository,
+                              NotificationSettingRepository notificationSettingRepository) {
         this.userRepository = userRepository;
+        this.notificationSettingRepository = notificationSettingRepository;
     }
 
     public static void main(String[] args) {
@@ -33,7 +38,8 @@ public class BackendApplication implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        this.createInitialUsers();
+        createInitialUsers();
+        addNotificationSettings();
     }
 
     /**
@@ -57,5 +63,19 @@ public class BackendApplication implements CommandLineRunner {
                         "See everything in it's entirety... effortlessly. That is what it means to truly see."
                 )
         );
+    }
+
+    private void addNotificationSettings() {
+        List<NotificationSetting> settings = List.of(
+          new NotificationSetting("Ship", "These are notifications to alert you on changes on the ship"),
+          new NotificationSetting("Tasks", "These are notifications to remind you of any task and when someone assigns you a new task"),
+          new NotificationSetting("Shifts", "These are notifications to remind you of an upcoming shift")
+        );
+
+        List<NotificationSetting> savedSettings = notificationSettingRepository.findAll();
+
+        if (savedSettings.size() < settings.size()) {
+            notificationSettingRepository.saveAll(settings);
+        }
     }
 }

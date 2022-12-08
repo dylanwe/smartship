@@ -29,10 +29,10 @@ export default class SessionSbService {
     async signIn(email, password) {
         const body = JSON.stringify({email, password});
         const response = await fetch(this.RESOURCE_URL + '/login', {
-           method: 'POST',
-           headers: {'Content-Type': 'application/json'},
-           body,
-           credentials: 'include'
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body,
+            credentials: 'include'
         });
 
         if (response.ok) {
@@ -85,7 +85,7 @@ export default class SessionSbService {
         // Get the new token
         const body = JSON.stringify({refreshToken});
         const response = await fetch(`${this.RESOURCE_URL}/refresh-token`, {
-           method: 'POST',
+            method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body,
             credentials: 'include'

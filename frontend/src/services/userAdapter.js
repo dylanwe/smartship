@@ -6,35 +6,66 @@ export default class UserAdapter {
     }
 
     /**
-     * Do the request with the URL to fetch the JSON
+     * Update the general user information
      *
-     * @param url From where you want to request
-     * @param options What you would like to send to that URL
-     * @returns {Promise<null|any>} The JSON response
+     * @param {string} firstName
+     * @param {string} lastName
+     * @param {string} email
+     * @param {string} bio
+     * @param {string} birthday
+     * @return {Promise<*|null>}
      */
-    async fetchJson(url, options = null) {
-        const response = await fetch(url, options);
+    async updateUserInfo(firstName, lastName, email, bio, birthday) {
+        const userInfo = {firstName, lastName, email, bio, birthday};
 
-        if (response.ok) {
-            return await response.json();
+        let updatedUser = await fetch(
+            `${this.RESOURCE_URL}`,
+            {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(userInfo),
+                credentials: 'include'
+            }
+        );
+
+        if (updatedUser.ok) {
+            updatedUser = await updatedUser.json();
+            localStorage.setItem("user", JSON.stringify(updatedUser));
+            return updatedUser;
         } else {
-            // response got an error
-            console.log(response, !response.bodyUsed ? await response.text() : "");
             return null;
         }
     }
 
-    async updateUserInfo() {
-        // TODO update user info
-        // return this.fetchJson(`${this.RESOURCE_URL}`)
+    /**
+     * Update the password of the logged-in user
+     *
+     * @param {string} oldPassword
+     * @param {string} newPassword
+     * @return {Promise<Response<any, Record<string, any>, number>>}
+     */
+    async updateUserPassword(oldPassword, newPassword) {
+        return await fetch(
+            `${this.RESOURCE_URL}/password`,
+            {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({oldPassword, newPassword}),
+                credentials: 'include'
+            }
+        );
     }
 
-    async updatePassword() {
-        // TODO update password
-    }
-
-    async updateNotificationSettings() {
-        // TODO update notification settings
+    async updateNotificationSettings(preferences) {
+        return await fetch(
+            `${this.RESOURCE_URL}/notification-preferences`,
+            {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(preferences),
+                credentials: 'include'
+            }
+        );
     }
 
     /**
@@ -43,40 +74,27 @@ export default class UserAdapter {
      * @returns The notification settings
      */
     async findNotificationSettings() {
-        // example stuff
-        return Promise.resolve({
-            notifications: [
-                {
-                    id: 1,
-                    name: "Ship",
-                    description: "These are notifications to alert you on changes of the ship.",
-                    options: [
-                        {
-                            name: "In App",
-                            on: false,
-                        },
-                        {
-                            name: "E-mail",
-                            on: true,
-                        },
-                    ]
-                },
-                {
-                    id: 2,
-                    name: "Tasks",
-                    description: "These are notifications to remind you of any task and when someone assigns you a new task.",
-                    options: [
-                        {
-                            name: "In App",
-                            on: true,
-                        },
-                        {
-                            name: "E-mail",
-                            on: false,
-                        },
-                    ]
-                },
-            ]
+        const settings = await fetch(`${process.env.VUE_APP_API_URL}/notification-settings`)
+            .then(res => res.json());
+        const preferences = await fetch(`${this.RESOURCE_URL}/notification-preferences`)
+            .then(res => res.json());
+
+        // convert settings to map
+        const settingsMap = {};
+        settings?.forEach(setting => {
+            settingsMap[setting.id] = setting
+            settingsMap[setting.id].notificationPreferenceId = undefined;
+            settingsMap[setting.id].isEmailActive = false;
+            settingsMap[setting.id].isPushActive = false;
         });
+
+        // add preferences to map
+        preferences?.forEach(preference => {
+            settingsMap[preference.notificationSetting.id].notificationPreferenceId = preference.id;
+            settingsMap[preference.notificationSetting.id].isEmailActive = preference.emailActive;
+            settingsMap[preference.notificationSetting.id].isPushActive = preference.pushActive;
+        });
+
+        return settingsMap;
     }
 }

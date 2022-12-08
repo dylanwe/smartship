@@ -1,6 +1,7 @@
 package com.smartship.backend.app.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.smartship.backend.app.exceptions.UnprocessableEntityException;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -13,7 +14,7 @@ public class User {
     private Long id;
     private String firstName;
     private String lastName;
-    @Column(unique=true)
+    @Column(unique = true)
     private String email;
     @JsonIgnore
     private String hashedPassword;
@@ -44,6 +45,24 @@ public class User {
         this.birthday = birthday;
         this.role = role;
         this.bio = bio;
+    }
+
+    /**
+     * Validate the information of a user
+     *
+     * @param user
+     */
+    public static void validateNewUserInformation(User user) {
+        if (user.getFirstName().length() < 2)
+            throw new UnprocessableEntityException("First name should be longer than 1 characters");
+        if (user.getLastName().length() < 2)
+            throw new UnprocessableEntityException("Last name should be longer than 1 characters");
+        if (user.getBirthday().isAfter(LocalDate.now()) && user.getBirthday().isEqual(LocalDate.now()))
+            throw new UnprocessableEntityException("Birthday can't be in the future");
+
+        String emailPattern = "^(.+)@(\\S+)$";
+        if (user.getEmail().length() < 4 && !user.getEmail().matches(emailPattern))
+            throw new UnprocessableEntityException("E-mail was wrong");
     }
 
     public Long getId() {

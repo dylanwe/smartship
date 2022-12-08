@@ -8,6 +8,7 @@ import ResetPasswordComponent from "@/pages/ResetPasswordPage";
 import SettingsIndex from "@/pages/SettingsPage";
 import SessionSbService from "@/services/SessionSbService";
 import NotificationIndex from "@/pages/NotificationPage";
+import ManagerIndex from "@/pages/ManagerPage";
 
 const savePages = ["login", "resetPassword"];
 
@@ -32,6 +33,7 @@ const routes = [
             {path: "profile", component: ProfileIndex},
             {path: "settings", component: SettingsIndex},
             {path: "notifications", component: NotificationIndex},
+            {path: "managerPanel", component: ManagerIndex},
             {path: ":pathMatch(.*)", component: UnknownRoute}
         ]
     },
