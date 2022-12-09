@@ -5,12 +5,14 @@ import com.smartship.backend.app.exceptions.UnprocessableEntityException;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstName;
     private String lastName;
@@ -21,6 +23,9 @@ public class User {
     private LocalDate birthday;
     private ROLE role;
     private String bio;
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user" )
+    private List<ToDo> toDos;
 
     public User() {
     }
@@ -127,6 +132,14 @@ public class User {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public List<ToDo> getToDos() {
+        return toDos;
+    }
+
+    public void setToDos(List<ToDo> toDos) {
+        this.toDos = toDos;
     }
 
     public enum ROLE {

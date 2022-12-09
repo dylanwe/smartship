@@ -1,12 +1,22 @@
 <template>
+  <AddToDoModal
+      :showToDoModal="isToDoModalShown"
+      @toggleToDoModal="toggleToDoModal"
+      @refreshToDoList="refreshToDoList"/>
+
+  <EditToDoModal
+      :showToDoModal="isEditTodoModalShown"
+      :selectedToDoId="selectedToDoId"
+      @toggleToDoModal="toggleEditToDoModal"
+      @refreshToDoList="refreshToDoList"/>
   <div class="mt-6">
     <div class="flex flex-col lg:flex-row lg:space-y-0 space-y-4 lg:space-x-4 mb-4">
       <div class="bg-white flex-1 h-full rounded-2xl p-4">
         <div class="profile-picture flex inline-block items-center">
-          <img class="w-20 h-20 object-none object-top rounded-2xl mr-6" src="@/assets/img/profile_picture.jpeg" alt=""
-               style="object-fit: cover">
           <div>
-            <h2 class="text-4xl font-bold text-neutral-900">{{ (user) ? `${user.firstName} ${user.lastName}` : '' }}</h2>
+            <h2 class="text-4xl font-bold text-neutral-900">{{
+                (user) ? `${user.firstName} ${user.lastName}` : ''
+              }}</h2>
             <p class="text-neutral-500">{{ (user) ? `${user.bio}` : '' }}</p>
           </div>
         </div>
@@ -62,7 +72,7 @@
       <div class="bg-white flex-1 lg:flex-none lg:w-96 rounded-2xl p-4 text-neutral-900">
         <div class="flex space-x-2">
           <router-link to="/dashboard/notifications">
-          <h2 class="font-bold text-2xl hover:underline">Notifications</h2>
+            <h2 class="font-bold text-2xl hover:underline">Notifications</h2>
           </router-link>
 
           <span class="bg-primary-100 text-primary-700 py-1 px-2 rounded-md font-bold">{{
@@ -92,7 +102,7 @@
     <div class="flex flex-col lg:flex-row lg:space-y-0 space-y-4 lg:space-x-4 mb-4">
       <div class="flex-1">
         <div class="bg-white w-full rounded-2xl p-4 mb-4">
-          <h2 class="text-2xl font-bold text-neutral-900">Graph 1</h2>
+          <h2 class="text-2xl font-bold text-neutral-900">Hours worked</h2>
           <div class="w-[98%]">
             <Bar
                 :chart-options="chartOptions"
@@ -104,7 +114,7 @@
           </div>
         </div>
         <div class="bg-white w-full rounded-2xl p-4">
-          <h2 class="text-2xl font-bold text-neutral-900">Graph 2</h2>
+          <h2 class="text-2xl font-bold text-neutral-900">Tasks done</h2>
           <div class="w-[98%]">
             <Bar
                 :chart-options="chartOptions"
@@ -119,17 +129,30 @@
 
       <!-- To-do List -->
       <div class="bg-white flex-1 lg:flex-none lg:w-96 rounded-2xl p-4">
-        <div class="flex space-x-2">
-          <h2 class="font-bold text-2xl text-neutral-900">Tasks</h2>
-          <span class="bg-primary-100 text-primary-700 pt-1 pb-1 pl-2 pr-2 rounded-md font-bold">{{ getSelectedAmount }}</span>
-          <div>
+        <div class="flex space-x-2 justify-between">
+          <div class="flex space-x-2">
+            <h2 class="font-bold text-2xl text-neutral-900">Tasks</h2>
+            <span class="bg-primary-100 text-primary-700 p-2 self-center rounded-md font-bold">{{
+                getSelectedAmount
+              }}</span>
           </div>
+          <button @click="toggleToDoModal"
+                  class="h-8 w-8 flex justify-center items-center text-center add-btn bg-sky-400 text-white rounded-md hover:bg-sky-600 transition-colors font-bold self-center">
+            +
+          </button>
         </div>
-        <div class="mt-3">
-          <li class="list-none mb-4" v-for="todo in todos" :key="todo.id">
-            <input type="checkbox" v-model="todo.done"/>
-            <label id="checkbox" for="checkbox" :class="(todo.done) ? 'text-neutral-300 line-through' : 'text-neutral-900'"
-                   class="ml-3">{{ todo.title }}</label>
+        <div class="mt-3" v-if="todos">
+          <li class="list-none flex justify-between space-x-2 hover:bg-slate-100 p-2 rounded-md" v-for="todo in todos"
+              :key="todo.id">
+            <div>
+              <input type="checkbox" v-model="todo.completed" @change="beeb(todo)" />
+              <label id="checkbox" for="checkbox"
+                     :class="(todo.completed) ? 'text-neutral-300 line-through' : 'text-neutral-900'"
+                     class="ml-3 hover:underline cursor-pointer" @click="toggleEditToDoModal(todo.id)">{{ todo.name }}
+              </label>
+              <br>
+              <small class="text-slate-500" v-if="!todo.completed">{{todo.dueAt}}</small>
+            </div>
           </li>
         </div>
       </div>
@@ -139,14 +162,16 @@
 
 <script>
 import {Bar} from 'vue-chartjs';
+import AddToDoModal from "@/components/modals/AddToDoModal";
+import EditToDoModal from "@/components/modals/EditToDoModal";
 import {Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale} from 'chart.js';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 export default {
   name: "ProfileIndex",
-  inject: ["sessionService", "userService"],
+  inject: ["sessionService", "userService", "toDoService"],
   chartName: 'BarChart',
-  components: {Bar},
+  components: {Bar, AddToDoModal, EditToDoModal},
   props: {
     chartId: {
       type: String,
@@ -159,20 +184,11 @@ export default {
   },
   data() {
     return {
+      isToDoModalShown: false,
+      isEditTodoModalShown: false,
+      selectedToDoId: null,
       user: null,
-      todos: [
-        {id: 1, title: "Clean the floor", done: false},
-        {id: 2, title: "Mop the floor", done: false},
-        {id: 3, title: "Organize the floor", done: false},
-        {id: 4, title: "Cook the floor", done: false},
-        {id: 5, title: "Smell the floor", done: false},
-        {id: 6, title: "Eat the floor", done: false},
-        {id: 7, title: "Sniff the floor", done: true},
-        {id: 8, title: "Feel the floor", done: true},
-        {id: 9, title: "Laugh at the floor", done: true},
-        {id: 10, title: "Sing to the floor", done: true},
-        {id: 11, title: "floor", done: true},
-      ],
+      todos: null,
       notifications: [
         {id: 1, title: "System info", desc: "You have a new task"},
         {id: 2, title: "Parameter alert!", desc: "Alert alert alert"},
@@ -197,11 +213,37 @@ export default {
   },
   computed: {
     getSelectedAmount() {
-      return this.todos.filter(todo => todo.done === false).length
+      if (this.todos) {
+        return this.todos.filter(todo => todo.completed === false).length;
+      } else {
+        return 0;
+      }
     }
   },
   async created() {
     this.user = this.sessionService.getCurrentUser();
+    const userToDos = await this.toDoService.getUserTodos(this.user.id);
+    this.todos = await userToDos.json();
+  },
+
+  methods: {
+    toggleToDoModal() {
+      this.isToDoModalShown = !this.isToDoModalShown;
+    },
+    toggleEditToDoModal(toDoId) {
+      this.selectedToDoId = toDoId;
+      this.isEditTodoModalShown = !this.isEditTodoModalShown;
+    },
+
+    async beeb(todo) {
+      await this.toDoService.updateToDo(this.user.id, todo);
+      await this.refreshToDoList();
+    },
+
+    async refreshToDoList() {
+      const userToDos = await this.toDoService.getUserTodos(this.user.id);
+      this.todos = await userToDos.json();
+    }
   }
 }
 
