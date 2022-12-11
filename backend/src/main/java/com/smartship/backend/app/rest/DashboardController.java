@@ -1,21 +1,22 @@
 package com.smartship.backend.app.rest;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.smartship.backend.app.exceptions.NotAcceptableException;
 import com.smartship.backend.app.exceptions.NotFoundException;
-import com.smartship.backend.app.models.Dashboard;
-import com.smartship.backend.app.models.DashboardItem;
-import com.smartship.backend.app.models.User;
-import com.smartship.backend.app.models.Widget;
-import com.smartship.backend.app.repositories.DashboardRepository;
-import com.smartship.backend.app.repositories.UserRepository;
+import com.smartship.backend.app.models.*;
+import com.smartship.backend.app.repositories.*;
 import com.smartship.backend.app.utility.JWTokenInfo;
+import com.smartship.backend.app.views.CustomJson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.transaction.Transactional;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -25,18 +26,21 @@ public class DashboardController {
 
     private final DashboardRepository dashboardRepository;
     private final UserRepository userRepository;
+    private final DashboardItemRepository dashboardItemRepository;
+
 
     @Autowired
-    public DashboardController(DashboardRepository dashboardRepository, UserRepository userRepository) {
+    public DashboardController(DashboardRepository dashboardRepository, UserRepository userRepository, DashboardItemRepository dashboardItemRepository) {
         this.dashboardRepository = dashboardRepository;
         this.userRepository = userRepository;
+        this.dashboardItemRepository = dashboardItemRepository;
     }
 
     /**
-     * Find all user dashboards
+     * Get all user dashboards
      * @return Array of dashboards
      */
-    @GetMapping(path = "")
+    @GetMapping
     public ResponseEntity<List<Dashboard>> findAllDashboards() {
         List<Dashboard> dashboards = dashboardRepository.findAll();
         return ResponseEntity.ok().body(dashboards);
@@ -46,7 +50,7 @@ public class DashboardController {
      * Create a new user dashboard
      * @return dashboard object
      */
-    @PostMapping(path = "")
+    @PostMapping
     public ResponseEntity<Dashboard> createDashboard(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
         User foundUser = getUser(jwTokenInfo);
 
@@ -69,9 +73,10 @@ public class DashboardController {
 
     /**
      * Delete user's dashboard
+     * TODO move to user controller???
      * @return deleted dashboard object
      */
-    @DeleteMapping(path = "{id}")
+    @DeleteMapping
     public ResponseEntity<Dashboard> deleteDashboardByUserId(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
         Dashboard foundDashboard = dashboardRepository.findByUserId(jwTokenInfo.userId())
                 .orElseThrow(() -> new NotFoundException(String.format("Dashboard with id %s is not found", jwTokenInfo.userId())));
@@ -83,66 +88,50 @@ public class DashboardController {
 
 
     /**
-     * Find dashboard by user id
+     * Find dashboard by dashboard Id
+     * @param id dashboard id
      * @return Dashboard object
      */
     @GetMapping(path = "{id}")
-    public ResponseEntity<Dashboard> getDashboardByUserId(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
-        Dashboard foundDashboard = dashboardRepository.findByUserId(jwTokenInfo.userId())
-                .orElseThrow(() -> new NotFoundException(String.format("Dashboard with userid %s is not found", jwTokenInfo.userId())));
+    public ResponseEntity<Dashboard> getDashboardById(@PathVariable Long id) {
+
+        Dashboard foundDashboard = dashboardRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Dashboard with id %s is not found", id)));
+        return ResponseEntity.ok().body(foundDashboard);
+    }
+
+    /**
+     * Find dashboard by user id
+     * TODO move to user controller???
+     * @return Dashboard object
+     */
+    @GetMapping(path = "user/{userId}")
+    public ResponseEntity<Dashboard> getDashboardByUserId(@PathVariable Long userId) {
+
+        Dashboard foundDashboard = dashboardRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("Dashboard with userid %s is not found", userId)));
         return ResponseEntity.ok().body(foundDashboard);
     }
 
 
-    public ResponseEntity<Dashboard> updateLayout(@PathVariable Long id, DashboardItem[] dashboardItems){
+    @PutMapping(path = "{id}")
+    @Transactional
+    @JsonView(CustomJson.Shallow.class)
+    public ResponseEntity<Set<DashboardItem>> updateLayout(@PathVariable Long id, @RequestBody DashboardItem... items) {
+
         Dashboard dashboard = dashboardRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Dashboard with id %d is not found", id)));
 
-        dashboard.addAllToLayout(dashboardItems);
+        dashboardItemRepository.deleteAll(dashboardItemRepository.findDashboardItemByDashboard(dashboard));
 
-        return ResponseEntity.ok().body(dashboard);
+
+        for (DashboardItem item : items) {
+            dashboard.addToLayout(dashboardItemRepository.save(item));
+        }
+        dashboardRepository.save(dashboard);
+
+        return ResponseEntity.ok().body(dashboard.getLayout());
     }
-//
-//    /**
-//     * Add component to dashboard layout
-//     * @param id     dashboard id
-//     * @param widget Widget Object
-//     * @return
-//     */
-//    @PostMapping(path = "{id}")
-//    public ResponseEntity<DashboardItem> addDashboardItem(@PathVariable Long id, @RequestBody Widget[] widgets) {
-//
-//        for (Widget widget : widgets) {
-//
-//        }
-//        DashboardItem dashboardItem = new DashboardItem(0, 0, widget.getDefaultHeight(), widget.getDefaultWidth(), widget);
-//
-//        Dashboard dashboard = dashboardRepository.findById(id)
-//                .orElseThrow(() -> new NotFoundException(String.format("Dashboard with id=%s is not found", id)));
-//
-//        // link component to layout
-//        dashboard.addToLayout(dashboardItem);
-//
-//
-//        return ResponseEntity.ok().body(dashboardItem);
-//    }
-
-
-//    /**
-//     * Get a Dashboard items or get a specific item
-//     *
-//     * @param id     dashboard id
-//     * @return
-//     */
-//    @GetMapping(path = "{id}")
-//    public Set<DashboardItem> guhaeiugha(@PathVariable Long id) {
-//
-//        Dashboard dashboard = dashboardRepository.findById(id)
-//                .orElseThrow(() -> new NotFoundException(String.format("Dashboard with id %s wasn't found", id)));
-//
-//
-//        return dashboard.getLayout();
-//    }
 
 
 
@@ -156,3 +145,4 @@ public class DashboardController {
     }
 
 }
+

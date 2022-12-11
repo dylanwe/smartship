@@ -3,6 +3,9 @@ package com.smartship.backend.app.models;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.smartship.backend.app.views.CustomJson;
 
 import javax.persistence.*;
 import java.util.*;
@@ -11,17 +14,16 @@ import java.util.*;
 public class Dashboard {
     @Id
     @GeneratedValue
+    @JsonView(CustomJson.Shallow.class)
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
     private User user;
 
-    private Long shipId;
 
-    @OneToMany(mappedBy = "dashboard", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JsonBackReference
+    @OneToMany(mappedBy = "dashboard")
+    @JsonSerialize(using = CustomJson.ShallowSerializer.class)
     private Set<DashboardItem> layout = new HashSet<>();
 
 
@@ -32,11 +34,19 @@ public class Dashboard {
         this.user = user;
     }
 
-    public void addAllToLayout(DashboardItem[] items){
-            for (DashboardItem dashboardItem : layout) {
-                boolean b = items == null ? removeItem(dashboardItem) : addToLayout(dashboardItem);
 
-            }
+    public void addAllToLayout(DashboardItem[] items){
+        for (DashboardItem dashboardItem : layout) {
+          removeItem(dashboardItem);
+        }
+
+        for (DashboardItem item : items) {
+            System.out.println(item.getId());
+            addToLayout(item);
+        }
+
+
+
     }
 
     /**
@@ -74,6 +84,10 @@ public class Dashboard {
         return this.layout.stream().filter(c -> Objects.equals(c,item)).findFirst().orElse(null);
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }
@@ -82,9 +96,6 @@ public class Dashboard {
         return user;
     }
 
-    public Long getShipId() {
-        return shipId;
-    }
 
     public Set<DashboardItem> getLayout() {
         return layout;

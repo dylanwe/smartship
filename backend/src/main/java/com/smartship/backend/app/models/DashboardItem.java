@@ -1,38 +1,49 @@
 package com.smartship.backend.app.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.smartship.backend.app.views.CustomJson;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "dashboardItems")
 public class DashboardItem {
     @Id
     @GeneratedValue
+    @JsonView(CustomJson.Shallow.class)
     private Long id;
 
+    @JsonView(CustomJson.Shallow.class)
     private int x;
+
+    @JsonView(CustomJson.Shallow.class)
     private int y;
+
+    @JsonView(CustomJson.Shallow.class)
     private int width;
+
+    @JsonView(CustomJson.Shallow.class)
     private int height;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dashboard_id", referencedColumnName = "id")
+    @ManyToOne
+    @JsonIgnore
     private Dashboard dashboard;
 
     @OneToOne
-    @JoinColumn(name = "widget_id", referencedColumnName = "id")
-    private Widget widget;
-
+    @JsonView(CustomJson.Shallow.class)
+    private ShipSensor shipSensor;
 
 
     public DashboardItem() {
     }
 
-    public DashboardItem(int x, int y, int width, int height, Widget widget) {
-         this.x = x;
+    public DashboardItem(int x, int y, int width, int height, ShipSensor shipSensor) {
+        this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.widget = widget;
+        this.shipSensor = shipSensor;
     }
 
     public boolean connectToLayout(Dashboard dashboard) {
@@ -42,16 +53,19 @@ public class DashboardItem {
             this.setDashboard(dashboard);
             return true;
 
-        } else if (dashboard == null && this.getDashboard()!= null) {
+        } else if (dashboard == null && this.getDashboard() != null) {
             this.setDashboard(null);
             return true;
         }
         return false;
     }
 
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public int getX() {
@@ -78,8 +92,8 @@ public class DashboardItem {
         this.dashboard = layout;
     }
 
-    public Widget getWidget() {
-        return widget;
+    public ShipSensor getShipSensor() {
+        return shipSensor;
     }
 
 

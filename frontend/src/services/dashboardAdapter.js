@@ -1,3 +1,5 @@
+import Dashboard from "@/models/dashboard/Dashboard";
+
 export default class DashboardAdapter {
     RESOURCE_URL;
 
@@ -13,7 +15,7 @@ export default class DashboardAdapter {
      * @returns {Promise<null|any>} The JSON response
      */
     async fetchJson(url, options = null) {
-        const response = await fetch(url, options);
+        const response = await fetch(this.RESOURCE_URL + url, options);
 
         if (response.ok) {
             return await response.json();
@@ -25,15 +27,21 @@ export default class DashboardAdapter {
     }
 
 
-    async getDashboard(userID){
-        return await this.fetchJson(this.RESOURCE_URL + `/${userID}`, {method:"GET"})
-    }
-    async getAll(){
-        return await this.fetchJson(this.RESOURCE_URL , {method:"GET"})
+    async getUserDashboard(user) {
+        const foundDB = await this.fetchJson(`/user/${user.id}`)
+        return foundDB;
     }
 
-    static createMockDashboard(){
 
+    async saveLayout(id, layoutArray) {
+        console.log(layoutArray[0])
+        return await this.fetchJson(`/${id}`, {
+            method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(layoutArray),
+            credentials: 'include'
+        })
     }
+
 
 }

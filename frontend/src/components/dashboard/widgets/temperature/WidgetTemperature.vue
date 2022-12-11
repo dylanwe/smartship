@@ -1,19 +1,18 @@
 <template>
+  <div class="text-neutral-500 bg-neutral-100 text-center  p-0 rounded-lg"
+       :class="{
+        'text-red-600 bg-red-100': 80
+    }">
+    <h3 class="text-sm">{{ sensor.nameShort || sensor.name }}</h3>
+    <h2 class="flex-grow text-lg md:text-3xl font-semibold ">{{ randomNumber() }}º</h2>
 
-  <div class="flex flex-col gap-2 p-2">
-    <h3 class="font-semibold">{{ data.title }}</h3>
-    <TemperatureItem :itemName="data.items[0].name" :temperature=randomNumber() :maxTemperature="data.items[0].maxTemperature" />
-    <TemperatureItem :itemName="data.items[1].name" :temperature=randomNumber() :maxTemperature="data.items[1].maxTemperature" />
   </div>
 
 </template>
 <script>
-import TemperatureItem from '@/components/dashboard/widgets/temperature/TemperatureItem.vue';
-
 export default {
   name: "BatteryTemperature",
-  components: { TemperatureItem },
-  props: { data: Object },
+  props: {sensor: Object, data: Object},
   methods: {
     randomNumber() {
       return Math.floor(Math.random() * 110)

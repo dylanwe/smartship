@@ -1,28 +1,26 @@
 export default class Dashboard {
-    // constructor(id, x, y, width, height,widget) {
-    //     this.id = id;
-    //     this.x = x;
-    //     this.y = y;
-    //     this.width = width;
-    //     this.height =height;
-    //     this.widget = widget;
-    //
-    //
-    // }
-    constructor(id) {
+
+    id
+    layout = []
+    #user
+
+    constructor(id, layout) {
         this.id = id;
-        // Grid options
-        this.numberOfColumns = 5;
-        this.draggable = false;
-        this.resizable = false;
-        this.index = 0;
-        // Widget edit
-        this.editMode = false;
-        this.showWidgetbar = false;
-        this.layout = [];
+        this.layout = layout || [];
     }
 
     static createMockDashboard(id){
         return new Dashboard(id);
 }
+
+    addToLayout(widget){
+        this.layout.push(widget);
+    }
+
+
+    get getLayout(){
+        return this.layout;
+    }
+
+
 }

@@ -1,32 +1,47 @@
 package com.smartship.backend.app.models;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.smartship.backend.app.views.CustomJson;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "widgets")
 public class Widget {
 
 
     @Id
     @GeneratedValue
+    @JsonView(CustomJson.Shallow.class)
     private Long id;
-    private String icon;
-    private String title;
+
+    @JsonView(CustomJson.Shallow.class)
     private String componentName;
+    @JsonView(CustomJson.Shallow.class)
+    private String icon;
+    @JsonView(CustomJson.Shallow.class)
+    private String title;
+    @JsonView(CustomJson.Shallow.class)
     private int minHeight;
+    @JsonView(CustomJson.Shallow.class)
     private int maxHeight;
+    @JsonView(CustomJson.Shallow.class)
     private int minWidth;
+    @JsonView(CustomJson.Shallow.class)
     private int maxWidth;
+    @JsonView(CustomJson.Shallow.class)
     private int defaultHeight;
+    @JsonView(CustomJson.Shallow.class)
     private int defaultWidth;
 
     @OneToOne
-    @JsonManagedReference
-    private DashboardItem dashboardItem;
+    private Sensor sensor;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonView(CustomJson.Summary.class)
     private ChartTypes chartTypes;
 
     public Widget() {
@@ -47,6 +62,29 @@ public class Widget {
 
     }
 
+
+    public void setSensor(Sensor sensor) {
+        sensor.setWidget(this);
+        this.sensor = sensor;
+    }
+
+//    /**
+//     * Associates the given item with this layout, if not yet associated
+//     *
+//     * @param sensor Dashboard item
+//     * @return whether a new association has been added
+//     */
+
+
+//    public boolean setSensor(Sensor sensor) {
+//        if (sensor != null && sensor.getWidget() == null) {
+//            // update both sides of the association'
+//            this.sensor = sensor;
+//            return  sensor.setWidget(this);
+//        }
+//        return false;
+//    }
+
     public Long getId() {
         return id;
     }
@@ -63,6 +101,18 @@ public class Widget {
         return componentName;
     }
 
+    public ChartTypes getChartTypes() {
+        return chartTypes;
+    }
+
+    public Sensor getSensor() {
+        return sensor;
+    }
+
+//    public Set<DashboardItem> getDashboardItems() {
+//
+//        return dashboardItems;
+//    }
 
     public int getMinHeight() {
         return minHeight;
