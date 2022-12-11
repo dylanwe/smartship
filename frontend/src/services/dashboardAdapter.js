@@ -1,5 +1,3 @@
-import Dashboard from "@/models/dashboard/Dashboard";
-
 export default class DashboardAdapter {
     RESOURCE_URL;
 
@@ -26,15 +24,13 @@ export default class DashboardAdapter {
         }
     }
 
-
+    //TODO user must have dashboard
     async getUserDashboard(user) {
-        const foundDB = await this.fetchJson(`/user/${user.id}`)
-        return foundDB;
+       return await this.fetchJson(`/user/${user.id}`)
     }
 
 
     async saveLayout(id, layoutArray) {
-        console.log(layoutArray[0])
         return await this.fetchJson(`/${id}`, {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},

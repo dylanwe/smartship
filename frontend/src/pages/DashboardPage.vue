@@ -63,6 +63,10 @@
                    :responsive="true"
                    :maxRows="5"
                    :autoSize="false"
+                   :preventCollision="true"
+                   @layout-created="layoutCreatedEvent"
+
+                   @layout-updated="layoutUpdatedEvent"
 
       >
         <!-- Grid Item -->
@@ -73,6 +77,12 @@
                    :h="dashboardItem.height"
                    :key="index"
                    :i="index"
+
+                   @resize="resizeEvent"
+                   @move="moveEvent"
+                   @resized="resizedEvent"
+                   @container-resized="containerResizedEvent"
+                   @moved="movedEvent"
 
                    class="bg-white border border-gray-600 rounded-md"
         >
@@ -113,8 +123,7 @@ export default {
 
   async created() {
     this.dashboard = await this.dashboardService.getUserDashboard(this.sessionService.getCurrentUser());
-    this.layout =await  this.dashboard.layout;
-    console.log(this.dashboard)
+    this.layout = await this.dashboard.layout;
   },
   data() {
     return {
@@ -135,6 +144,38 @@ export default {
     }
   },
   methods: {
+
+    layoutUpdatedEvent: function (newLayout) {
+      console.log("Updated layout: ", newLayout)
+    },
+
+    layoutCreatedEvent: function(newLayout){
+      console.log("Created layout: ", newLayout)
+    },
+    moveEvent: function(i, newX, newY){
+      console.log("MOVE i=" + i + ", X=" + newX + ", Y=" + newY);
+    },
+    resizeEvent: function(i, newH, newW, newHPx, newWPx){
+      console.log("RESIZE i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
+    },
+    movedEvent: function(i, newX, newY){
+      console.log("MOVED i=" + i + ", X=" + newX + ", Y=" + newY);
+    },
+    resizedEvent: function(i, newH, newW, newHPx, newWPx){
+      console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
+    },
+    containerResizedEvent: function(i, newH, newW, newHPx, newWPx){
+      console.log("CONTAINER RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
+    },
+
+
+
+
+
+
+
+
+
     toggleWidgetbar() {
       this.showWidgetSidebar = !this.showWidgetSidebar;
     },
@@ -149,13 +190,12 @@ export default {
     async saveChanges() {
       this.toggleEditMode()
       await this.dashboardService.saveLayout(this.dashboard.id, this.layout);
-      // this.dashboard.layout = await this.dashboardService.saveLayout(this.dashboard.id, this.layout)
     },
 
     addWidget(widget) {
       this.layout.push({
-        x: (this.dashboard.getLayout.length * 2) % (this.numberOfColumns),
-        y: this.dashboard.getLayout.length + (this.numberOfColumns), // puts it at the bottom
+        x: (this.layout.length * 2) % (this.numberOfColumns),
+        y: this.layout.length + (this.numberOfColumns), // puts it at the bottom
         width: widget.sensor.widget.defaultWidth,
         height: widget.sensor.widget.defaultHeight,
         shipSensor: widget
@@ -182,25 +222,25 @@ export default {
   layoutUpdatedEvent: function (newLayout) {
     console.log("Updated layout: ", newLayout)
   },
-  //
-  // layoutCreatedEvent: function(newLayout){
-  //   console.log("Created layout: ", newLayout)
-  // },
-  // moveEvent: function(i, newX, newY){
-  //   console.log("MOVE i=" + i + ", X=" + newX + ", Y=" + newY);
-  // },
-  // resizeEvent: function(i, newH, newW, newHPx, newWPx){
-  //   console.log("RESIZE i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
-  // },
-  // movedEvent: function(i, newX, newY){
-  //   console.log("MOVED i=" + i + ", X=" + newX + ", Y=" + newY);
-  // },
-  // resizedEvent: function(i, newH, newW, newHPx, newWPx){
-  //   console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
-  // },
-  // containerResizedEvent: function(i, newH, newW, newHPx, newWPx){
-  //   console.log("CONTAINER RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
-  // },
+
+  layoutCreatedEvent: function(newLayout){
+    console.log("Created layout: ", newLayout)
+  },
+  moveEvent: function(i, newX, newY){
+    console.log("MOVE i=" + i + ", X=" + newX + ", Y=" + newY);
+  },
+  resizeEvent: function(i, newH, newW, newHPx, newWPx){
+    console.log("RESIZE i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
+  },
+  movedEvent: function(i, newX, newY){
+    console.log("MOVED i=" + i + ", X=" + newX + ", Y=" + newY);
+  },
+  resizedEvent: function(i, newH, newW, newHPx, newWPx){
+    console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
+  },
+  containerResizedEvent: function(i, newH, newW, newHPx, newWPx){
+    console.log("CONTAINER RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
+  },
 }
 </script>
 
