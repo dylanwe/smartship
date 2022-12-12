@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path = "api/v1/notifications")
+@RequestMapping(path = "api/v1/user/{userId}/notifications")
 public class NotificationController {
 
     private final NotificationRepository notificationRepository;

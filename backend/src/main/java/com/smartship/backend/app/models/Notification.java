@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class Notification {
     @Id
     @GeneratedValue
-    private Long id;
+    private Long notificationId;
     private String title;
     private String body;
     private LocalDate notificationDateTime;
@@ -19,7 +19,7 @@ public class Notification {
     }
 
     public Notification(Long id, String title, String body, LocalDate notificationDateTime, TYPE type) {
-        this.id = id;
+        this.notificationId = id;
         this.title = title;
         this.body = body;
         this.notificationDateTime = notificationDateTime;
@@ -34,11 +34,11 @@ public class Notification {
     }
 
     public Long getId() {
-        return id;
+        return notificationId;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.notificationId = id;
     }
 
     public String getTitle() {
