@@ -19,19 +19,18 @@ public class SensorData {
     @JsonView(CustomJson.Shallow.class)
     private Double val;
     @JsonView(CustomJson.Shallow.class)
-    private LocalDateTime time;
+    private Long time;
 
     @ManyToOne
     @JsonIgnore
     private ShipSensor shipSensor;
 
-    @OneToOne
-//    @JsonView(CustomJson.Shallow.class)
-    @JsonIgnore
+    @OneToOne(mappedBy = "sensorData")
+    @JsonView(CustomJson.Shallow.class)
     private ShipData shipData;
 
 
-    public SensorData(Double val, LocalDateTime time, ShipSensor shipSensor) {
+    public SensorData(Double val, Long time, ShipSensor shipSensor) {
         this.val = val;
         this.time = time;
         this.shipSensor = shipSensor;
@@ -39,6 +38,7 @@ public class SensorData {
 
     public SensorData() {
     }
+
 
 
     public Long getId() {
@@ -57,11 +57,11 @@ public class SensorData {
         this.val = val;
     }
 
-    public LocalDateTime getTime() {
+    public Long getTime() {
         return time;
     }
 
-    public void setTime(LocalDateTime time) {
+    public void setTime(Long time) {
         this.time = time;
     }
 

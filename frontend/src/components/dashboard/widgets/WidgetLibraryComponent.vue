@@ -28,7 +28,7 @@
             <tbody v-if="filteredSearch">
                 <tr v-for="(widget, index) in filteredSearch" :key="index">
                     <td class="bg-gray-300 hover:bg-gray-400 rounded-lg p-3 cursor-pointer"
-                        @click="addWidget(widget)">{{ widget.sensor.widget.icon }} {{ widget.sensor.name }}</td>
+                        @click="addWidget(widget)">{{ widget.sensor.name }}</td>
                 </tr>
             </tbody>
             <span v-else>Sorry, we couldn't find any results...</span>

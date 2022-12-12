@@ -1,26 +1,26 @@
 export default class Dashboard {
 
     id
-    layout = []
-    #user
+    #showWidgetbar
+    #editMode
+    #isDraggable
+    #isResizable
 
-    constructor(id, layout) {
+    constructor(id) {
         this.id = id;
-        this.layout = layout || [];
     }
 
-    static createMockDashboard(id){
+    static createMockDashboard(id) {
         return new Dashboard(id);
-}
-
-    addToLayout(widget){
-        this.layout.push(widget);
     }
 
 
-    get getLayout(){
-        return this.layout;
+    editMode() {
+        this.editMode = !this.editMode;
+        this.draggable = !this.draggable;
+        this.resizable = !this.resizable;
     }
+
 
 
 }

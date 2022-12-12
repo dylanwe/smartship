@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -117,23 +118,28 @@ public class BackendApplication implements CommandLineRunner {
 
         Widget widgetEngineTemperatures = widgetRepository.save(new Widget("<", "Engine Temperatures", "WidgetTemperature", 1, 1, 1, 1, 1, 1));
 
-        widgetEngineTemperatures.setSensor(sensorEngineTemp1);
-        widgetEngineTemperatures.setSensor(sensorEngineTemp2);
+        widgetEngineTemperatures.addSensor(sensorEngineTemp1);
+        widgetEngineTemperatures.addSensor(sensorEngineTemp2);
 
 
-        ShipSensor shipSensor = shipSensorRepository.save(new ShipSensor("bb7baec4-c049-45c5-81ce-2715801e6bff", shipOne, sensorEngineTemp1));
+        ShipSensor shipSensor1 = shipSensorRepository.save(new ShipSensor("bb7baec4-c049-45c5-81ce-2715801e6bff", shipOne, sensorEngineTemp1));
+        ShipSensor shipSensor2 = shipSensorRepository.save(new ShipSensor("bb7baec4-c049-45c5-81ce-2715801e6bgg", shipOne, sensorEngineTemp2));
 
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
         LocalDateTime dateTime = LocalDateTime.parse("13:10:00 15/07/2022", formatter);
-
-        SensorData sensorData = sensorDataRepository.save(new SensorData(67.68, dateTime, shipSensor));
+        SensorData sensorData = sensorDataRepository.save(new SensorData(30.68, dateTime.atZone(ZoneId.systemDefault()).toEpochSecond()
+                , shipSensor1));
+        SensorData sensorData2 = sensorDataRepository.save(new SensorData(67.68, dateTime.atZone(ZoneId.systemDefault()).toEpochSecond()
+                , shipSensor2));
 
 
         ShipData shipData = shipDataRepository.save(new ShipData(30.0, "123", "123", sensorData));
+        ShipData shipData2 = shipDataRepository.save(new ShipData(55.0, "123", "123", sensorData2));
+
 
         Dashboard dashboard = dashboardRepository.save(new Dashboard(userRepository.findAll().get(0)));
-        DashboardItem dashboardItem =  dashboardItemRepository.save(new DashboardItem(0, 0, 2, 2, shipSensor));
+        DashboardItem dashboardItem = dashboardItemRepository.save(new DashboardItem(0, 0, 2, 2, shipSensor1));
 
 
         dashboard.addToLayout(dashboardItem);

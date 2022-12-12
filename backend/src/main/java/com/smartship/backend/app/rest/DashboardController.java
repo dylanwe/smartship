@@ -14,7 +14,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import java.net.URI;
-import java.util.Arrays;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 
@@ -27,17 +29,19 @@ public class DashboardController {
     private final DashboardRepository dashboardRepository;
     private final UserRepository userRepository;
     private final DashboardItemRepository dashboardItemRepository;
-
+    private final SensorDataRepository sensorDataRepository;
 
     @Autowired
-    public DashboardController(DashboardRepository dashboardRepository, UserRepository userRepository, DashboardItemRepository dashboardItemRepository) {
+    public DashboardController(DashboardRepository dashboardRepository, UserRepository userRepository, DashboardItemRepository dashboardItemRepository, SensorDataRepository sensorDataRepository) {
         this.dashboardRepository = dashboardRepository;
         this.userRepository = userRepository;
         this.dashboardItemRepository = dashboardItemRepository;
+        this.sensorDataRepository = sensorDataRepository;
     }
 
     /**
      * Get all user dashboards
+     *
      * @return Array of dashboards
      */
     @GetMapping
@@ -48,6 +52,7 @@ public class DashboardController {
 
     /**
      * Create a new user dashboard
+     *
      * @return dashboard object
      */
     @PostMapping
@@ -74,6 +79,7 @@ public class DashboardController {
     /**
      * Delete user's dashboard
      * TODO move to user controller???
+     *
      * @return deleted dashboard object
      */
     @DeleteMapping
@@ -89,6 +95,7 @@ public class DashboardController {
 
     /**
      * Find dashboard by dashboard Id
+     *
      * @param id dashboard id
      * @return Dashboard object
      */
@@ -103,6 +110,7 @@ public class DashboardController {
     /**
      * Find dashboard by user id
      * TODO move to user controller???
+     *
      * @return Dashboard object
      */
     @GetMapping(path = "user/{userId}")
@@ -134,6 +142,10 @@ public class DashboardController {
     }
 
 
+    @GetMapping("widget/{id}")
+    public ResponseEntity<List<SensorData>> findDataBetweenDates(@PathVariable String id, String from, String to) {
+        return ResponseEntity.ok().body(sensorDataRepository.findSensorDataByShipSensorIdAndTimeBetween(id, Long.valueOf(from), Long.valueOf(to)));
+    }
 
 
     private User getUser(JWTokenInfo jwTokenInfo) {

@@ -5,15 +5,35 @@
       <div class="flex flex-row gap-4">
         <h1 class="text-4xl text-neutral-800 font-bold">Dashboard</h1>
 
-        <span class="text-neutral-500 font-semibold text-sm self-center flex gap-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                 stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-  <path stroke-linecap="round" stroke-linejoin="round"
-        d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/>
-</svg>
+        <div class="mt-2">
+          <date-picker
+              v-model:value="dateRange"
+              value-type="timestamp"
+              type="datetime"
+              range
+              placeholder="Select datetime range"
+              :show-time-panel="showTimeRangePanel"
+              @change="onTimeRangeChange"
+              @close="handleRangeClose">
+            <template #footer="{ emit }">
+              <div class="flex gap-1">
+                <div>
+                  <button v-for="(date, index) in presetRanges" :key="index"
+                          class="mx-btn mx-btn-text" @click="emit(date.range)">
+                    {{ date.label }}
+                  </button>
+                </div>
+                <div class="ml-auto bg-sky-200 rounded-lg px-2">
+                  <button class="mx-btn mx-btn-text" @click="toggleTimeRangePanel">
+                    {{ showTimeRangePanel ? 'select date' : 'select time' }}
+                  </button>
+                </div>
+              </div>
+            </template>
+          </date-picker>
+        </div>
 
-            Past 6 hours
-          </span>
+
       </div>
 
 
@@ -50,7 +70,7 @@
       </div>
     </div>
     <!-- Widget Library -->
-    <WidgetLibraryComponent @addWidget="addWidget" :showWidgetbar="showWidgetSidebar"
+    <WidgetLibraryComponent @addWidget="addWidget" :showWidgetbar="showWidgetbar"
                             @closeWidgetMenu="toggleWidgetbar"/>
     <div class="container select-none">
       <grid-layout v-model:layout="layout"
@@ -60,40 +80,31 @@
                    :is-resizable="resizable"
                    :vertical-compact="true"
                    :use-css-transforms="true"
-                   :responsive="true"
+                   :responsive="false"
                    :maxRows="5"
                    :autoSize="false"
-                   :preventCollision="true"
-                   @layout-created="layoutCreatedEvent"
-
-                   @layout-updated="layoutUpdatedEvent"
 
       >
         <!-- Grid Item -->
-        <grid-item v-for="(dashboardItem,index) in layout"
-                   :x="dashboardItem.x"
-                   :y="dashboardItem.y"
-                   :w="dashboardItem.width"
-                   :h="dashboardItem.height"
+        <grid-item v-for="(item, index) in layout"
+                   :x="item.x"
+                   :y="item.y"
+                   :w="item.w"
+                   :h="item.h"
+                   :i="item.i"
                    :key="index"
-                   :i="index"
-
-                   @resize="resizeEvent"
-                   @move="moveEvent"
-                   @resized="resizedEvent"
-                   @container-resized="containerResizedEvent"
-                   @moved="movedEvent"
-
                    class="bg-white border border-gray-600 rounded-md"
         >
           <!-- Widget Component -->
-          <component class="h-full w-full" v-if="dashboardItem.shipSensor"
-                     :is="dashboardItem.shipSensor.sensor.widget.componentName"
-                     :sensor="dashboardItem.shipSensor.sensor"/>
+          <!--:is="item.shipSensor.sensor.widget.componentName"-->
+          <component class="h-full w-full" v-if="item.shipSensor"
+                     :is="this.tempComponent"
+                     :dataSet="item.data"
+                     :sensor="item.shipSensor.sensor"/>
 
           <span v-if="editMode"
-                class="remove absolute right-1 top-1 hover:bg-red-400 bg-red-300 px-4 rounded-lg text-red-700 font-semibold items-center cursor-default"
-                @click="removeItem(dashboardItem)">X</span>
+                class="z-30 remove absolute right-1 top-1 hover:bg-red-400 bg-red-300 px-4 rounded-lg text-red-700 font-semibold items-center cursor-default"
+                @click="removeItem(item.i)">X</span>
         </grid-item>
 
       </grid-layout>
@@ -104,32 +115,66 @@
 <script>
 
 import {GridLayout, GridItem} from 'vue3-grid-layout';
+import LineChart from '../components/charts/LineChart';
+import SparkBarChart from '../components/charts/SparkBarChart'
+import SparkLineChart from '../components/charts/SparkLineChart'
+
+
 import WidgetLibraryComponent from '../components/dashboard/widgets/WidgetLibraryComponent.vue';
-import WidgetTemperature from '../components/dashboard/widgets/temperature/WidgetTemperature.vue';
-import BatteryLevel from '../components/dashboard/widgets/battery/BatteryLevel.vue';
+
 import BigLineChart from '../components/dashboard/widgets/base/BigLineChart.vue';
 import SmallLineChart from '../components/dashboard/widgets/base/SmallLineChart.vue';
 
+import DatePicker from 'vue-datepicker-next';
+import 'vue-datepicker-next/index.css';
+import ExtractDataSet from "@/utils/ExtractDataSet";
+
+// import { formatDistanceStrict } from 'date-fns'
 
 export default {
   name: "DashboardIndex",
   inject: ["dashboardService", "sessionService"],
   components: {
+    DatePicker,
     GridLayout: GridLayout,
     GridItem: GridItem,
-    WidgetLibraryComponent,
-    WidgetTemperature, BatteryLevel, BigLineChart, SmallLineChart
+    WidgetLibraryComponent
+    ,BigLineChart, SmallLineChart,LineChart, SparkBarChart, SparkLineChart
   },
 
+
   async created() {
-    this.dashboard = await this.dashboardService.getUserDashboard(this.sessionService.getCurrentUser());
-    this.layout = await this.dashboard.layout;
+    const {id: dashboardId,layout} = await this.dashboardService.getUserDashboard(this.sessionService.getCurrentUser());
+    this.dashboardId = dashboardId;
+
+        this.layout = await Promise.all( layout.map(async (obj) =>  ({...obj, i: this.index++, data: (await this.updateWidgetData(obj))})));
+        console.log(this.layout)
   },
   data() {
     return {
-      dashboard: null,
+      tempComponent: "SmallLineChart",
+      dateRange: [new Date(new Date().setDate(new Date().getDate() - 1)).valueOf(), new Date().valueOf()],
+      showTimeRangePanel: false,
+      presetRanges: [
+        {
+          label: 'Last 24 hours',
+          range: [new Date(new Date().setDate(new Date().getDate() - 1)), new Date()]
+        },
+        {
+          label: 'Last 7 days',
+          range: [new Date(new Date().setDate(new Date().getDate() - 7)), new Date()]
+        },
+        {
+          label: 'Last 30 days',
+          range: [new Date(new Date().setDate(new Date().getDate() - 30)), new Date()]
+        },
+        {
+          label: 'Last 365 days',
+          range: [new Date(new Date().setDate(new Date().getDate() - 365)), new Date()]
+        }
+      ],
+      // Temp stored widgets
       layout: [],
-
       // Grid options
       numberOfColumns: 5,
       draggable: false,
@@ -139,108 +184,77 @@ export default {
 
       // Widget edit
       editMode: false,
-      showWidgetSidebar: false
+      showWidgetbar: false
 
     }
   },
+
   methods: {
-
-    layoutUpdatedEvent: function (newLayout) {
-      console.log("Updated layout: ", newLayout)
+    ExtractDataSet,
+    toggleTimeRangePanel() {
+      this.showTimeRangePanel = !this.showTimeRangePanel;
+    },
+    handleRangeClose() {
+      this.showTimeRangePanel = false;
     },
 
-    layoutCreatedEvent: function(newLayout){
-      console.log("Created layout: ", newLayout)
-    },
-    moveEvent: function(i, newX, newY){
-      console.log("MOVE i=" + i + ", X=" + newX + ", Y=" + newY);
-    },
-    resizeEvent: function(i, newH, newW, newHPx, newWPx){
-      console.log("RESIZE i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
-    },
-    movedEvent: function(i, newX, newY){
-      console.log("MOVED i=" + i + ", X=" + newX + ", Y=" + newY);
-    },
-    resizedEvent: function(i, newH, newW, newHPx, newWPx){
-      console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
-    },
-    containerResizedEvent: function(i, newH, newW, newHPx, newWPx){
-      console.log("CONTAINER RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
+    async updateWidgetData(item){
+      const [from,to] =this.dateRange;
+        return ExtractDataSet(await this.dashboardService.getWidgetData(item.shipSensor.id, from,to));
     },
 
+    async updateWidgetsData(){
+      const [from,to] =this.dateRange;
+      for (const item of this.layout) {
+        item.data = ExtractDataSet(await this.dashboardService.getWidgetData(item.shipSensor.id, from,to));
+      }
+      console.log(this.layout)
+    },
 
+    async onTimeRangeChange() {
+     await this.updateWidgetsData()
+    },
 
-
-
-
-
-
-
-    toggleWidgetbar() {
-      this.showWidgetSidebar = !this.showWidgetSidebar;
+    async toggleWidgetbar() {
+      this.showWidgetbar = !this.showWidgetbar
     },
     toggleEditMode() {
       this.editMode = !this.editMode;
-      this.resizable = !this.resizable;
       this.draggable = !this.draggable;
+      this.resizable = !this.resizable;
     },
     cancelChanges() {
       this.toggleEditMode()
     },
     async saveChanges() {
       this.toggleEditMode()
-      await this.dashboardService.saveLayout(this.dashboard.id, this.layout);
+      await this.dashboardService.saveLayout(this.dashboardId, this.layout);
     },
 
     addWidget(widget) {
-      this.layout.push({
+      const obj = {
         x: (this.layout.length * 2) % (this.numberOfColumns),
         y: this.layout.length + (this.numberOfColumns), // puts it at the bottom
-        width: widget.sensor.widget.defaultWidth,
-        height: widget.sensor.widget.defaultHeight,
-        shipSensor: widget
-      })
+        w: widget.sensor.widget.defaultWidth,
+        h: widget.sensor.widget.defaultHeight,
+        shipSensor: widget,
+        data: [],
+        i: this.index++
+      }
+      this.layout.push(obj)
 
-
-      // Add a new dashboard item
-      // this.dashboard.addToLayout({
-      //   x: (this.dashboard.getLayout.length * 2) % (this.numberOfColumns),
-      //   y: this.dashboard.getLayout.length + (this.numberOfColumns), // puts it at the bottom
-      //   width: widget.sensor.widget.defaultWidth,
-      //   height: widget.sensor.widget.defaultHeight,
-      //   sensor: widget
-      // })
     },
 
     removeItem(val) {
       const index = this.layout.map(item => item.i).indexOf(val);
-      if (confirm(`Are you sure you want to delete this widget?`)) this.layout.splice(index, 1);
+      if (confirm(`Are you sure you want to delete this widget?`)) {
+        this.layout.splice(index, 1);
+      }
 
     },
   },
 
-  layoutUpdatedEvent: function (newLayout) {
-    console.log("Updated layout: ", newLayout)
-  },
 
-  layoutCreatedEvent: function(newLayout){
-    console.log("Created layout: ", newLayout)
-  },
-  moveEvent: function(i, newX, newY){
-    console.log("MOVE i=" + i + ", X=" + newX + ", Y=" + newY);
-  },
-  resizeEvent: function(i, newH, newW, newHPx, newWPx){
-    console.log("RESIZE i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
-  },
-  movedEvent: function(i, newX, newY){
-    console.log("MOVED i=" + i + ", X=" + newX + ", Y=" + newY);
-  },
-  resizedEvent: function(i, newH, newW, newHPx, newWPx){
-    console.log("RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
-  },
-  containerResizedEvent: function(i, newH, newW, newHPx, newWPx){
-    console.log("CONTAINER RESIZED i=" + i + ", H=" + newH + ", W=" + newW + ", H(px)=" + newHPx + ", W(px)=" + newWPx);
-  },
 }
 </script>
 

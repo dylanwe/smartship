@@ -24,7 +24,7 @@ public class Sensor {
     @JsonView(CustomJson.Shallow.class)
     private String unit;
 
-    @OneToOne
+    @ManyToOne
     @JsonView(CustomJson.Shallow.class)
     private Widget widget;
 
@@ -33,7 +33,7 @@ public class Sensor {
     private Set<ShipSensor> shipSensors;
 
 
-     public Sensor( String name, String nameShort,  GROUP groupName, TYPE type, String unit) {
+    public Sensor(String name, String nameShort, GROUP groupName, TYPE type, String unit) {
         this.name = name;
         this.nameShort = nameShort;
         this.groupName = groupName;
@@ -44,20 +44,16 @@ public class Sensor {
     public Sensor() {
     }
 
-    public void setWidget(Widget widget) {
-        this.widget = widget;
+
+    public boolean addWidget(Widget widget) {
+        if (widget != null && this.getWidget() == null) {
+            // update both sides of the association
+            widget.addSensor(this);
+            this.widget = widget;
+            return true;
+        }
+        return false;
     }
-
-
-    //    public boolean setWidget(Widget widget) {
-//        if (widget != null && this.getWidget() == null) {
-//            // update both sides of the association
-//            widget.setSensor(this);
-//            this.setWidget(widget);
-//            return true;
-//        }
-//        return false;
-//    }
 
 
     public Long getId() {
@@ -126,6 +122,7 @@ public class Sensor {
         Battery,
         Fuel
     }
+
     public enum TYPE {
         Temperature,
         Quantity,
@@ -133,7 +130,6 @@ public class Sensor {
         Speed,
         Depletion_Rate
     }
-
 
 
 }

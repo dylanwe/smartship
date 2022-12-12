@@ -1,5 +1,6 @@
 package com.smartship.backend.app.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.smartship.backend.app.views.CustomJson;
@@ -36,8 +37,9 @@ public class Widget {
     @JsonView(CustomJson.Shallow.class)
     private int defaultWidth;
 
-    @OneToOne
-    private Sensor sensor;
+    @OneToMany
+    @JsonIgnore
+    private Set<Sensor> sensors = new HashSet<>();
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -62,28 +64,21 @@ public class Widget {
 
     }
 
+    /**
+     * Associates the given item with this layout, if not yet associated
+     *
+     * @param sensor Dashboard item
+     * @return whether a new association has been added
+     */
 
-    public void setSensor(Sensor sensor) {
-        sensor.setWidget(this);
-        this.sensor = sensor;
+    public boolean addSensor(Sensor sensor) {
+        if (sensor != null && sensor.getWidget() == null){
+            return this.sensors.add(sensor) && sensor.addWidget(this);
+        }
+        return false;
     }
 
-//    /**
-//     * Associates the given item with this layout, if not yet associated
-//     *
-//     * @param sensor Dashboard item
-//     * @return whether a new association has been added
-//     */
 
-
-//    public boolean setSensor(Sensor sensor) {
-//        if (sensor != null && sensor.getWidget() == null) {
-//            // update both sides of the association'
-//            this.sensor = sensor;
-//            return  sensor.setWidget(this);
-//        }
-//        return false;
-//    }
 
     public Long getId() {
         return id;
@@ -105,14 +100,6 @@ public class Widget {
         return chartTypes;
     }
 
-    public Sensor getSensor() {
-        return sensor;
-    }
-
-//    public Set<DashboardItem> getDashboardItems() {
-//
-//        return dashboardItems;
-//    }
 
     public int getMinHeight() {
         return minHeight;
@@ -132,6 +119,14 @@ public class Widget {
 
     public int getDefaultHeight() {
         return defaultHeight;
+    }
+
+    public Set<Sensor> getSensors() {
+        return sensors;
+    }
+
+    public void setSensors(Set<Sensor> sensors) {
+        this.sensors = sensors;
     }
 
     public int getDefaultWidth() {

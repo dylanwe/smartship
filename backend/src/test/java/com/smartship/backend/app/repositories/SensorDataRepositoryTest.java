@@ -1,5 +1,6 @@
 package com.smartship.backend.app.repositories;
 
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.smartship.backend.app.models.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,9 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 
-import java.nio.file.attribute.UserPrincipalNotFoundException;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -20,7 +22,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
  */
 @DataJpaTest
 @ComponentScan({"com.smartship.backend.app.repositories"})
-class DashboardRepositoryTest {
+class SensorDataRepositoryTest {
 
     @Autowired
     private DashboardRepository dashboardRepository;
@@ -32,6 +34,8 @@ class DashboardRepositoryTest {
     private WidgetRepository widgetRepository;
     @Autowired
     private SensorRepository sensorRepository;
+    @Autowired
+    private SensorDataRepository sensorDataRepository;
 
 
     private User bruce;
@@ -84,15 +88,12 @@ class DashboardRepositoryTest {
 
 
 
-        ShipSensor shipSensor = new ShipSensor("bb7baec4-c049-45c5-81ce-2715801e6bff", shipOne,sensorEngineOneTemp );
+        shipSensor = new ShipSensor("bb7baec4-c049-45c5-81ce-2715801e6bff", shipOne,sensorEngineOneTemp );
 
 
 
 
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
-//        LocalDateTime dateTime = LocalDateTime.parse("13:10:00 15/07/2022", formatter);
-//
-//        shipOneSensorData = new SensorData(67.68, dateTime, shipSensor);
+
 
     }
 
@@ -100,26 +101,22 @@ class DashboardRepositoryTest {
     @Test
     public void itShouldAddItemToLayout() {
 
-        dashboard = new Dashboard(bruce);
-        dashboardItem = new DashboardItem(1, 3, 2, 2, shipSensor);
-
-        boolean added = dashboard.addToLayout(dashboardItem);
-        dashboardRepository.save(dashboard);
-
-        assertThat(added).isTrue();
-    }
-
-    @Test
-    public void itShoulAddUserToShip() {
-        boolean added = shipOne.addUser(bruce);
-        assertThat(added).isTrue();
-    }
+        DateTimeFormatter formatterr = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
+        LocalDateTime dateTime = LocalDateTime.parse("13:10:00 15/07/2022", formatterr);
 
 
-    @Test
-    public void itShouldCreateASensorAndLinkToWidget() {
-        boolean added = shipOne.addUser(bruce);
-        assertThat(added).isTrue();
+
+//        System.out.println(dateTime);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy").withZone(ZoneId.systemDefault());
+
+
+//        shipOneSensorData = new SensorData(67.68, dateTime, shipSensor);;
+//
+//        SensorData test = sensorDataRepository.save(shipOneSensorData);
+//
+//        System.out.println(        sensorDataRepository.findSensorDataByShipSensorId(shipSensor.getId())
+//        );
+//        System.out.println(test.getTime());
     }
 
 

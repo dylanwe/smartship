@@ -24,8 +24,7 @@ public class ShipData {
     private String gps_Longitude;
 
     @OneToOne
-//    @JsonIgnore
-    @JsonView(CustomJson.Shallow.class)
+    @JsonIgnore
     private SensorData sensorData;
 
     public ShipData() {
@@ -38,6 +37,7 @@ public class ShipData {
         this.sensorData = sensorData;
 
     }
+
 
 
     public Long getId() {
@@ -79,4 +79,5 @@ public class ShipData {
     public void setSensorData(SensorData sensorData) {
         this.sensorData = sensorData;
     }
+
 }

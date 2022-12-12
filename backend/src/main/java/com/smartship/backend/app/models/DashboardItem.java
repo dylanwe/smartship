@@ -2,7 +2,6 @@ package com.smartship.backend.app.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.smartship.backend.app.views.CustomJson;
 
 import javax.persistence.*;
@@ -21,16 +20,17 @@ public class DashboardItem {
     private int y;
 
     @JsonView(CustomJson.Shallow.class)
-    private int width;
+    private int w;
 
     @JsonView(CustomJson.Shallow.class)
-    private int height;
+    private int h;
 
     @ManyToOne
     @JsonIgnore
     private Dashboard dashboard;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "shipSensor")
     @JsonView(CustomJson.Shallow.class)
     private ShipSensor shipSensor;
 
@@ -41,8 +41,8 @@ public class DashboardItem {
     public DashboardItem(int x, int y, int width, int height, ShipSensor shipSensor) {
         this.x = x;
         this.y = y;
-        this.width = width;
-        this.height = height;
+        this.w = width;
+        this.h = height;
         this.shipSensor = shipSensor;
     }
 
@@ -76,12 +76,12 @@ public class DashboardItem {
         return y;
     }
 
-    public int getWidth() {
-        return width;
+    public int getW() {
+        return w;
     }
 
-    public int getHeight() {
-        return height;
+    public int getH() {
+        return h;
     }
 
     public Dashboard getDashboard() {

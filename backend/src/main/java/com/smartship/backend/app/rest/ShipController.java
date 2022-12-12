@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -66,31 +68,16 @@ public class ShipController {
 
 
     /**
-     * Find ship by smart id
+     * Find ship by smartship id
      */
-//    @GetMapping("{smartShipId}")
-//    public ResponseEntity<Ship> findShip(@PathVariable String smartShipId) {
-//
-//        Ship ship = shipRepository.findBySmartShipId(smartShipId).orElseThrow(
-//                () -> new NotFoundException(smartShipId)
-//        );
-//
-//        return ResponseEntity.ok().body(ship);
-//    }
-
-    /**
-     *  Find ship by id
-     * @param shipId
-     * @return
-     */
-    @GetMapping("{shipId}")
-    public ResponseEntity<Ship> findShip(@PathVariable Long shipId){
-        Ship ship= shipRepository.findById(shipId).orElseThrow(
-                () -> new NotFoundException(shipId.toString())
+    @GetMapping("{smartShipId}")
+    public ResponseEntity<Ship> findShip(@PathVariable String smartShipId) {
+        Ship ship = shipRepository.findBySmartShipId(smartShipId).orElseThrow(
+                () -> new NotFoundException(smartShipId)
         );
-
         return ResponseEntity.ok().body(ship);
     }
+
 
     /**
      * Digest ship & sensor data and store them
@@ -145,14 +132,17 @@ public class ShipController {
                 }
             }
 
-
-            // Parse sensor data
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
+            // Parse sensor data 13:10:00 15/07/2022
+            System.out.println(Instant.parse(object.path("Time").asText()));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy").withZone(ZoneId.systemDefault());
 
             LocalDateTime time = LocalDateTime.parse(object.path("Time").asText(), formatter);
+            ZoneId zoneId = ZoneId.systemDefault(); // or: ZoneId.of("Europe/Oslo");
+            Long epoch = time.atZone(zoneId).toEpochSecond();
+
             Double value = object.path("Value").asDouble();
 
-            SensorData newSensorData = new SensorData(value, time, shipSensors.get(sensorId));
+            SensorData newSensorData = new SensorData(value, epoch, shipSensors.get(sensorId));
             sensorData.add(newSensorData);
 
             // Parse ship data

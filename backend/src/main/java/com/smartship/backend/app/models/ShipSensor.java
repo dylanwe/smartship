@@ -29,6 +29,10 @@ public class ShipSensor {
 //    @JsonIgnore
     private Sensor sensor;
 
+    @OneToMany(mappedBy = "shipSensor")
+    @JsonIgnore
+    private Set<DashboardItem> dashboardItems;
+
     @OneToMany
     @JsonSerialize(using = CustomJson.ShallowSerializer.class)
     private Set<SensorData> sensorData;
@@ -74,5 +78,9 @@ public class ShipSensor {
 
     public void setSensorData(Set<SensorData> sensorData) {
         this.sensorData = sensorData;
+    }
+
+    public Set<DashboardItem> getDashboardItems() {
+        return dashboardItems;
     }
 }

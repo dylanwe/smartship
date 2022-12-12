@@ -26,17 +26,26 @@ export default class DashboardAdapter {
 
     //TODO user must have dashboard
     async getUserDashboard(user) {
-       return await this.fetchJson(`/user/${user.id}`)
+        const data = await this.fetchJson(`/user/${user.id}`)
+        console.log(data)
+        return data
     }
 
+    async getWidgetData(id, from, to) {
+        from = Math.floor(from / 1000)
+        to = Math.floor(to / 1000)
+       return await this.fetchJson(`/widget/${id}?from=${from}&to=${to}`);
+    }
 
     async saveLayout(id, layoutArray) {
-        return await this.fetchJson(`/${id}`, {
+        const data = await this.fetchJson(`/${id}`, {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(layoutArray),
             credentials: 'include'
         })
+        console.log(data)
+        return []
     }
 
 
