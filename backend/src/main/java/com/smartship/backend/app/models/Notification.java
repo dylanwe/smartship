@@ -1,7 +1,12 @@
 package com.smartship.backend.app.models;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.smartship.backend.app.views.CustomJson;
+
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Table(name = "notifications")
@@ -32,6 +37,10 @@ public class Notification {
         this.notificationDateTime = notificationDateTime;
         this.type = type;
     }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonSerialize(using = CustomJson.ShallowSerializer.class)
+    private User users;
 
     public Long getId() {
         return notificationId;
