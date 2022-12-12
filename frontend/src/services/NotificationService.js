@@ -1,6 +1,6 @@
 import { Service, Autowired } from "vue-class-component";
 import Notification from "@/models/notifications/Notification";
-import NotificationRepository from "backend/src/main/java/com/smartship/backend/app/repositories/NotificationRepository.java";
+import * as NotificationRepository from "backend/src/main/java/com/smartship/backend/app/repositories/NotificationRepository.java";
 
 @Service
 export default class NotificationService {
