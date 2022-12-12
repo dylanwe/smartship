@@ -81,7 +81,7 @@ export default {
   inject: ['sessionService','managerService'],
   components: {AddOperatorModal},
   async created() {
-    //If the user isn't a manager, send the user to the dashboard
+    //If the user isn't a managr, send the user to the dashboard
     // if (this.sessionService.getCurrentUser().role !== 'Manager') {
     //   this.$router.push(this.$route.matched[0].path)
     // }
