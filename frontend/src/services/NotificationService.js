@@ -1,19 +1,17 @@
+import { Service, Autowired } from "vue-class-component";
 import Notification from "@/models/notifications/Notification";
+import NotificationRepository from "backend/src/main/java/com/smartship/backend/app/repositories/NotificationRepository.java";
 
+@Service
 export default class NotificationService {
-    notifications;
+    @Autowired
+    private repository: NotificationRepository;
 
-    constructor() {
-        this.notifications = [
-            Notification.createMockNotification(1),
-            Notification.createMockNotification(2),
-            Notification.createMockNotification(3),
-            Notification.createMockNotification(4)
-
-        ];
+    public findByMessageContainsLetters(letters: string): Notification[] {
+        return this.repository.findByMessageContainsLetters(letters);
     }
 
-    async findAllNotification() {
-        return this.notifications;
+    public findAllInOrderFromNewestToOldest(): Notification[] {
+        return this.repository.findAllByOrderByNotificationDateTimeDesc();
     }
 }

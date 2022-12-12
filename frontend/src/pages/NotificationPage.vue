@@ -51,7 +51,7 @@ export default {
   },
 
   async created() {
-    this.notifications = await this.notificationService.findAllNotification();
+    this.notifications = await this.notificationService.findAllInOrderFromNewestToOldest();
   },
 
   methods: {

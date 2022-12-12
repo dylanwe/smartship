@@ -14,6 +14,7 @@ public class Notification {
     private LocalDate notificationDateTime;
     private TYPE type;
 
+
     public Notification() {
     }
 
