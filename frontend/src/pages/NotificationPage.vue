@@ -4,19 +4,19 @@
   <form class="w-full">
     <div class="flex w-full space-x-3">
       <div class="flex mb-3">
-        <button id="dropdownActionButton" v-on:click="showDropdown = !showDropdown" data-dropdown-toggle="dropdownAction"
+        <button id="dropdownActionButton" @click="showDropdown = true"
                 class="inline-flex items-center text-neutral-500 bg-white border border-neutral-300 focus:outline-none hover:bg-neutral-100 focus:ring-4 focus:ring-neutral-200 font-medium rounded-lg text-sm px-3 py-1.5 "
                 type="button">
           <span class="sr-only">Action button</span>
           Filter
-          <svg class="ml-2 w-3 h-3" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          <svg class="ml-2 w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
           </svg>
         </button>
         <!-- Dropdown menu -->
         <div v-if="showDropdown" id="dropdownAction"
-             class="hidden z-10 w-44 bg-white rounded divide-y divide-neutral-100 shadow">
+             class="z-10 w-44 bg-white rounded divide-y divide-neutral-100 shadow">
           <ul class="py-1 text-sm text-neutral-700" aria-labelledby="dropdownActionButton">
             <li>
               <a href="#"
@@ -113,11 +113,15 @@
 <script>
 import Notification from "@/models/notifications/Notification";
 import NotificationsDetail from "@/components/dashboard/notification/NotificationsDetail";
+import NotificationService from "@/services/NotificationService";
 
 export default {
-  inject: ["notificationService", "userService"],
+  inject: ["notificationService", "userService", "sessionService"],
   name: "NotificationIndex",
   components: {NotificationsDetail},
+  emits: [
+    'showDropdown'
+  ],
 
   data() {
     return {
@@ -128,13 +132,21 @@ export default {
   },
 
   async created() {
-    this.notifications = await this.notificationService.getUserNotifications();
+    this.user = this.sessionService.getCurrentUser();
+    const userNotifications = await this.notificationService.getUserNotifications(this.user.id);
+    this.notifications = await userNotifications.json();
   },
 
   methods: {
     selectNotification(notification) {
       this.selectedNotification = notification;
       this.selectedNotification.status = Notification.Status.READ;
+    },
+    activateDropdown() {
+      let showDropdown;
+      this.showDropdown =true;
+      this.showDropdown = !showDropdown;
+      this.$emit('showDropdown', this.showDropdown);
     },
   }
 }

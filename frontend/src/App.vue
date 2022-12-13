@@ -24,10 +24,9 @@ export default {
     return {
       sessionService: this.theSessionService,
       userService: new UserAdapter(`${API_URL}/users`),
-      notificationService: new NotificationService(),
+      notificationService: new NotificationService(`${API_URL}/users`),
       managerService: new ManagerAdapter(`${API_URL}/manager`),
       toDoService: new ToDoAdapter(`${API_URL}/users`),
-
     }
   },
 
