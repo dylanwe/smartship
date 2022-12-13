@@ -8,7 +8,7 @@ import SessionSbService from "@/services/SessionSbService";
 import {shallowReactive} from "vue";
 import FetchInterceptor from "@/utils/FetchInterceptor";
 import NotificationService from "@/services/NotificationService";
-import ManagerAdapter from "@/services/managerAdapter";
+import UserManagementAdaptor from "@/services/userManagementAdaptor";
 import ToDoAdapter from "@/services/toDoAdapter";
 
 const API_URL = process.env.VUE_APP_API_URL;
@@ -25,9 +25,8 @@ export default {
       sessionService: this.theSessionService,
       userService: new UserAdapter(`${API_URL}/users`),
       notificationService: new NotificationService(),
-      managerService: new ManagerAdapter(`${API_URL}/manager`),
+      userManagementService: new UserManagementAdaptor(`${API_URL}/userManagement`),
       toDoService: new ToDoAdapter(`${API_URL}/users`),
-
     }
   },
 
