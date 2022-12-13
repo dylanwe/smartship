@@ -1,5 +1,4 @@
 package com.smartship.backend.app.models;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.smartship.backend.app.views.CustomJson;
 

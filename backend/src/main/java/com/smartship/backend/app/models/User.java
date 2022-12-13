@@ -29,9 +29,9 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user" )
     private List<ToDo> toDos;
 
-    @OneToMany(mappedBy = "users")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "users")
     @JsonSerialize(using = CustomJson.ShallowSerializer.class)
-    private Set<Notification> notification;
+    private List<Notification> notification;
 
     public User() {
     }
@@ -158,7 +158,12 @@ public class User {
     public List<ToDo> getToDos() {
         return toDos;
     }
-    public Set<Notification> getNotifications() {
+//    public Set<Notification> getNotifications() {
+//        return notification;
+//    }
+
+
+    public List<Notification> getNotification() {
         return notification;
     }
 

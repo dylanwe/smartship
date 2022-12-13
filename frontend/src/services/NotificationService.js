@@ -17,9 +17,31 @@ export default class NotificationService {
         );
     }
 
-    async getUserNotificationsById(userId, notificationId) {
+    async getUserNotificationsTypes(userId) {
         return await fetch(
-            `${this.RESOURCE_URL}/${userId}/notifications/${notificationId}`,
+            `${this.RESOURCE_URL}/${userId}/notifications/type/{notificationType}`,
+            {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'include'
+            }
+        );
+    }
+
+    async getUserNotificationsAscending(userId) {
+        return await fetch(
+            `${this.RESOURCE_URL}/${userId}/notifications/ascending`,
+            {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'include'
+            }
+        );
+    }
+
+    async getUserNotificationsSearch(userId) {
+        return await fetch(
+            `${this.RESOURCE_URL}/${userId}/notifications/search`,
             {
                 method: 'GET',
                 headers: {'Content-Type': 'application/json'},
@@ -29,4 +51,14 @@ export default class NotificationService {
     }
 
 
+    async deleteUserNotifications(userId) {
+        return await fetch(
+            `${this.RESOURCE_URL}/${userId}/notifications/{notificationId}`,
+            {
+                method: 'DELETE',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'include'
+            }
+        );
+    }
 }
