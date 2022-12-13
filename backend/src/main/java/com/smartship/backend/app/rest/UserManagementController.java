@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.smartship.backend.app.exceptions.NotFoundException;
 import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.UserManagementRepository;
+import com.smartship.backend.app.utility.JWTokenInfo;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +62,24 @@ public class UserManagementController {
         userManagementRepository.save(user);
 
         return ResponseEntity.ok().body(user);
+    }
+
+    @PutMapping(path = "")
+    public ResponseEntity<User> updateUser(@RequestBody User updatedUser) {
+        User finalUpdatedUser = updatedUser;
+
+        User foundUser = userManagementRepository.findById(updatedUser.getId())
+                .orElseThrow(() -> new NotFoundException(String.format(
+                        "User with id %s wasn't found",
+                        finalUpdatedUser.getId()
+                )));
+
+        foundUser.setFirstName(updatedUser.getFirstName());
+        foundUser.setLastName(updatedUser.getLastName());
+        foundUser.setEmail(updatedUser.getEmail());
+
+        updatedUser = userManagementRepository.save(foundUser);
+        return ResponseEntity.ok().body(updatedUser);
     }
 
 }

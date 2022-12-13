@@ -57,4 +57,16 @@ export default class UserManagementAdaptor {
             body: JSON.stringify({email, firstName, lastName, password})
         });
     }
+
+    async updateUser(user) {
+         return await fetch(
+            `${this.RESOURCE_URL}`,
+            {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(user),
+                credentials: 'include'
+            }
+        );
+    }
 }
