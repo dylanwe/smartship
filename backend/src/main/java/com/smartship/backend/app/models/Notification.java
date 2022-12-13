@@ -1,12 +1,10 @@
 package com.smartship.backend.app.models;
 
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.smartship.backend.app.views.CustomJson;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Set;
 
 @Entity
 @Table(name = "notifications")
@@ -17,25 +15,25 @@ public class Notification {
     private String title;
     private String body;
     private LocalDate notificationDateTime;
-    private TYPE type;
+    private TYPE notificationType;
 
 
     public Notification() {
     }
 
-    public Notification(Long id, String title, String body, LocalDate notificationDateTime, TYPE type) {
+    public Notification(Long id, String title, String body, LocalDate notificationDateTime, TYPE notificationType) {
         this.notificationId = id;
         this.title = title;
         this.body = body;
         this.notificationDateTime = notificationDateTime;
-        this.type = type;
+        this.notificationType = notificationType;
     }
 
-    public Notification(String title, String body, LocalDate notificationDateTime, TYPE type) {
+    public Notification(String title, String body, LocalDate notificationDateTime, TYPE notificationType) {
         this.title = title;
         this.body = body;
         this.notificationDateTime = notificationDateTime;
-        this.type = type;
+        this.notificationType = notificationType;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -74,12 +72,12 @@ public class Notification {
         this.notificationDateTime = notificationDateTime;
     }
 
-    public TYPE getType() {
-        return type;
+    public TYPE getNotificationType() {
+        return notificationType;
     }
 
-    public void setType(TYPE type) {
-        this.type = type;
+    public void setNotificationType(TYPE notificationType) {
+        this.notificationType = notificationType;
     }
 
     public enum TYPE {
