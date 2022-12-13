@@ -9,7 +9,9 @@
           <h2 class="float-left text-3xl font-bold">Managers</h2>
           <button
               @click="showModal = true"
-              class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center transition-colors flex float-right items-center">
+              class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300
+              font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center transition-colors
+              flex float-right items-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                  stroke="currentColor" class="w-6 h-6">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m6-6H6"/>
@@ -22,11 +24,8 @@
           <th scope="col" class="py-3 px-6">
             NAME
           </th>
-          <th scope="col" class="py-3 px-6">
+          <th scope="col" class="py-3 px-6S">
             EMAIL ADDRESS
-          </th>
-          <th scope="col" class="py-3 px-6">
-            SHIP
           </th>
           <th scope="col" class="py-3 px-6">
             <span class="sr-only">Delete</span>
@@ -43,9 +42,6 @@
           </th>
           <td class="py-4 px-6">
             {{ manager.email }}
-          </td>
-          <td class="py-4 px-6">
-            Titanic
           </td>
           <td class="py-4 px-6">
             <button type="button" @click="deleteUser(manager)"
@@ -66,7 +62,7 @@
   </div>
 
   <add-account-modal v-model="showModal" v-on:close="showModal=false"
-                      v-on:add="(email, firstName, lastName, password) => addUser(email, firstName, lastName, password)"
+                     v-on:add="(email, firstName, lastName, password) => addUser(email, firstName, lastName, password)"
   ></add-account-modal>
 
 </template>
@@ -79,7 +75,7 @@ import User from "@/models/User";
 
 export default {
   name: "AdminIndex",
-  inject: ['sessionService','userManagementService'],
+  inject: ['sessionService', 'userManagementService'],
   components: {AddAccountModal},
   async created() {
     //If the user isn't an admin, send the user to the dashboard
@@ -103,7 +99,7 @@ export default {
     async deleteUser(user) {
       //Show a popup window asking if they really want to delete the user.
       const userSave = confirm('Are you sure you want to delete ' + user.firstName + ' ' + user.lastName
-          + ' (id:' + user.id + ')?');
+          + ' (id: ' + user.id + ')?');
       //Delete the user if they pressed confirm and call the refresh method, which gets the managers again.
       if (userSave) {
         await this.userManagementService.deleteUserById(user.id);
@@ -135,9 +131,9 @@ export default {
           };
 
           await emailjs.send("service_i66vivu", "template_ufzdlte", emailParams, "LB6axeycasCvaughh")
-              .then(function(response) {
+              .then(function (response) {
                 console.log('SUCCESS!', response.status, response.text);
-              }, function(error) {
+              }, function (error) {
                 console.log('FAILED...', error);
               });
 
