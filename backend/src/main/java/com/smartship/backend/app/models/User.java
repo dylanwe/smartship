@@ -1,16 +1,17 @@
 package com.smartship.backend.app.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.smartship.backend.app.exceptions.UnprocessableEntity;
+import com.smartship.backend.app.exceptions.UnprocessableEntityException;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstName;
     private String lastName;
@@ -21,27 +22,30 @@ public class User {
     private LocalDate birthday;
     private ROLE role;
     private String bio;
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user" )
+    private List<ToDo> toDos;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, String password, LocalDate birthday, ROLE role, String bio) {
+    public User(String firstName, String lastName, String email, String hashedPassword, LocalDate birthday, ROLE role, String bio) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.hashedPassword = password;
+        this.hashedPassword = hashedPassword;
         this.birthday = birthday;
         this.role = role;
         this.bio = bio;
     }
 
-    public User(Long id, String firstName, String lastName, String email, String password, LocalDate birthday,
+    public User(Long id, String firstName, String lastName, String email, String hashedPassword, LocalDate birthday,
                 ROLE role, String bio) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.hashedPassword = password;
+        this.hashedPassword = hashedPassword;
         this.birthday = birthday;
         this.role = role;
         this.bio = bio;
@@ -54,15 +58,15 @@ public class User {
      */
     public static void validateNewUserInformation(User user) {
         if (user.getFirstName().length() < 2)
-            throw new UnprocessableEntity("First name should be longer than 1 characters");
+            throw new UnprocessableEntityException("First name should be longer than 1 characters");
         if (user.getLastName().length() < 2)
-            throw new UnprocessableEntity("Last name should be longer than 1 characters");
+            throw new UnprocessableEntityException("Last name should be longer than 1 characters");
         if (user.getBirthday().isAfter(LocalDate.now()) && user.getBirthday().isEqual(LocalDate.now()))
-            throw new UnprocessableEntity("Birthday can't be in the future");
+            throw new UnprocessableEntityException("Birthday can't be in the future");
 
         String emailPattern = "^(.+)@(\\S+)$";
         if (user.getEmail().length() < 4 && !user.getEmail().matches(emailPattern))
-            throw new UnprocessableEntity("E-mail was wrong");
+            throw new UnprocessableEntityException("E-mail was wrong");
     }
 
     public Long getId() {
@@ -79,6 +83,21 @@ public class User {
 
     public void setFirstName(String firstname) {
         this.firstName = firstname;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", hashedPassword='" + hashedPassword + '\'' +
+                ", birthday=" + birthday +
+                ", role=" + role +
+                ", bio='" + bio + '\'' +
+                ", toDos=" + toDos +
+                '}';
     }
 
     public String getLastName() {
@@ -129,9 +148,32 @@ public class User {
         this.bio = bio;
     }
 
+    public List<ToDo> getToDos() {
+        return toDos;
+    }
+
+    public void setToDos(List<ToDo> toDos) {
+        this.toDos = toDos;
+    }
+
     public enum ROLE {
         Admin,
         Manager,
         Operator
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        return id.equals(user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

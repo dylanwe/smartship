@@ -1,3 +1,9 @@
+# APP INFO
+smart.app:
+  jwtSecret: "VFb0qJ1LRg_4ujbZoRMXnVkUgiuKq5KxWqNdbKq_G9Vvz-S1zZa9LPxtHWKa64zDl2ofkT8F6jBt_K4riU-fPg"
+  jwtExpirationMs: 1200000
+  jwtRefreshExpirationMs: 86400000
+
 server:
   port: 8087
   servlet.context-path: "/"
