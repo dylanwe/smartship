@@ -39,7 +39,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(path = "login")
-    public ResponseEntity<?> loginUser(@RequestBody ObjectNode body) {
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody ObjectNode body) {
         String email = body.path("email").asText();
         String password = body.path("password").asText();
 

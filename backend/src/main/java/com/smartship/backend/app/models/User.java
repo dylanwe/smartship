@@ -7,12 +7,13 @@ import com.smartship.backend.app.views.CustomJson;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView(CustomJson.Shallow.class)
     private Long id;
     @JsonView(CustomJson.Summary.class)
@@ -30,6 +31,9 @@ public class User {
     private ROLE role;
     @JsonView(CustomJson.Summary.class)
     private String bio;
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user" )
+    private List<ToDo> toDos;
 
     @ManyToOne
 //    @JsonView(CustomJson.Shallow.class)
@@ -39,23 +43,23 @@ public class User {
     public User() {
     }
 
-    public User(String firstName, String lastName, String email, String password, LocalDate birthday, ROLE role, String bio) {
+    public User(String firstName, String lastName, String email, String hashedPassword, LocalDate birthday, ROLE role, String bio) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.hashedPassword = password;
+        this.hashedPassword = hashedPassword;
         this.birthday = birthday;
         this.role = role;
         this.bio = bio;
     }
 
-    public User(Long id, String firstName, String lastName, String email, String password, LocalDate birthday,
+    public User(Long id, String firstName, String lastName, String email, String hashedPassword, LocalDate birthday,
                 ROLE role, String bio) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.hashedPassword = password;
+        this.hashedPassword = hashedPassword;
         this.birthday = birthday;
         this.role = role;
         this.bio = bio;
@@ -111,6 +115,21 @@ public class User {
         this.firstName = firstname;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", hashedPassword='" + hashedPassword + '\'' +
+                ", birthday=" + birthday +
+                ", role=" + role +
+                ", bio='" + bio + '\'' +
+                ", toDos=" + toDos +
+                '}';
+    }
+
     public String getLastName() {
         return lastName;
     }
@@ -159,6 +178,14 @@ public class User {
         this.bio = bio;
     }
 
+    public List<ToDo> getToDos() {
+        return toDos;
+    }
+
+    public void setToDos(List<ToDo> toDos) {
+        this.toDos = toDos;
+    }
+
     public Ship getShip() {
         return ship;
     }
@@ -171,5 +198,20 @@ public class User {
         Admin,
         Manager,
         Operator
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        User user = (User) o;
+
+        return id.equals(user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }

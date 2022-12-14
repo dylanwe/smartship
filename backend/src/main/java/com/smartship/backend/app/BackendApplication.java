@@ -71,13 +71,13 @@ public class BackendApplication implements CommandLineRunner {
 
         System.out.println("Adding a initial users");
         // Encrypt the password
-        String password = BCrypt.hashpw("secret", BCrypt.gensalt());
+        String hashedPassword = BCrypt.hashpw("secret", BCrypt.gensalt());
         userRepository.save(
                 new User(
                         "John",
                         "Smith",
                         "test@mail.com",
-                        password,
+                        hashedPassword,
                         LocalDate.now(),
                         User.ROLE.Operator,
                         "See everything in it's entirety... effortlessly. That is what it means to truly see."

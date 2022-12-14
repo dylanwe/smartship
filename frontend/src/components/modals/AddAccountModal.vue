@@ -2,8 +2,8 @@
   <vue-final-modal
       classes="flex justify-center items-center"
       content-class="relative flex flex-col max-h-full mx-4 p-6 border rounded-md bg-white bg-neutral-50">
-    <span class="mr-8 text-2xl font-bold">Add an operator account</span>
-    <p class="text-xl mb-6">Fill in the necessary information to add a new operator.</p>
+    <span class="mr-8 text-2xl font-bold">Add an account</span>
+    <p class="text-xl mb-6">Fill in the necessary information to add a new account.</p>
 
     <form @submit="closeModal()" @submit.prevent>
 
