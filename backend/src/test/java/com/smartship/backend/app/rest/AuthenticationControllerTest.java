@@ -3,6 +3,7 @@ package com.smartship.backend.app.rest;
 import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.UserRepository;
 import com.smartship.backend.app.response.LoginResponse;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,11 @@ class AuthenticationControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @AfterEach
+    void tearDown() {
+        userRepository.deleteAll();
+    }
+
     @Test
     void loginShouldBeDone() {
         // Given a user
@@ -46,7 +52,7 @@ class AuthenticationControllerTest {
 
         // try to log in
         LoginResponse response = restTemplate.postForObject("/api/v1/auth/login", json, LoginResponse.class);
-
+        System.out.println(response);
         // check if content is correct
         assertNotNull(response.jwtToken());
         assertNotNull(response.refreshToken());
