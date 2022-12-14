@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface SensorDataRepository extends JpaRepository<SensorData, Long> {
     List<SensorData> findSensorDataByShipSensorId(String id);
-    List<SensorData> findSensorDataByShipSensorIdAndTimeBetween(String id,Long start, Long end);
+    List<SensorData> findSensorDataByShipSensorIdAndTimeBetweenOrderByTimeAsc(String id,Long start, Long end);
 
 }

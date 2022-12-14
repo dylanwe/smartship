@@ -98,7 +98,7 @@
           <!-- Widget Component -->
           <!--:is="item.shipSensor.sensor.widget.componentName"-->
           <component class="h-full w-full" v-if="item.shipSensor"
-                     :is="this.tempComponent"
+                     :is="item.shipSensor.sensor.widget.componentName"
                      :dataSet="item.data"
                      :sensor="item.shipSensor.sensor"/>
 

@@ -144,7 +144,7 @@ public class DashboardController {
 
     @GetMapping("widget/{id}")
     public ResponseEntity<List<SensorData>> findDataBetweenDates(@PathVariable String id, String from, String to) {
-        return ResponseEntity.ok().body(sensorDataRepository.findSensorDataByShipSensorIdAndTimeBetween(id, Long.valueOf(from), Long.valueOf(to)));
+        return ResponseEntity.ok().body(sensorDataRepository.findSensorDataByShipSensorIdAndTimeBetweenOrderByTimeAsc(id, Long.valueOf(from), Long.valueOf(to)));
     }
 
 

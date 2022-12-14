@@ -36,9 +36,11 @@ public class User {
     private List<ToDo> toDos;
 
     @ManyToOne
-//    @JsonView(CustomJson.Shallow.class)
     @JsonIgnore
     private Ship ship;
+
+    @OneToOne
+    private Dashboard dashboard;
 
     public User() {
     }

@@ -17,7 +17,7 @@ public class Dashboard {
     @JsonView(CustomJson.Shallow.class)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne
     @JsonIgnore
     private User user;
 

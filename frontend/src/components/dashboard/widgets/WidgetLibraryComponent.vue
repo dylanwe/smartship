@@ -47,7 +47,9 @@ export default {
     emits: ['addWidget', 'closeWidgetMenu'],
 
     async created() {
-      this.widgets = await this.shipService.getSensors(5);
+      //FIXME dynamic
+      this.widgets = await this.shipService.getSensors(4);
+
     },
 
     data() {

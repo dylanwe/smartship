@@ -114,29 +114,62 @@ public class BackendApplication implements CommandLineRunner {
         Sensor sensorEngineTemp1 = new Sensor("Engine 1 Temperature", "Engine 1", Sensor.GROUP.Motor, Sensor.TYPE.Temperature, "Celsius");
         Sensor sensorEngineTemp2 = new Sensor("Engine 2 Temperature", "Engine 2", Sensor.GROUP.Motor, Sensor.TYPE.Temperature, "Celsius");
 
-        List<Sensor> sensors = sensorRepository.saveAll(List.of(sensorEngineTemp1, sensorEngineTemp2));
-
-        Widget widgetEngineTemperatures = widgetRepository.save(new Widget("<", "Engine Temperatures", "WidgetTemperature", 1, 1, 1, 1, 1, 1));
-
-        widgetEngineTemperatures.addSensor(sensorEngineTemp1);
-        widgetEngineTemperatures.addSensor(sensorEngineTemp2);
+        Sensor sensorBatteryTemp1 = new Sensor("Battery 1 Temperature", "Battery 1", Sensor.GROUP.Battery, Sensor.TYPE.Temperature, "Celsius");
+        Sensor sensorBatteryTemp2 = new Sensor("Battery 2 Temperature", "Battery 2", Sensor.GROUP.Battery, Sensor.TYPE.Temperature, "Celsius");
 
 
-        ShipSensor shipSensor1 = shipSensorRepository.save(new ShipSensor("bb7baec4-c049-45c5-81ce-2715801e6bff", shipOne, sensorEngineTemp1));
-        ShipSensor shipSensor2 = shipSensorRepository.save(new ShipSensor("bb7baec4-c049-45c5-81ce-2715801e6bgg", shipOne, sensorEngineTemp2));
+        Sensor sensorEngineUsage1 = new Sensor("Engine 1 Usage", "Engine 1", Sensor.GROUP.Battery, Sensor.TYPE.Temperature, "%");
+
+        List<Sensor> sensors = sensorRepository.saveAll(List.of(sensorEngineTemp1, sensorEngineTemp2,sensorBatteryTemp1, sensorBatteryTemp2,sensorEngineUsage1));
+
+        Widget widgetTemperatures = new Widget("<", "Temperatures", "SmallLineChart", 1, 1, 1, 1, 1, 2);
 
 
+        Widget widgetEngine = new Widget("<", "Engine", "LineChart", 1, 1, 1, 1, 2, 2);
+
+        widgetRepository.saveAll(List.of(
+                widgetTemperatures, widgetEngine
+        ));
+
+        // add sensors
+        for(Sensor sensor : sensors) {
+            widgetTemperatures.addSensor(sensor);
+        }
+
+        widgetEngine.addSensor(sensorEngineUsage1);
+
+        widgetRepository.saveAll(List.of(widgetTemperatures));
+
+        List<ShipSensor> shipsSensors = List.of(
+                shipSensorRepository.save(new ShipSensor("bb7baec4-c049-45c5-81ce-2715801e6bff", shipOne, sensorEngineTemp1)),
+                shipSensorRepository.save(new ShipSensor("bb7baec4-c049-45c5-81ce-2715801e6bgg", shipOne, sensorEngineTemp2)),
+                shipSensorRepository.save(new ShipSensor("bb7baec4-c049-45c5-81ce-2715801e6begz", shipOne, sensorBatteryTemp1)),
+                shipSensorRepository.save(new ShipSensor("bb7baec4-c049-45c5-81ce-2715801e6begee", shipOne, sensorBatteryTemp2)),
+                shipSensorRepository.save(new ShipSensor("bb7baec4-c049-45c5-81ce-2715801ebb6begee", shipOne, sensorEngineUsage1))
+        );
+
+        // Create a LocalDateTime instance using the random values
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
         LocalDateTime dateTime = LocalDateTime.parse("13:10:00 15/07/2022", formatter);
-        SensorData sensorData = sensorDataRepository.save(new SensorData(30.68, dateTime.atZone(ZoneId.systemDefault()).toEpochSecond()
-                , shipSensor1));
-        SensorData sensorData2 = sensorDataRepository.save(new SensorData(67.68, dateTime.atZone(ZoneId.systemDefault()).toEpochSecond()
-                , shipSensor2));
+        for (ShipSensor shipSensor : shipsSensors) {
+            for(int i = 0; i < 10; i++) {
+                // Create a new Random instance
+                Random random = new Random();
 
+                // Get a random year, month, day, hour, minute, and second
+                int year = random.nextInt(10_000) + 1;
+                int month = random.nextInt(12) + 1;
+                int day = random.nextInt(28) + 1;
+                int hour = random.nextInt(24);
+                int minute = random.nextInt(60);
+                int second = random.nextInt(60);
 
-        ShipData shipData = shipDataRepository.save(new ShipData(30.0, "123", "123", sensorData));
-        ShipData shipData2 = shipDataRepository.save(new ShipData(55.0, "123", "123", sensorData2));
+                Double randomValue = new Random().nextDouble(100);
+                SensorData sensorData = sensorDataRepository.save(new SensorData(randomValue,  LocalDateTime.of(2022, month, day, hour, minute, second).atZone(ZoneId.systemDefault()).toEpochSecond() ,shipSensor));
 
+                shipDataRepository.save(new ShipData(randomValue, "123", "123", sensorData));
+            }
+        }
 
         Dashboard dashboard = dashboardRepository.save(new Dashboard(userRepository.findAll().get(0)));
         DashboardItem dashboardItem = dashboardItemRepository.save(new DashboardItem(0, 0, 2, 2, shipSensor1));
