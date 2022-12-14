@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Random;
 
 @SpringBootApplication
 public class BackendApplication implements CommandLineRunner {
@@ -172,13 +173,9 @@ public class BackendApplication implements CommandLineRunner {
         }
 
         Dashboard dashboard = dashboardRepository.save(new Dashboard(userRepository.findAll().get(0)));
-        DashboardItem dashboardItem = dashboardItemRepository.save(new DashboardItem(0, 0, 2, 2, shipSensor1));
-
+        DashboardItem dashboardItem = dashboardItemRepository.save(new DashboardItem(0, 0, 2, 2, shipsSensors.get(0)));
 
         dashboard.addToLayout(dashboardItem);
-
-
         System.out.println("Added a initial dashboard");
-
     }
 }
