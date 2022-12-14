@@ -44,7 +44,7 @@
               <button :disabled="selectedToDo.name.length < 2 || v$.selectedToDo.name.$error || v$.selectedToDo.dueAt.$silentErrors.length !== 0"
                       type="submit"
                       class="disabled:bg-slate-400 w-full text-white bg-sky-500 hover: transition-colors hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                Save
+                Update task
               </button>
               <button @click="deleteToDo" type="submit" class="w-full text-red-400 bg-red-100 hover:bg-red-500 hover:text-white hover:transition-colors focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                 Delete Task
@@ -96,7 +96,7 @@ export default {
       }
     }
   },
-  emits: ["toggleToDoModal", "refreshToDoList"],
+  emits: ["toggleEditToDoModal", "refreshToDoList"],
   async created() {
     this.user = this.sessionService.getCurrentUser();
   },
@@ -110,7 +110,7 @@ export default {
   },
   methods: {
     closeToDoModal() {
-      this.$emit("toggleToDoModal");
+      this.$emit("toggleEditToDoModal");
     },
 
     async updateToDo() {
@@ -121,7 +121,6 @@ export default {
     async deleteToDo() {
       await this.toDoService.deleteUserToDoById(this.user.id, this.selectedToDoId);
       this.$emit("refreshToDoList");
-
       this.closeToDoModal();
     }
   }

@@ -7,7 +7,7 @@
   <EditToDoModal
       :showToDoModal="isEditTodoModalShown"
       :selectedToDoId="selectedToDoId"
-      @toggleToDoModal="toggleEditToDoModal"
+      @toggleEditToDoModal="toggleEditToDoModal"
       @refreshToDoList="refreshToDoList"/>
   <div class="mt-6">
     <div class="flex flex-col lg:flex-row lg:space-y-0 space-y-4 lg:space-x-4 mb-4">
@@ -105,8 +105,8 @@
           <h2 class="text-2xl font-bold text-neutral-900">Hours worked</h2>
           <div class="w-[98%]">
             <Bar
-                :chart-options="chartOptions"
-                :chart-data="chartData"
+                :chart-options="chartOptions2"
+                :chart-data="hoursWorkedChart"
                 :chart-id="chartId"
                 :dataset-id-key="datasetIdKey"
                 :height="250"
@@ -118,7 +118,7 @@
           <div class="w-[98%]">
             <Bar
                 :chart-options="chartOptions"
-                :chart-data="chartData"
+                :chart-data="toDosDoneChart"
                 :chart-id="chartId"
                 :dataset-id-key="datasetIdKey"
                 :height="250"
@@ -145,7 +145,7 @@
           <li class="list-none flex justify-between space-x-2 hover:bg-slate-100 p-2 rounded-md" v-for="todo in todos"
               :key="todo.id">
             <div>
-              <input type="checkbox" v-model="todo.completed" @change="beeb(todo)" />
+              <input type="checkbox" v-model="todo.completed" @change="toDoCompleted(todo)" />
               <label id="checkbox" for="checkbox"
                      :class="(todo.completed) ? 'text-neutral-300 line-through' : 'text-neutral-900'"
                      class="ml-3 hover:underline cursor-pointer" @click="toggleEditToDoModal(todo.id)">{{ todo.name }}
@@ -193,12 +193,27 @@ export default {
         {id: 1, title: "System info", desc: "You have a new task"},
         {id: 2, title: "Parameter alert!", desc: "Alert alert alert"},
       ],
-      chartData: {
+      hoursWorkedChart: {
         labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         datasets: [
           {
+            label: 'Hours',
             backgroundColor: '#92D1F880',
-            data: [40, 20, 12, 90, 51, 32, 9],
+            data: [8, 12, 14, 10, 10, 14, 5],
+            borderRadius: 10,
+            borderColor: '#0EA5E9',
+            borderWidth: 2,
+          },
+        ]
+      },
+
+      toDosDoneChart: {
+        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        datasets: [
+          {
+            label: 'Amount',
+            backgroundColor: '#92D1F880',
+            data: [10, 3, 5, 12, 1, 0, 15],
             borderRadius: 10,
             borderColor: '#0EA5E9',
             borderWidth: 2,
@@ -208,6 +223,15 @@ export default {
       chartOptions: {
         responsive: true,
         maintainAspectRatio: false,
+      },
+      chartOptions2: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            max: 24
+          }
+        }
       }
     }
   },
@@ -235,7 +259,7 @@ export default {
       this.isEditTodoModalShown = !this.isEditTodoModalShown;
     },
 
-    async beeb(todo) {
+    async toDoCompleted(todo) {
       await this.toDoService.updateToDo(this.user.id, todo);
       await this.refreshToDoList();
     },

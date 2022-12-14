@@ -30,8 +30,9 @@ export default class ToDoAdapter {
 
     async saveTodo(userId, name, dueDate) {
         dueDate = new Date(dueDate);
+        const month = (dueDate.getMonth() + 1 < 10) ? `0${dueDate.getMonth() + 1}` : dueDate.getMonth() + 1
         // format date
-        dueDate = `${dueDate.getDate()}-${dueDate.getMonth()}-${dueDate.getFullYear()}`;
+        dueDate = `${dueDate.getDate()}-${month}-${dueDate.getFullYear()}`;
 
         return await fetch(
             `${this.RESOURCE_URL}/${userId}/todos`,
