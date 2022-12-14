@@ -1,7 +1,9 @@
 package com.smartship.backend.app.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.smartship.backend.app.exceptions.UnprocessableEntityException;
+import com.smartship.backend.app.views.CustomJson;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -12,19 +14,31 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(CustomJson.Shallow.class)
     private Long id;
+    @JsonView(CustomJson.Summary.class)
     private String firstName;
+    @JsonView(CustomJson.Summary.class)
     private String lastName;
+    @JsonView(CustomJson.Shallow.class)
     @Column(unique = true)
     private String email;
     @JsonIgnore
     private String hashedPassword;
+    @JsonView(CustomJson.Summary.class)
     private LocalDate birthday;
+    @JsonView(CustomJson.Shallow.class)
     private ROLE role;
+    @JsonView(CustomJson.Summary.class)
     private String bio;
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user" )
     private List<ToDo> toDos;
+
+    @ManyToOne
+//    @JsonView(CustomJson.Shallow.class)
+    @JsonIgnore
+    private Ship ship;
 
     public User() {
     }
@@ -67,6 +81,22 @@ public class User {
         String emailPattern = "^(.+)@(\\S+)$";
         if (user.getEmail().length() < 4 && !user.getEmail().matches(emailPattern))
             throw new UnprocessableEntityException("E-mail was wrong");
+    }
+
+
+
+    public boolean connectToShip(Ship ship) {
+        if (ship != null && this.getShip() == null) {
+            // update both sides of the association
+            ship.addUser(this);
+            this.setShip(ship);
+            return true;
+
+        } else if (ship == null && this.getShip() != null) {
+            this.setShip(null);
+            return true;
+        }
+        return false;
     }
 
     public Long getId() {
@@ -154,6 +184,14 @@ public class User {
 
     public void setToDos(List<ToDo> toDos) {
         this.toDos = toDos;
+    }
+
+    public Ship getShip() {
+        return ship;
+    }
+
+    public void setShip(Ship ship) {
+        this.ship = ship;
     }
 
     public enum ROLE {

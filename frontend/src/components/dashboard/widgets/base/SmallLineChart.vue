@@ -1,30 +1,30 @@
-<template >
-    <div class="flex flex-col justify-center">
-        <h3 class="text-neutral-400">{{title}}</h3>
-        <div class="flex flex-row gap-3">
-            <h1 class="text-4xl">{{value}}</h1>
-            <LineChart :hideGrid="true" :data="data" :hidePointers="true" class="w-[70%] h-[90%] hidden md:block "/>
-        </div>
-       
+<template>
+  <div class="flex flex-col justify-center pl-2">
+    <h3 class="text-neutral-400">{{ sensor.name }}</h3>
+      <h1 class="text-xl font-semibold">
+        {{ this.dataSet.length ? `${this.dataSet.at(-1)[1]} ${this.sensor.unit}` : 'NaN' }}
+      </h1>
+
+      <SparkLineChart :sensor="sensor" :dataSet="dataSet"/>
     </div>
-   
+
+
 </template>
 
 <script>
-import LineChart from '@/components/charts/LineChart';
+
+import SparkLineChart from "@/components/charts/SparkLineChart";
 
 export default {
-    name: "SmallLineChart",
-    props: {
-        title: String,
-        value: [String, Number],
-        data: Object
-    },
-    components: { LineChart },
-   created(){
-  
-   }
-  
+  name: "SmallLineChart",
+  props: {
+    sensor: Object,
+    dataSet: Array
+  },
+  components: {SparkLineChart, },
+  created() {
+  }
+
 };
 
 </script>

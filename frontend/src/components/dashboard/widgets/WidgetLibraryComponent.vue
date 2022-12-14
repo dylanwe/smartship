@@ -28,7 +28,7 @@
             <tbody v-if="filteredSearch">
                 <tr v-for="(widget, index) in filteredSearch" :key="index">
                     <td class="bg-gray-300 hover:bg-gray-400 rounded-lg p-3 cursor-pointer"
-                        @click="addWidget(widget)">{{ widget.icon }} {{ widget.title }}</td>
+                        @click="addWidget(widget)">{{ widget.sensor.name }}</td>
                 </tr>
             </tbody>
             <span v-else>Sorry, we couldn't find any results...</span>
@@ -40,67 +40,22 @@
 
 export default {
     name: "WidgetLibrary",
+    inject: ["shipService" ],
     props: {
         showWidgetbar: Boolean
     },
     emits: ['addWidget', 'closeWidgetMenu'],
-    data() {
-        // Temp roles
-        const ROLES = { "ADMIN": "Admin" }
 
+    async created() {
+      this.widgets = await this.shipService.getSensors(5);
+    },
+
+    data() {
+      // Temp roles
+      // const ROLES = { "ADMIN": "Admin" }
         return {
             search: null,
-            data: [
-                // { icon: "📈", title: "Line Chart", component: "WidgetLine", config: {}, restrictTo: [ROLES.ADMIN] },
-                {
-                    icon: "🔢", title: "Battery Temperature", component: "WidgetTemperature", config: {
-                        minHeight: 2,
-                        height: 2
-                    }, data: {
-                        title: "Batteries",
-                        items: [{ name: "Pack 1", maxTemperature: 80 }, { name: "Pack 2", maxTemperature: 80 }],
-            
-                    },
-                    restrictTo: [ROLES.ADMIN]
-                },
-                {
-                    icon: "📈", title: "Battery Levels", component: "BatteryLevel", config: {
-                        minHeight: 2,
-                        height: 2,
-                        minWidth: 2,
-                        width: 2
-                    }, data:{
-                        dataSet: [{ x: '8:00', y: 9 }, { x: '9:00', y: 3 }, { x: '10:00', y: 18 }, { x: '11:00', y: 5 }, { x: '12:00', y: 8 }]
-                    }
-                },
-
-
-                {
-                    icon: "🔢", title: "Engine Temperature", component: "WidgetTemperature", config: {
-                        minHeight: 2,
-                        height: 2
-                    }, data: {
-                        title: "Engines",
-                        items: [{ name: "Engine 1", maxTemperature: 80 }, { name: "Engine 2", maxTemperature: 80 }],
-
-                    }
-                },
-                {
-                    icon: "📈", title: "Engine 1 Usage", component: "BigLineChart", config: {
-                        width: 3,
-                        height: 4
-                    }, data: {
-                        title: "Engine 1 Usage", dataSet: [{ x: '8:00', y: 9 }, { x: '9:00', y: 3 }, { x: '10:00', y: 18 }, { x: '11:00', y: 5 }, { x: '12:00', y: 8 }]
-                    }
-                },
-                {
-                    icon: "📈", title: "Engine 2 Usage", component: "BigLineChart", config: {
-                        width: 3,
-                        height: 4
-                    }, data: { title: "Engine 2 Usage", dataSet: [{ x: '8:00', y: 9 }, { x: '9:00', y: 12 }, { x: '10:00', y: 8 }, { x: '11:00', y: 5 }, { x: '12:00', y: 8 }] }
-                },
-
-            ],
+            widgets: []
         }
     },
     methods: {
@@ -115,12 +70,12 @@ export default {
         // Search widget filter
         filteredSearch() {
             if (this.search) {
-                let filtered = this.data.filter(({ title }) =>
-                    title.toLowerCase().includes(this.search)
+                let filtered = this.widgets.filter(({ sensor: {name} }) =>
+                    name.toLowerCase().includes(this.search)
                 );
                 return filtered.length ? filtered : null
             } else {
-                return this.data;
+                return this.widgets;
             }
         }
     }
