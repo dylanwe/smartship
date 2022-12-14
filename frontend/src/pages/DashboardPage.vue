@@ -148,7 +148,6 @@ export default {
     this.dashboardId = dashboardId;
 
         this.layout = await Promise.all( layout.map(async (obj) =>  ({...obj, i: this.index++, data: (await this.updateWidgetData(obj))})));
-        console.log(this.layout)
   },
   data() {
     return {
@@ -208,7 +207,6 @@ export default {
       for (const item of this.layout) {
         item.data = ExtractDataSet(await this.dashboardService.getWidgetData(item.shipSensor.id, from,to));
       }
-      console.log(this.layout)
     },
 
     async onTimeRangeChange() {

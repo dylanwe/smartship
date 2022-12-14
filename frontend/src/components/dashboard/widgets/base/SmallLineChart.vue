@@ -23,7 +23,6 @@ export default {
   },
   components: {SparkLineChart, },
   created() {
-    console.log(this.sensor)
   }
 
 };

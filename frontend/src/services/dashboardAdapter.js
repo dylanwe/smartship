@@ -27,7 +27,6 @@ export default class DashboardAdapter {
     //TODO user must have dashboard
     async getUserDashboard(user) {
         const data = await this.fetchJson(`/user/${user.id}`)
-        console.log(data)
         return data
     }
 
@@ -44,8 +43,7 @@ export default class DashboardAdapter {
             body: JSON.stringify(layoutArray),
             credentials: 'include'
         })
-        console.log(data)
-        return []
+        return data
     }
 
 
