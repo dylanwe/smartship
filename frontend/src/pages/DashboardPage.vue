@@ -143,6 +143,7 @@ import 'vue-datepicker-next/index.css';
 import ExtractDataSet from "@/utils/ExtractDataSet";
 
 import { formatDistance } from 'date-fns'
+import Grid from "@/utils/Grid";
 
 export default {
   name: "DashboardIndex",
@@ -250,29 +251,32 @@ export default {
       await this.dashboardService.saveLayout(this.dashboardId, this.layout);
     },
 
-    addWidget(widget) {
-      const grid = this.makeLayoutGrid();
+    async addWidget(widget) {
+      const grid = new Grid(this.numberOfColumns, this.numberOfColumns, this.layout);
 
-      const defaultHeight = widget.sensor.widget.defaultHeight,
-            defaultWidth = widget.sensor.widget.defaultWidth;
+      const {defaultHeight,defaultWidth} = widget.sensor.widget;
 
-      const coords = this.getCoordinates(grid, {
-        w: defaultWidth,
+      const foundCoords = grid.getCoordinates({
         h: defaultHeight,
+        w: defaultWidth
       });
 
-      if (!coords) return console.log("noh man");
+      if (!foundCoords) return console.error("noh man");
 
-      const obj = {
-        x: coords[1],
-        y: coords[0],
-        w:defaultWidth ,
+      const newWidget = {
+        x: foundCoords.x,
+        y: foundCoords.y,
+        w: defaultWidth,
         h: defaultHeight,
         shipSensor: widget,
         data: [],
         i: this.index++
-      }
-      this.layout.push(obj)
+      };
+
+      this.layout.push(newWidget);
+
+      // Load widget's data
+      await this.updateWidgetData(newWidget);
     },
 
     removeItem(val) {
