@@ -2,7 +2,7 @@
   <div class="mt-6">
     <!-- Header -->
     <div class="flex flex-col justify-between mb-4 sm:flex-row">
-      <div class="flex flex-row gap-4">
+      <div class="flex flex-row gap-4 w-full px-2">
         <h1 class="text-4xl text-neutral-800 font-bold">Dashboard</h1>
 
         <!--  Date picker range-->
@@ -43,6 +43,7 @@
               </div>
             </template>
           </date-picker>
+          </div>
         </div>
       <!-- Edit widgets buttons -->
 
@@ -52,21 +53,18 @@
             class="flex flex-row gap-1  "
         >
           <button
-              class="text-white bg-primary-500 disabled:bg-neutral-300 hover:bg-primary-600 focus:ring-2 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"
+              class="text-white bg-primary-500 disabled:bg-neutral-300 hover:bg-primary-600 focus:ring-2 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-2.5 py-2.5 text-center transition-colors"
               @click="toggleWidgetbar"
           >
-            Open Widget Library
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+            </svg>
+
           </button>
           <button
-              class="text-white bg-primary-500 disabled:bg-neutral-300 hover:bg-primary-600 focus:ring-2 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"
+              class="text-primary-600 bg-primary-100 border-2 border-primary-500 disabled:bg-neutral-300 hover:bg-primary-200 focus:ring-2 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"
               @click="saveChanges">
             Save & Exit
-          </button>
-
-          <button
-              class="text-white bg-gray-400 hover:bg-gray-600 focus:ring-2 focus:outline-none focus:ring-gray-300  rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center font-bold transition-colors"
-              @click="cancelChanges">
-            Cancel
           </button>
         </div>
 
@@ -106,7 +104,7 @@
                    :h="item.h"
                    :i="item.i"
                    :key="index"
-                   class="bg-white border border-gray-600 rounded-md"
+                   class="bg-white border border-neutral-400 rounded-lg  p-2"
         >
           <!-- Widget Component -->
           <!--:is="item.shipSensor.sensor.widget.componentName"-->
@@ -116,8 +114,10 @@
                      :sensor="item.shipSensor.sensor"/>
 
           <span v-if="editMode"
-                class="z-30 remove absolute right-1 top-1 hover:bg-red-400 bg-red-300 px-4 rounded-lg text-red-700 font-semibold items-center cursor-default"
-                @click="removeItem(item.i)">X</span>
+                class="z-30 remove absolute right-2 top-2 hover:bg-red-100 bg-red-50 p-2 rounded-lg text-red-500 font-bold items-center cursor-default"
+                @click="removeItem(item.i)">
+              <svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
+          </span>
         </grid-item>
 
       </grid-layout>
@@ -245,9 +245,6 @@ export default {
       this.draggable = !this.draggable;
       this.resizable = !this.resizable;
     },
-    cancelChanges() {
-      this.toggleEditMode()
-    },
     async saveChanges() {
       this.toggleEditMode()
       await this.dashboardService.saveLayout(this.dashboardId, this.layout);
@@ -283,7 +280,67 @@ export default {
       if (confirm(`Are you sure you want to delete this widget?`)) {
         this.layout.splice(index, 1);
       }
+    },
 
+    makeLayoutGrid() {
+      let grid = [];
+
+      // rows and cols the grid has
+      const rows = this.numberOfColumns;
+      const cols = this.numberOfColumns;
+
+      // fill the grid with empty positions
+      for (let i = 0; i < rows; i++) {
+        grid[i] = [];
+        for (let j = 0; j < cols; j++) {
+          grid[i][j] = false;
+        }
+      }
+
+      // fill the grid with taken positions
+      for (const item of this.layout) {
+        for (let i = 0; i < item.h; i++){
+          for (let j = 0; j < item.w; j++){
+            grid[item.y + i][item.x + j] = true
+          }
+        }
+      }
+
+      return grid;
+    },
+
+    checkForPlacement(grid, row, col, newItem) {
+      const rowEnd =  row + newItem.h;
+      const colEnd =  col + newItem.w;
+      // check if inbounds
+      if (rowEnd > this.numberOfColumns || colEnd > this.numberOfColumns) return false;
+      for (let i = row; i < rowEnd; i++) {
+        for(let j = col; j < colEnd; j++) {
+          if (grid[i][j] === true) return false;
+        }
+      }
+      return true;
+    },
+
+    /**
+     *
+     * @param grid
+     * @param dimensions
+     * @returns {null|[number, number]}
+     */
+    getCoordinates(grid, dimensions) {
+      // find empty spot
+      for (let i = 0; i < this.numberOfColumns; i++) {
+        for (let j = 0; j < this.numberOfColumns; j++) {
+          // Available slot
+          if (grid[i][j] === false) {
+            if (this.checkForPlacement(grid, i, j, dimensions)) {
+              return [i,j];
+            }
+          }
+        }
+      }
+      return null;
     },
   },
 
