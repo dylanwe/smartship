@@ -5,9 +5,21 @@
       <div class="flex flex-row gap-4">
         <h1 class="text-4xl text-neutral-800 font-bold">Dashboard</h1>
 
-        <div class="mt-2">
+        <!--  Date picker range-->
+        <div class="flex-1">
+          <button class="flex items-center space-x-2 bg-white py-2 px-2.5 rounded-md border border-neutral-400" @click="toggleDatePickerMenu">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-neutral-500 transition-colors" :class="{'text-sky-600': openDatePicker}">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+            </svg>
+            <span class="text-neutral-700 text-sm">
+              {{getRangeDistance}}
+            </span>
+          </button>
+
+          <div class="w-[1px] h-[1px] mt-[-15px] overflow-hidden opacity-0">
           <date-picker
               v-model:value="dateRange"
+              v-model:open="openDatePicker"
               value-type="timestamp"
               type="datetime"
               range
@@ -23,8 +35,8 @@
                     {{ date.label }}
                   </button>
                 </div>
-                <div class="ml-auto bg-sky-200 rounded-lg px-2">
-                  <button class="mx-btn mx-btn-text" @click="toggleTimeRangePanel">
+                <div class="ml-auto bg-primary-100 rounded px-2">
+                  <button class="mx-btn mx-btn-text " @click="toggleTimeRangePanel">
                     {{ showTimeRangePanel ? 'select date' : 'select time' }}
                   </button>
                 </div>
@@ -32,13 +44,9 @@
             </template>
           </date-picker>
         </div>
-
-
-      </div>
-
-
       <!-- Edit widgets buttons -->
-      <div>
+
+        <!--    Edit mode enabled-->
         <div
             v-if="editMode"
             class="flex flex-row gap-1  "
@@ -61,14 +69,19 @@
             Cancel
           </button>
         </div>
-        <button v-else
-                class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-2 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"
+
+        <!--    Edit mode disabled-->
+        <button
+            class="text-primary-600 bg-primary-100 border-2 border-primary-500 disabled:bg-neutral-300 hover:bg-primary-200 focus:ring-2 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"
+            v-else
                 @click="toggleEditMode"
         >
-          Edit Panels
+          Manage widgets
         </button>
       </div>
+
     </div>
+
     <!-- Widget Library -->
     <WidgetLibraryComponent @addWidget="addWidget" :showWidgetbar="showWidgetbar"
                             @closeWidgetMenu="toggleWidgetbar"/>
@@ -129,7 +142,7 @@ import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
 import ExtractDataSet from "@/utils/ExtractDataSet";
 
-// import { formatDistanceStrict } from 'date-fns'
+import { formatDistance } from 'date-fns'
 
 export default {
   name: "DashboardIndex",
@@ -141,7 +154,12 @@ export default {
     WidgetLibraryComponent
     ,BigLineChart, SmallLineChart,LineChart, SparkBarChart, SparkLineChart
   },
-
+  computed:{
+    getRangeDistance(){
+      const [from,to] = this.dateRange;
+     return formatDistance(to, from);
+    }
+  },
 
   async created() {
     const {id: dashboardId,layout} = await this.dashboardService.getUserDashboard(this.sessionService.getCurrentUser());
@@ -152,7 +170,7 @@ export default {
   data() {
     return {
       tempComponent: "SmallLineChart",
-      dateRange: [new Date(new Date().setDate(new Date().getDate() - 1)).valueOf(), new Date().valueOf()],
+      dateRange: [new Date(new Date().setDate(new Date().getDate() - 365)).valueOf(), new Date().valueOf()],
       showTimeRangePanel: false,
       presetRanges: [
         {
@@ -183,13 +201,19 @@ export default {
 
       // Widget edit
       editMode: false,
-      showWidgetbar: false
+      showWidgetbar: false,
 
+
+      openDatePicker:false
     }
   },
 
+
   methods: {
     ExtractDataSet,
+    toggleDatePickerMenu(){
+      this.openDatePicker = !this.openDatePicker
+    },
     toggleTimeRangePanel() {
       this.showTimeRangePanel = !this.showTimeRangePanel;
     },
@@ -230,17 +254,28 @@ export default {
     },
 
     addWidget(widget) {
+      const grid = this.makeLayoutGrid();
+
+      const defaultHeight = widget.sensor.widget.defaultHeight,
+            defaultWidth = widget.sensor.widget.defaultWidth;
+
+      const coords = this.getCoordinates(grid, {
+        w: defaultWidth,
+        h: defaultHeight,
+      });
+
+      if (!coords) return console.log("noh man");
+
       const obj = {
-        x: (this.layout.length * 2) % (this.numberOfColumns),
-        y: this.layout.length + (this.numberOfColumns), // puts it at the bottom
-        w: widget.sensor.widget.defaultWidth,
-        h: widget.sensor.widget.defaultHeight,
+        x: coords[1],
+        y: coords[0],
+        w:defaultWidth ,
+        h: defaultHeight,
         shipSensor: widget,
         data: [],
         i: this.index++
       }
       this.layout.push(obj)
-
     },
 
     removeItem(val) {
