@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "apexcharts": "^3.36.3",
-    "vue-datepicker-next": "^1.0.2"
-  }
-}
