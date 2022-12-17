@@ -285,67 +285,6 @@ export default {
         this.layout.splice(index, 1);
       }
     },
-
-    makeLayoutGrid() {
-      let grid = [];
-
-      // rows and cols the grid has
-      const rows = this.numberOfColumns;
-      const cols = this.numberOfColumns;
-
-      // fill the grid with empty positions
-      for (let i = 0; i < rows; i++) {
-        grid[i] = [];
-        for (let j = 0; j < cols; j++) {
-          grid[i][j] = false;
-        }
-      }
-
-      // fill the grid with taken positions
-      for (const item of this.layout) {
-        for (let i = 0; i < item.h; i++){
-          for (let j = 0; j < item.w; j++){
-            grid[item.y + i][item.x + j] = true
-          }
-        }
-      }
-
-      return grid;
-    },
-
-    checkForPlacement(grid, row, col, newItem) {
-      const rowEnd =  row + newItem.h;
-      const colEnd =  col + newItem.w;
-      // check if inbounds
-      if (rowEnd > this.numberOfColumns || colEnd > this.numberOfColumns) return false;
-      for (let i = row; i < rowEnd; i++) {
-        for(let j = col; j < colEnd; j++) {
-          if (grid[i][j] === true) return false;
-        }
-      }
-      return true;
-    },
-
-    /**
-     *
-     * @param grid
-     * @param dimensions
-     * @returns {null|[number, number]}
-     */
-    getCoordinates(grid, dimensions) {
-      // find empty spot
-      for (let i = 0; i < this.numberOfColumns; i++) {
-        for (let j = 0; j < this.numberOfColumns; j++) {
-          // Available slot
-          if (grid[i][j] === false) {
-            if (this.checkForPlacement(grid, i, j, dimensions)) {
-              return [i,j];
-            }
-          }
-        }
-      }
-      return null;
-    },
   },
 
 
