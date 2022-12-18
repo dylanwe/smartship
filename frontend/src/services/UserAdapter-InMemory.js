@@ -30,7 +30,7 @@ export class UserAdapterInMemory {
         return user;
     }
 
-    updateUserPassword(oldPassword, newPassword) {}
+    updateUserPassword(userId, oldPassword, newPassword) {}
 
     updateNotificationSettings(preferences) {}
 
