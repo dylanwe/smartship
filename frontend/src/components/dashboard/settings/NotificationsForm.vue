@@ -78,7 +78,7 @@ export default {
 
       // handle response
       if (response.ok) {
-        this.$emit('showToast', 'succes', 'Notification preferences saved');
+        this.$emit('showToast', 'success', 'Notification preferences saved');
       } else {
         const data = await response.json();
         this.$emit('showToast', 'error', data.message);

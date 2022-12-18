@@ -1,5 +1,9 @@
 import User from "./User";
 
+/**
+ * @Author: Dylan Weijgertze
+ */
+
 // test data
 const USER_ID = 412;
 const USER_FIRST_NAME = "Bruce";
@@ -72,4 +76,21 @@ it('should create a copy of a user', () => {
     expect(userCopy.bio,
         'user bio was not set properly')
         .toBe(user.bio);
+})
+
+it('should check that a user and its copy are equal', () => {
+    const userCopy = User.copyUser(user);
+
+    expect(user.equals(userCopy),
+        'the equals doesnt think they\'re equal')
+        .toBeTruthy();
+})
+
+it('should check that a user and its changed copy are not equal', () => {
+    const userCopy = User.copyUser(user);
+    userCopy.firstName = "Peter";
+
+    expect(user.equals(userCopy),
+        'the equals doesnt thinks they\'re equal')
+        .toBeFalsy();
 })
