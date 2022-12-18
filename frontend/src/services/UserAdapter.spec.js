@@ -1,6 +1,10 @@
 import {UserAdapterInMemory} from "@/services/UserAdapter-InMemory";
 import User from "@/models/User";
 
+/**
+ * @Author: Dylan Weijgertze
+ */
+
 const FIRST_ID = 10_000;
 let userService;
 
