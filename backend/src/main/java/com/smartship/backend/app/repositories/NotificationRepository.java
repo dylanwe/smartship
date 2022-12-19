@@ -14,4 +14,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     @Query("SELECT n FROM Notification n WHERE n.notificationType = :notificationType")
     List<Notification> findByNotificationType(@Param("notificationType") String notificationType);
+
+    List<Notification>findByUserId(Long userId);
 }

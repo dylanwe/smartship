@@ -6,6 +6,18 @@ export default class NotificationService {
         this.RESOURCE_URL = resourceUrl;
     }
 
+    // async fetchNotifications(userId) {
+    //     try {
+    //         const response = await this.notificationService.getUserNotifications(userId);
+    //         const data = await response.json();
+    //         console.log(data)
+    //         return data;
+    //     } catch (error) {
+    //         console.error(error);
+    //         throw error;
+    //     }
+    // }
+
     async getUserNotifications(userId) {
         return await fetch(
             `${this.RESOURCE_URL}/${userId}/notifications`,

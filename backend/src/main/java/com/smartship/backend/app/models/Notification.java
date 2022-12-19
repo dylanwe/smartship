@@ -15,29 +15,20 @@ public class Notification {
     private String body;
     private LocalDate notificationDateTime;
     private TYPE notificationType;
-
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonSerialize(using = CustomJson.ShallowSerializer.class)
+    private User user;
 
     public Notification() {
     }
 
-    public Notification(Long id, String title, String body, LocalDate notificationDateTime, TYPE notificationType) {
-        this.notificationId = id;
+    public Notification(String title, String body, LocalDate notificationDateTime, TYPE notificationType, User user) {
         this.title = title;
         this.body = body;
         this.notificationDateTime = notificationDateTime;
         this.notificationType = notificationType;
+        this.user = user;
     }
-
-    public Notification(String title, String body, LocalDate notificationDateTime, TYPE notificationType) {
-        this.title = title;
-        this.body = body;
-        this.notificationDateTime = notificationDateTime;
-        this.notificationType = notificationType;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonSerialize(using = CustomJson.ShallowSerializer.class)
-    private User users;
 
     public Long getId() {
         return notificationId;
@@ -77,6 +68,14 @@ public class Notification {
 
     public void setNotificationType(TYPE notificationType) {
         this.notificationType = notificationType;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public enum TYPE {

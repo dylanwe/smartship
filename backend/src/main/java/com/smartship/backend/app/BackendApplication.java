@@ -21,15 +21,11 @@ public class BackendApplication implements CommandLineRunner {
 
     private final UserRepository userRepository;
     private final NotificationSettingRepository notificationSettingRepository;
-    private final NotificationRepository notificationRepository;
-
     @Autowired
     public BackendApplication(UserRepository userRepository,
-                              NotificationSettingRepository notificationSettingRepository,
-                              NotificationRepository notificationRepository) {
+                              NotificationSettingRepository notificationSettingRepository) {
         this.userRepository = userRepository;
         this.notificationSettingRepository = notificationSettingRepository;
-        this.notificationRepository = notificationRepository;
     }
 
     public static void main(String[] args) {
@@ -45,7 +41,6 @@ public class BackendApplication implements CommandLineRunner {
     public void run(String... args) {
         createInitialUsers();
         addNotificationSettings();
-        addNotifications();
     }
 
     /**
@@ -69,20 +64,6 @@ public class BackendApplication implements CommandLineRunner {
                         "See everything in it's entirety... effortlessly. That is what it means to truly see."
                 )
         );
-    }
-
-    private void addNotifications(){
-        List<Notification> notifications = notificationRepository.findAll();
-        if (notifications.size() > 0) return;
-        notificationRepository.save(
-                new Notification(
-                        "Hello world",
-                        "what's up",
-                        LocalDate.now(),
-                        Notification.TYPE.Error
-                )
-        );
-
     }
 
     private void addNotificationSettings() {

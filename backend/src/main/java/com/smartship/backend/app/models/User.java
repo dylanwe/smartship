@@ -29,7 +29,7 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user" )
     private List<ToDo> toDos;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "users")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @JsonSerialize(using = CustomJson.ShallowSerializer.class)
     private List<Notification> notification;
 

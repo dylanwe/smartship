@@ -4,60 +4,68 @@
   <form class="w-full">
     <div class="flex w-full space-x-3">
       <div class="flex mb-3">
-        <button id="dropdownActionButton" @click="showDropdown = true"
-                class="inline-flex items-center text-neutral-500 bg-white border border-neutral-300 focus:outline-none hover:bg-neutral-100 focus:ring-4 focus:ring-neutral-200 font-medium rounded-lg text-sm px-3 py-1.5 "
+        <button @click="handleDateClick" id="dropdownActionButton"
+                class="inline-block relative w-full flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-neutral-900 bg-neutral-100 border border-neutral-300 rounded-l-lg hover:bg-neutral-200 focus:ring-4 focus:outline-none focus:ring-neutral-100"
                 type="button">
           <span class="sr-only">Action button</span>
-          Filter
+          {{ textContentFilter }}
           <svg class="ml-2 w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                xmlns="http://www.w3.org/2000/svg">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
           </svg>
         </button>
         <!-- Dropdown menu -->
-        <div v-if="showDropdown" id="dropdownAction"
-             class="z-10 w-44 bg-white rounded divide-y divide-neutral-100 shadow">
+        <div v-if="showDateDropdown" id="dropdownAction"
+             class="absolute w-full mt-11 z-10 w-44 bg-white rounded divide-y divide-neutral-100 shadow">
           <ul class="py-1 text-sm text-neutral-700" aria-labelledby="dropdownActionButton">
             <li>
-              <a href="#"
+              <a href="#" @click="selectOptionFilter('Filter')"
+                 class="block py-2 px-4 hover:bg-neutral-100 ">None</a>
+            </li>
+            <li>
+              <a href="#" @click="selectOptionFilter('Date Ascending')"
                  class="block py-2 px-4 hover:bg-neutral-100 ">Date Ascending</a>
             </li>
             <li>
-              <a href="#"
+              <a href="#" @click="selectOptionFilter('Date Descending')"
                  class="block py-2 px-4 hover:bg-neutral-100">Date Descending</a>
             </li>
           </ul>
         </div>
       </div>
       <div class="flex flex-1 mb-3">
-        <button id="dropdown-button" data-dropdown-toggle="dropdown"
+        <button @click="handleTypeClick" id="dropdown-button"
                 class="flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-neutral-900 bg-neutral-100 border border-neutral-300 rounded-l-lg hover:bg-neutral-200 focus:ring-4 focus:outline-none focus:ring-neutral-100 "
-                type="button">Notification Types
-          <svg aria-hidden="true" class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"
+                type="button"> {{textContentType}}
+          <svg  class="w-4 h-4 ml-1" fill="currentColor" viewBox="0 0 20 20"
                xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd"
                   d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                   clip-rule="evenodd"></path>
           </svg>
         </button>
-        <div id="dropdown"
-             class="z-10 hidden bg-white divide-y divide-neutral-100 rounded shadow w-44"
-             data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top"
-             style="position: absolute; transform: translate3d(897px, 5637px, 0px);">
+        <div v-if="showTypeDropdown" id="dropdown"
+             class="absolute w-full mt-11 z-10 bg-white divide-y divide-neutral-100 rounded shadow w-44">
           <ul class="py-1 text-sm text-neutral-700" aria-labelledby="dropdown-button">
-            <li>
+            <li @click="selectOptionType('Notification Types')">
+              <button type="button"
+                      class="inline-flex w-full px-4 py-2 hover:bg-neutral-100">
+                None
+              </button>
+            </li>
+            <li @click="selectOptionType('Error')">
               <button type="button"
                       class="inline-flex w-full px-4 py-2 hover:bg-neutral-100">
                 Error
               </button>
             </li>
-            <li>
+            <li @click="selectOptionType('Info')">
               <button type="button"
                       class="inline-flex w-full px-4 py-2 hover:bg-neutral-100">
                 Info
               </button>
             </li>
-            <li>
+            <li @click="selectOptionType('Message')">
               <button type="button"
                       class="inline-flex w-full px-4 py-2 hover:bg-neutral-100">
                 Message
@@ -89,7 +97,7 @@
               {{ notification.date }}
             </time>
             <p class="mb-1 text-base font-normal text-neutral-500">{{
-                notification.text.substring(0, 80)
+                notification.body.substring(0, 80)
               }}...</p>
 
             <span v-if="notification.notifiicationType === 'INFO'"
@@ -113,7 +121,6 @@
 <script>
 import Notification from "@/models/notifications/Notification";
 import NotificationsDetail from "@/components/dashboard/notification/NotificationsDetail";
-import NotificationService from "@/services/NotificationService";
 
 export default {
   inject: ["notificationService", "userService", "sessionService"],
@@ -127,7 +134,10 @@ export default {
     return {
       notifications: null,
       selectedNotification: null,
-      showDropdown: false
+      showDateDropdown: false,
+      showTypeDropdown: false,
+      textContentFilter: 'Filter',
+      textContentType: 'Notification Types'
     };
   },
 
@@ -135,18 +145,32 @@ export default {
     this.user = this.sessionService.getCurrentUser();
     const userNotifications = await this.notificationService.getUserNotifications(this.user.id);
     this.notifications = await userNotifications.json();
-  },
+    },
 
   methods: {
     selectNotification(notification) {
       this.selectedNotification = notification;
       this.selectedNotification.status = Notification.Status.READ;
     },
-    activateDropdown() {
-      let showDropdown;
-      this.showDropdown =true;
-      this.showDropdown = !showDropdown;
-      this.$emit('showDropdown', this.showDropdown);
+    handleDateClick() {
+      this.showDateDropdown = !this.showDateDropdown
+      if (this.showDateDropdown){
+        this.showTypeDropdown = false;
+      }
+    },
+    selectOptionFilter(event) {
+      this.textContentFilter = event;
+      this.showDateDropdown = false;
+    },
+    handleTypeClick(){
+      this.showTypeDropdown = !this.showTypeDropdown;
+      if (this.showTypeDropdown){
+        this.showDateDropdown = false;
+      }
+    },
+    selectOptionType(event) {
+      this.textContentType = event;
+      this.showTypeDropdown = false;
     },
   }
 }

@@ -1,5 +1,6 @@
 package com.smartship.backend.app.rest;
-
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.smartship.backend.app.exceptions.NotFoundException;
 import com.smartship.backend.app.exceptions.UnauthorizedException;
 import com.smartship.backend.app.models.Notification;
@@ -10,6 +11,7 @@ import com.smartship.backend.app.utility.JWTokenInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +29,22 @@ public class NotificationController {
         this.userRepository = userRepository;
     }
 
+    @PostMapping
+    public ResponseEntity<?> addNotification(@RequestBody ObjectNode body, @PathVariable Long userId, @RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
+        //check user from jwt
+        if (!userId.equals(jwTokenInfo.userId()))
+            throw new UnauthorizedException("User id doesn't match");
+
+        String title = body.path("title").asText();
+        String notificationBody = body.path("body").asText();
+
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("User with id %d wasn't found", userId)));
+
+        return ResponseEntity.ok().body(notificationRepository.save(new Notification(title, notificationBody, LocalDate.now(), Notification.TYPE.Error, user)));
+    }
+
     @GetMapping
     public ResponseEntity<List<Notification>> getAlNotificationsForUser(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId) {
         //check user from jwt
@@ -37,10 +55,7 @@ public class NotificationController {
                 .orElseThrow(() -> new NotFoundException("Can't find user id"));
 
         return ResponseEntity.ok().body(
-                user.getNotification()
-                        .stream()
-                        .sorted(Comparator.comparing(Notification::getNotificationDateTime, Comparator.reverseOrder()))
-                        .collect(Collectors.toList())
+                notificationRepository.findByUserId(user.getId())
         );
     }
 
