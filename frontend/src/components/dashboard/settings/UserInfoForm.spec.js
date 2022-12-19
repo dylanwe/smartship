@@ -34,7 +34,9 @@ it('should load in user', () => {
         'current users first name did not load in')
         .toBe(currentUser.firstName);
 
-    expect(wrapper.vm.$data.user.equals(currentUser)).toBeTruthy();
+    expect(wrapper.vm.$data.user.equals(currentUser),
+        'User\'s first name did not load into the user info form')
+        .toBeTruthy();
 });
 
 it('submit should be disabled when nothing changed', async () => {
