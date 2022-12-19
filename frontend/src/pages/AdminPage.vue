@@ -131,7 +131,7 @@ export default {
         let error = document.getElementById('error');
 
         //Add a new manager with the given data via the backend
-        const addedUser = await this.userManagementService.addAccount(email, firstName, lastName, password, User.ROLE.Manager);
+        const addedUser = await this.userManagementService.addAccount(email, firstName, lastName, password, User.ROLE.Manager, '');
 
         //Show an error message if a new user didn't get created.
         if (addedUser == null) {

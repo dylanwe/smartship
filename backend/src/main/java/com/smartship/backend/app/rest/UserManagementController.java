@@ -1,10 +1,12 @@
 package com.smartship.backend.app.rest;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.smartship.backend.app.exceptions.NotFoundException;
+import com.smartship.backend.app.models.Ship;
 import com.smartship.backend.app.models.User;
+import com.smartship.backend.app.repositories.ShipRepository;
 import com.smartship.backend.app.repositories.UserManagementRepository;
-import com.smartship.backend.app.utility.JWTokenInfo;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(path = "/api/v1/userManagement")
@@ -19,9 +22,12 @@ public class UserManagementController {
 
     private final UserManagementRepository userManagementRepository;
 
+    private final ShipRepository shipRepository;
+
     @Autowired
-    public UserManagementController(UserManagementRepository userManagementRepository) {
+    public UserManagementController(UserManagementRepository userManagementRepository, ShipRepository shipRepository) {
         this.userManagementRepository = userManagementRepository;
+        this.shipRepository = shipRepository;
     }
 
     @GetMapping(path = "/{role}")
@@ -31,11 +37,22 @@ public class UserManagementController {
         return ResponseEntity.ok().body(foundUsers);
     }
 
+    @GetMapping(path = "/ship/{shipId}")
+    public ResponseEntity<List<User>> findAllOperatorsForShip(@PathVariable long shipId) {
+        List<User> foundUsers = userManagementRepository.findByShipId(shipId);
+
+        return ResponseEntity.ok().body(foundUsers);
+    }
+
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<User> deleteUserById(@PathVariable long id) {
 
         User foundUser = userManagementRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %s wasn't found", id)));
+
+        foundUser.removeShip(foundUser.getShip());
+
+        userManagementRepository.save(foundUser);
 
         userManagementRepository.deleteById(id);
 
@@ -48,8 +65,9 @@ public class UserManagementController {
         String firstName = body.path("firstName").asText();
         String lastName = body.path("lastName").asText();
         String password = BCrypt.hashpw(body.path("password").asText(), BCrypt.gensalt());
+        String shipSmartId = body.path("assignedShip").asText();
 
-        User user = new User(
+        User user = userManagementRepository.save(new User(
                 firstName,
                 lastName,
                 email,
@@ -57,7 +75,14 @@ public class UserManagementController {
                 LocalDate.now(),
                 User.ROLE.valueOf(role),
                 "See everything in it's entirety... effortlessly. That is what it means to truly see."
-        );
+        ));
+
+        if (!Objects.equals(shipSmartId, "")) {
+            Ship ship = shipRepository.findBySmartShipId(shipSmartId).orElseThrow(
+                    () -> new NotFoundException(shipSmartId)
+            );
+            user.connectToShip(ship);
+        }
 
         userManagementRepository.save(user);
 
@@ -65,20 +90,36 @@ public class UserManagementController {
     }
 
     @PutMapping(path = "")
-    public ResponseEntity<User> updateUser(@RequestBody User updatedUser) {
-        User finalUpdatedUser = updatedUser;
+    public ResponseEntity<User> updateUser(@RequestBody ObjectNode body) {
 
-        User foundUser = userManagementRepository.findById(updatedUser.getId())
+        JsonNode user = body.path("user");
+        String shipSmartId = body.path("assignedShip").asText();
+
+        long id = Long.parseLong(user.path("id").asText());
+        String firstName = user.path("firstName").asText();
+        String lastName = user.path("lastName").asText();
+        String email = user.path("email").asText();
+
+        User foundUser = userManagementRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format(
                         "User with id %s wasn't found",
-                        finalUpdatedUser.getId()
+                        id
                 )));
 
-        foundUser.setFirstName(updatedUser.getFirstName());
-        foundUser.setLastName(updatedUser.getLastName());
-        foundUser.setEmail(updatedUser.getEmail());
+        if (!Objects.equals(shipSmartId, "")) {
+            Ship ship = shipRepository.findBySmartShipId(shipSmartId).orElseThrow(
+                    () -> new NotFoundException(shipSmartId)
+            );
 
-        updatedUser = userManagementRepository.save(foundUser);
+            foundUser.connectToShip(ship);
+        }
+
+        foundUser.setFirstName(firstName);
+        foundUser.setLastName(lastName);
+        foundUser.setEmail(email);
+
+        User updatedUser = userManagementRepository.save(foundUser);
+
         return ResponseEntity.ok().body(updatedUser);
     }
 

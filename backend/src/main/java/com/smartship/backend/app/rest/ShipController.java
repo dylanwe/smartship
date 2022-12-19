@@ -40,13 +40,21 @@ public class ShipController {
 
     /**
      * Create a new ship
-     * @param shipBody
+     * @param body
      * @return
      */
     @PostMapping
-    public ResponseEntity<Ship> createShip(@RequestBody Ship shipBody) {
+    public ResponseEntity<Ship> createShip(@RequestBody ObjectNode body) {
 
-        Ship ship = shipRepository.save(shipBody);
+        String name = body.path("name").asText();
+        String smartShipId = body.path("shipId").asText();
+
+        Ship ship = new Ship(
+                smartShipId,
+                name
+        );
+
+        shipRepository.save(ship);
 
         URI location = ServletUriComponentsBuilder.
                 fromCurrentRequest()
@@ -173,7 +181,21 @@ public class ShipController {
         return ResponseEntity.ok().body(shipSensorRepository.findShipSensorByShipId(shipId));
     }
 
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Ship> deleteShipById(@PathVariable long id) {
 
+        Ship foundShip = shipRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format("Ship with id %s wasn't found", id)));
+
+        for (int i = 0; i < foundShip.getUsers().size(); i++) {
+            foundShip.getUsers().stream().toList().get(i).removeShip(foundShip);
+            foundShip.removeUser(foundShip.getUsers().stream().toList().get(i));
+        }
+
+        shipRepository.deleteById(id);
+
+        return ResponseEntity.ok().body(foundShip);
+    }
 
 
 }
