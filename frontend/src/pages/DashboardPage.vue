@@ -1,4 +1,8 @@
 <template>
+  <!-- Widget Library -->
+  <WidgetLibraryComponent @addWidget="addWidget" :showWidgetbar="showWidgetbar"
+                          @closeWidgetMenu="toggleWidgetbar"/>
+
   <div class="mt-6">
     <!-- Header -->
     <div class="flex flex-col justify-between mb-4 sm:flex-row">
@@ -80,9 +84,8 @@
 
     </div>
 
-    <!-- Widget Library -->
-    <WidgetLibraryComponent @addWidget="addWidget" :showWidgetbar="showWidgetbar"
-                            @closeWidgetMenu="toggleWidgetbar"/>
+
+
     <div class="container select-none">
       <grid-layout v-model:layout="layout"
                    :col-num="numberOfColumns"
@@ -93,7 +96,7 @@
                    :use-css-transforms="true"
                    :responsive="false"
                    :maxRows="5"
-                   :autoSize="false"
+                   :autoSize="true"
 
       >
         <!-- Grid Item -->
