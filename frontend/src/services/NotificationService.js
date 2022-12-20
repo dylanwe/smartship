@@ -6,18 +6,6 @@ export default class NotificationService {
         this.RESOURCE_URL = resourceUrl;
     }
 
-    // async fetchNotifications(userId) {
-    //     try {
-    //         const response = await this.notificationService.getUserNotifications(userId);
-    //         const data = await response.json();
-    //         console.log(data)
-    //         return data;
-    //     } catch (error) {
-    //         console.error(error);
-    //         throw error;
-    //     }
-    // }
-
     async getUserNotifications(userId) {
         return await fetch(
             `${this.RESOURCE_URL}/${userId}/notifications`,
@@ -29,9 +17,10 @@ export default class NotificationService {
         );
     }
 
-    async getUserNotificationsTypes(userId) {
+
+    async getUserNotificationsAscending(userId) {
         return await fetch(
-            `${this.RESOURCE_URL}/${userId}/notifications/type/{notificationType}`,
+            `${this.RESOURCE_URL}/${userId}/notifications/ascending`,
             {
                 method: 'GET',
                 headers: {'Content-Type': 'application/json'},
@@ -40,9 +29,20 @@ export default class NotificationService {
         );
     }
 
-    async getUserNotificationsAscending(userId) {
+    async getNotificationDescending(userId){
         return await fetch(
-            `${this.RESOURCE_URL}/${userId}/notifications/ascending`,
+            `${this.RESOURCE_URL}/${userId}/notifications/descending`,
+            {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'include'
+            }
+        )
+    }
+
+    async getUserNotificationsTypes(userId) {
+        return await fetch(
+            `${this.RESOURCE_URL}/${userId}/notifications/type/{notificationType}`,
             {
                 method: 'GET',
                 headers: {'Content-Type': 'application/json'},
@@ -62,14 +62,15 @@ export default class NotificationService {
         );
     }
 
-
-    async deleteUserNotifications(userId) {
+    async markNotificationAsRead(userId, notificationId) {
         return await fetch(
-            `${this.RESOURCE_URL}/${userId}/notifications/{notificationId}`,
+            `${this.RESOURCE_URL}/${userId}/notifications/${notificationId}/read`,
             {
-                method: 'DELETE',
-                headers: {'Content-Type': 'application/json'},
-                credentials: 'include'
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
             }
         );
     }

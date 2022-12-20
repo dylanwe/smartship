@@ -1,6 +1,4 @@
 package com.smartship.backend.app.models;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.smartship.backend.app.views.CustomJson;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -13,18 +11,19 @@ public class Notification {
     private Long notificationId;
     private String title;
     private String body;
+    private Boolean readNotification;
     private LocalDate notificationDateTime;
     private TYPE notificationType;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonSerialize(using = CustomJson.ShallowSerializer.class)
     private User user;
 
     public Notification() {
     }
 
-    public Notification(String title, String body, LocalDate notificationDateTime, TYPE notificationType, User user) {
+    public Notification(String title, String body, Boolean readNotification, LocalDate notificationDateTime, TYPE notificationType, User user) {
         this.title = title;
         this.body = body;
+        this.readNotification = readNotification;
         this.notificationDateTime = notificationDateTime;
         this.notificationType = notificationType;
         this.user = user;
@@ -76,6 +75,22 @@ public class Notification {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public LocalDate getDate() {
+        return notificationDateTime;
+    }
+
+    public TYPE getType() {
+        return notificationType;
+    }
+
+    public boolean getReadNotification() {
+        return readNotification;
+    }
+
+    public void setReadNotification(boolean readNotification) {
+        this.readNotification = readNotification;
     }
 
     public enum TYPE {

@@ -5,7 +5,7 @@
     <div class="flex w-full space-x-3">
       <div class="flex mb-3">
         <button @click="handleDateClick" id="dropdownActionButton"
-                class="inline-block relative w-full flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-neutral-900 bg-neutral-100 border border-neutral-300 rounded-l-lg hover:bg-neutral-200 focus:ring-4 focus:outline-none focus:ring-neutral-100"
+                class="inline-block relative w-full flex-shrink-0 z-10 inline-flex items-center py-2.5 px-4 text-sm font-medium text-center text-neutral-900 bg-neutral-100 border border-neutral-300 rounded-full hover:bg-neutral-200 focus:ring-4 focus:outline-none focus:ring-neutral-100"
                 type="button">
           <span class="sr-only">Action button</span>
           {{ textContentFilter }}
@@ -18,10 +18,6 @@
         <div v-if="showDateDropdown" id="dropdownAction"
              class="absolute w-full mt-11 z-10 w-44 bg-white rounded divide-y divide-neutral-100 shadow">
           <ul class="py-1 text-sm text-neutral-700" aria-labelledby="dropdownActionButton">
-            <li>
-              <a href="#" @click="selectOptionFilter('Filter')"
-                 class="block py-2 px-4 hover:bg-neutral-100 ">None</a>
-            </li>
             <li>
               <a href="#" @click="selectOptionFilter('Date Ascending')"
                  class="block py-2 px-4 hover:bg-neutral-100 ">Date Ascending</a>
@@ -74,9 +70,9 @@
           </ul>
         </div>
         <div class="relative w-full">
-          <input type="search" id="search-dropdown"
+          <input v-model="searchQuery" type="search" id="search-dropdown"
                  class="block p-2.5 w-full z-20 text-sm text-neutral-900 bg-neutral-50 rounded-r-lg border-l-neutral-50 border-l-2 border border-neutral-300 "
-                 placeholder="Search Notifications" required>
+                 placeholder="Search Notifications" required @input="searchNotifications">
         </div>
       </div>
     </div>
@@ -100,9 +96,9 @@
                 notification.body.substring(0, 80)
               }}...</p>
 
-            <span v-if="notification.notifiicationType === 'INFO'"
+            <span v-if="notification.notificationType.toUpperCase() === 'INFO'"
                   class="bg-primary-200 text-primary-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Info</span>
-            <span v-else-if="notification.notifiicationType === 'ERROR'"
+            <span v-else-if="notification.notificationType.toUpperCase() === 'ERROR'"
                   class="bg-red-200 text-red-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Error</span>
             <span v-else
                   class="bg-neutral-200 text-neutral-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Message</span>
@@ -132,12 +128,13 @@ export default {
 
   data() {
     return {
-      notifications: null,
+      notifications: [],
       selectedNotification: null,
       showDateDropdown: false,
       showTypeDropdown: false,
       textContentFilter: 'Filter',
-      textContentType: 'Notification Types'
+      textContentType: 'Notification Types',
+      searchQuery: ""
     };
   },
 
@@ -145,7 +142,25 @@ export default {
     this.user = this.sessionService.getCurrentUser();
     const userNotifications = await this.notificationService.getUserNotifications(this.user.id);
     this.notifications = await userNotifications.json();
+    console.log(this.notifications)
+    return userNotifications.sort((a, b) => {
+      if (a.date === b.date) {
+        // if the dates are the same, sort by timestamp
+        return b.timestamp - a.timestamp;
+      }
+      // otherwise, sort by date
+      return b.date - a.date;
+    });
+  },
+
+  computed: {
+    filteredNotifications() {
+      return this.notifications.filter((notification) => {
+        return notification.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+            notification.body.toLowerCase().includes(this.searchQuery.toLowerCase());
+      });
     },
+  },
 
   methods: {
     selectNotification(notification) {
@@ -172,6 +187,11 @@ export default {
       this.textContentType = event;
       this.showTypeDropdown = false;
     },
+    async searchNotifications() {
+      const searchResults = await this.notificationService.getUserNotificationsSearch(this.user.id, this.search);
+      // update the notifications array with the search results
+      this.notifications = await searchResults.json();
+    }
   }
 }
 

@@ -12,7 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -29,23 +31,41 @@ public class NotificationController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addNotification(@RequestBody ObjectNode body, @PathVariable Long userId, @RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
+    public ResponseEntity<?> addNotification(@RequestBody ObjectNode body,
+                                             @PathVariable Long userId,
+                                             @RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
         //check user from jwt
         if (!userId.equals(jwTokenInfo.userId()))
             throw new UnauthorizedException("User id doesn't match");
 
         String title = body.path("title").asText();
         String notificationBody = body.path("body").asText();
+        String typeString = body.path("type").asText();
+        Notification.TYPE type;
 
+        if (typeString.equalsIgnoreCase("error")) {
+            type = Notification.TYPE.Error;
+        } else if (typeString.equalsIgnoreCase("info")) {
+            type = Notification.TYPE.Info;
+        } else {
+            type = Notification.TYPE.Message;
+        }
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %d wasn't found", userId)));
 
-        return ResponseEntity.ok().body(notificationRepository.save(new Notification(title, notificationBody, LocalDate.now(), Notification.TYPE.Error, user)));
+        Notification notification = new Notification(title, notificationBody, false, LocalDate.now(), type, user);
+        notificationRepository.save(notification);
+
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("date", notification.getDate());
+        return ResponseEntity.ok().body(responseBody);
     }
 
+
+
     @GetMapping
-    public ResponseEntity<List<Notification>> getAlNotificationsForUser(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId) {
+    public ResponseEntity<List<Notification>> getAllNotificationsForUser(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId) {
         //check user from jwt
         if (!userId.equals(jwTokenInfo.userId()))
             throw new UnauthorizedException("User id doesn't match");
@@ -55,11 +75,14 @@ public class NotificationController {
 
         return ResponseEntity.ok().body(
                 notificationRepository.findByUserId(user.getId())
+                        .stream()
+                        .sorted(Comparator.comparing(Notification::getNotificationDateTime).reversed())
+                        .collect(Collectors.toList())
         );
     }
 
-    @GetMapping("/oldest")
-    public ResponseEntity<List<Notification>> getOldestNotifications(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId) {
+    @GetMapping("/descending")
+    public ResponseEntity<List<Notification>> getNotificationDescending(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId) {
         //check user from jwt
         if (!userId.equals(jwTokenInfo.userId()))
             throw new UnauthorizedException("User id doesn't match");
@@ -71,6 +94,22 @@ public class NotificationController {
                 user.getNotification()
                         .stream()
                         .sorted(Comparator.comparing(Notification::getNotificationDateTime))
+                        .collect(Collectors.toList())
+        );
+    }
+    @GetMapping("/ascending")
+    public ResponseEntity<List<Notification>> getNotificationsAscending(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId) {
+        //check user from jwt
+        if (!userId.equals(jwTokenInfo.userId()))
+            throw new UnauthorizedException("User id doesn't match");
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Can't find user id"));
+
+        return ResponseEntity.ok().body(
+                user.getNotification()
+                        .stream()
+                        .sorted(Comparator.comparing(Notification::getNotificationDateTime).reversed())
                         .collect(Collectors.toList())
         );
     }
