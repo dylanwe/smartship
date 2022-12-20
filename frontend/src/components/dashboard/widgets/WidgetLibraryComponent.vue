@@ -32,7 +32,9 @@
                   <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" />
                 </svg>
                 <span class="flex-1 ml-3 text-left whitespace-nowrap">{{ widget.sensor.name }}</span>
-                <span class=" inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-neutral-500 bg-neutral-200 rounded ">Active</span>
+                <!--      Determine if widget already exists in layout          -->
+                <span class=" inline-flex items-center justify-center px-2 py-0.5 ml-3 text-xs font-medium text-neutral-500 bg-neutral-200 rounded "
+                      :class="{'hidden': !layout.find(x=> x.shipSensor.sensor.name === widget.sensor.name)}">Active</span>
               </button>
             </li>
           </ul>
@@ -52,11 +54,13 @@ export default {
     name: "WidgetLibrary",
     inject: ["shipService" ],
     props: {
-        showWidgetbar: Boolean
+        showWidgetbar: Boolean,
+        layout: Array
     },
     emits: ['addWidget', 'closeWidgetMenu'],
 
     async created() {
+
       //FIXME dynamic
       this.widgets = await this.shipService.getSensors(4);
 
