@@ -99,7 +99,6 @@
                    :autoSize="true"
       >
         <!-- Grid Item -->
-
 <!--        :maxH="item.shipSensor.sensor.widget?.maxHeight || dashboard.maxRows"-->
 <!--        :maxW="item.shipSensor.sensor.widget?.maxWidth ||dashboard.maxColumns"-->
 <!--        :minH="item.shipSensor.sensor.widget?.minHeight || 1"-->
@@ -139,7 +138,6 @@
 </template>
 
 <script>
-
 import {GridLayout, GridItem} from 'vue3-grid-layout';
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
@@ -238,7 +236,8 @@ export default {
      * Open and close datepicker menu
      */
     toggleDatePickerMenu(){
-      this.openDatePicker = !this.openDatePicker
+
+      this.openDatePicker = !this.openDatePicker;
     },
     /**
      * Open and close datepicker time range panel
