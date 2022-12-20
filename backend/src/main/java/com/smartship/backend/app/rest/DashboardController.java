@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -115,10 +116,18 @@ public class DashboardController {
      */
     @GetMapping(path = "user/{userId}")
     public ResponseEntity<Dashboard> getDashboardByUserId(@PathVariable Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(String.format("User with userid %s is not found", userId)));
 
-        Dashboard foundDashboard = dashboardRepository.findByUserId(userId)
-                .orElseThrow(() -> new NotFoundException(String.format("Dashboard with userid %s is not found", userId)));
-        return ResponseEntity.ok().body(foundDashboard);
+        Dashboard dashboard;
+        Optional<Dashboard> hasDashboard = dashboardRepository.findByUserId(userId);
+        if (hasDashboard.isEmpty()){
+            dashboard = dashboardRepository.save(new Dashboard(user));
+             user.setDashboard(dashboard);
+        } else {
+            dashboard = hasDashboard.get();
+        }
+        return ResponseEntity.ok().body(dashboard);
     }
 
 
