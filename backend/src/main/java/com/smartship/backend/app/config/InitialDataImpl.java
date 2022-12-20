@@ -46,7 +46,7 @@ public class InitialDataImpl implements InitialData {
     public void addData() {
         createInitialUsers();
         addNotificationSettings();
-        createInitialUsers();
+        createInitialDashboards();
     }
 
     /**
@@ -160,6 +160,8 @@ public class InitialDataImpl implements InitialData {
 
         Dashboard dashboard = dashboardRepository.save(new Dashboard(userRepository.findAll().get(0)));
         DashboardItem dashboardItem = dashboardItemRepository.save(new DashboardItem(0, 0, 2, 2, shipsSensors.get(0)));
+
+        userRepository.findAll().get(0).setDashboard(dashboard);
 
         dashboard.addToLayout(dashboardItem);
         System.out.println("Added a initial dashboard");
