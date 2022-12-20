@@ -1,5 +1,4 @@
 package com.smartship.backend.app.rest;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.smartship.backend.app.exceptions.NotFoundException;
 import com.smartship.backend.app.exceptions.UnauthorizedException;
