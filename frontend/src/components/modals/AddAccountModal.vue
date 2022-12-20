@@ -37,14 +37,35 @@
         </div>
       </div>
 
-      <div class="flex justify-around">
-        <button type="submit" @click="$emit('add', this.email, this.firstName, this.lastName, this.password)"
-                class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"
-                >
+      <div v-if="this.userRole === 'Manager'" class="flex">
+        <div class="mb-6 w-full">
+          <label for="shipSelect" class="block mb-1 text-sm font-medium text-neutral-500">Assign a ship</label>
+          <select id="shipSelect"
+                  class="bg-white border border-2 border-neutral-200 text-neutral-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  required v-model="assignedShip">
+            <option value="" disabled selected>Choose a ship</option>
+            <option v-for="ship in ships" :key="ship.id" :value="ship.smartShipId">
+              {{ ship.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="flex">
+        <button v-if="this.userRole === 'Manager'" type="submit"
+                @click="$emit('add', this.email, this.firstName, this.lastName, this.password, this.assignedShip)"
+                class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors mr-6"
+        >
+          Add account
+        </button>
+        <button v-else type="submit"
+                @click="$emit('add', this.email, this.firstName, this.lastName, this.password)"
+                class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors mr-6"
+        >
           Add account
         </button>
         <button
-            class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"
+            class="text-neutral-600 bg-neutral-300 hover:bg-neutral-400 hover:text-neutral-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors"
             @click="$emit('close')" formnovalidate>
           Cancel
         </button>
@@ -56,18 +77,26 @@
 </template>
 
 <script>
-import { VueFinalModal } from 'vue-final-modal'
+import {VueFinalModal} from 'vue-final-modal'
 
 export default {
   name: "AddOperatorModal",
-  components: { VueFinalModal },
+  inject: ['sessionService', 'shipService'],
+  components: {VueFinalModal},
 
+  async created() {
+    this.ships = await this.shipService.getAllShips();
+    this.userRole = this.sessionService.getCurrentUser().role;
+  },
   data() {
     return {
+      ships: [],
       email: "",
       firstName: "",
       lastName: "",
       password: "",
+      assignedShip: "",
+      userRole: "",
     }
   },
 

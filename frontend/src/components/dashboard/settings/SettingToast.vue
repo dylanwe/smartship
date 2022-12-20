@@ -33,7 +33,7 @@ export default {
     toastType: {
       type: String,
       validator(value) {
-        return ['succes', 'error', 'info'].includes(value)
+        return ['success', 'error', 'info'].includes(value)
       },
       default: 'info',
     },
@@ -41,7 +41,7 @@ export default {
   computed: {
     toastStyling() {
       switch (this.toastType) {
-        case 'succes':
+        case 'success':
           return 'text-green-500 bg-green-800';
         case 'error':
           return 'text-red-400 bg-red-900';

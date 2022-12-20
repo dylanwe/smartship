@@ -1,3 +1,8 @@
+import User from "@/models/User";
+
+/**
+ * @Author: Dylan Weijgertze
+ */
 export default class UserAdapter {
     RESOURCE_URL;
 
@@ -8,22 +13,16 @@ export default class UserAdapter {
     /**
      * Update the general user information
      *
-     * @param {string} firstName
-     * @param {string} lastName
-     * @param {string} email
-     * @param {string} bio
-     * @param {string} birthday
-     * @return {Promise<*|null>}
+     * @param {User} user
+     * @return {Promise<User|null>}
      */
-    async updateUserInfo(firstName, lastName, email, bio, birthday) {
-        const userInfo = {firstName, lastName, email, bio, birthday};
-
+    async updateUserInfo(user) {
         let updatedUser = await fetch(
             `${this.RESOURCE_URL}`,
             {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(userInfo),
+                body: JSON.stringify(user),
                 credentials: 'include'
             }
         );
@@ -31,7 +30,7 @@ export default class UserAdapter {
         if (updatedUser.ok) {
             updatedUser = await updatedUser.json();
             localStorage.setItem("user", JSON.stringify(updatedUser));
-            return updatedUser;
+            return User.createUserFromJson(updatedUser);
         } else {
             return null;
         }

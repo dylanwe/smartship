@@ -25,9 +25,29 @@ export default class ShipAdapter {
         }
     }
 
+    async getAllShips() {
+        return await this.fetchJson('')
+    }
+
     async getSensors(shipId) {
         return await this.fetchJson(`/${shipId}/sensors`)
     }
 
+    async getShipByShipId(smartShipId) {
+        return await this.fetchJson(`/${smartShipId}`)
+    }
 
+    async deleteShipById(id) {
+        return await this.fetchJson("/" + id, {
+            method: 'DELETE'
+        });
+    }
+
+    async addShip(name, shipId) {
+        return await this.fetchJson('', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({name, shipId})
+        });
+    }
 }

@@ -3,6 +3,7 @@ package com.smartship.backend.app.repositories;
 import com.smartship.backend.app.models.NotificationPreference;
 import com.smartship.backend.app.models.NotificationSetting;
 import com.smartship.backend.app.models.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +33,15 @@ class NotificationPreferenceRepositoryTest {
 
     @BeforeEach
     void setup() {
+        addTestUsers();
+        addTestNotificationSettings();
+    }
+
+    @AfterEach
+    void tearDown() {
         userRepository.deleteAll();
         notificationPreferenceRepository.deleteAll();
         notificationSettingRepository.deleteAll();
-
-        addTestUsers();
-        addTestNotificationSettings();
     }
 
     @Test

@@ -85,7 +85,7 @@ export default {
 
       // handle response
       if (response.ok) {
-        this.$emit('showToast', 'succes', 'New password saved');
+        this.$emit('showToast', 'success', 'New password saved');
       } else {
         const data = await response.json();
         this.$emit('showToast', 'error', data.message);

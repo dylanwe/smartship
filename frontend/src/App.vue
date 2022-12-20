@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import UserAdapter from "@/services/userAdapter";
+import UserAdapter from "@/services/UserAdapter";
 import SessionSbService from "@/services/SessionSbService";
 import {shallowReactive} from "vue";
 import FetchInterceptor from "@/utils/FetchInterceptor";

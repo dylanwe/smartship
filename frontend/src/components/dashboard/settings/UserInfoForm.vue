@@ -8,6 +8,7 @@
         <div class="mb-4">
           <label class="block mb-2 text-sm font-medium text-neutral-900">First name</label>
           <input type="text" v-model.trim="userCopy.firstName"
+                 name="firstName"
                  class="border text-sm rounded-lg block w-full p-2.5"
                  :class="(v$.userCopy.firstName.$error) ? errorInputStyle : goodInputStyle"
                  placeholder="Jane" required="">
@@ -19,6 +20,7 @@
         <div class="mb-4">
           <label class="block mb-2 text-sm font-medium text-neutral-900">Last Name</label>
           <input type="text" v-model.trim="userCopy.lastName"
+                 name="lastName"
                  class="border text-sm rounded-lg block w-full p-2.5"
                  :class="(v$.userCopy.lastName.$error) ? errorInputStyle : goodInputStyle"
                  placeholder="Smith" required="">
@@ -30,6 +32,7 @@
         <div class="mb-4">
           <label class="block mb-2 text-sm font-medium text-neutral-900">Email</label>
           <input type="email" v-model.trim="userCopy.email"
+                 name="email"
                  class="border text-sm rounded-lg block w-full p-2.5"
                  :class="(v$.userCopy.email.$error) ? errorInputStyle : goodInputStyle"
                  placeholder="janesmith@mail.com" required="">
@@ -41,6 +44,7 @@
         <div class="mb-4">
           <label class="block mb-2 text-sm font-medium text-neutral-900">Birthday</label>
           <input type="date" v-model.trim="userCopy.birthday"
+                 name="birthday"
                  class="border text-sm rounded-lg block w-full p-2.5"
                  :class="(v$.userCopy.birthday.$silentErrors.length !== 0) ? errorInputStyle : goodInputStyle"
                  required="">
@@ -53,6 +57,7 @@
 
       <label for="Bio" class="block mb-2 text-sm font-medium text-neutral-900">Bio</label>
       <textarea id="Bio" rows="2" v-model.trim="userCopy.bio"
+                name="bio"
                 class="block p-2.5 w-full text-sm resize-none rounded-lg border"
                 :class="(v$.userCopy.bio.$error) ? errorInputStyle : goodInputStyle"
                 placeholder="Tell us about yourself"></textarea>
@@ -70,8 +75,10 @@
 </template>
 
 <script>
+import User from "@/models/User";
 import {useVuelidate} from '@vuelidate/core'
 import {email, helpers, maxLength, minLength, required} from "@vuelidate/validators";
+import {toRaw} from "vue";
 
 export default {
   name: "UserInfoForm",
@@ -92,18 +99,12 @@ export default {
 
   async created() {
     this.user = this.sessionService.getCurrentUser();
-    this.userCopy = {...this.user};
+    this.userCopy = User.copyUser(this.user);
   },
 
   computed: {
     userInfoHasChanged() {
-      return (
-          this.userCopy.firstName !== this.user.firstName ||
-          this.userCopy.lastName !== this.user.lastName ||
-          this.userCopy.email !== this.user.email ||
-          this.userCopy.birthday !== this.user.birthday ||
-          this.userCopy.bio !== this.user.bio
-      );
+      return !this.user.equals(this.userCopy);
     }
   },
 
@@ -138,17 +139,11 @@ export default {
 
   methods: {
     async updateUserInfo() {
-      const response = await this.userService.updateUserInfo(
-          this.userCopy.firstName,
-          this.userCopy.lastName,
-          this.userCopy.email,
-          this.userCopy.bio,
-          this.userCopy.birthday
-      );
+      const updatedUser = await this.userService.updateUserInfo(toRaw(this.userCopy));
 
-      if (response !== null) {
-        this.user = response;
-        this.$emit('showToast', 'succes', 'User information saved');
+      if (updatedUser !== null) {
+        this.user = updatedUser;
+        this.$emit('showToast', 'success', 'User information saved');
       } else {
         this.$emit('showToast', 'error', 'Couldn\'t save information');
       }

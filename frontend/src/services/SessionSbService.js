@@ -1,6 +1,8 @@
 import User from "@/models/User";
-// import {router} from "@/router";
 
+/**
+ * @Author: Dylan Weijgertze
+ */
 export default class SessionSbService {
     BROWSER_STORAGE_ITEM_NAME;
     RESOURCE_URL;
@@ -168,14 +170,6 @@ export default class SessionSbService {
             return;
         }
 
-        return new User(
-            storedUser.id,
-            storedUser.firstName,
-            storedUser.lastName,
-            storedUser.email,
-            storedUser.role,
-            storedUser.birthday,
-            storedUser.bio
-        );
+        return User.createUserFromJson(storedUser);
     }
 }

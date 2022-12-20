@@ -36,7 +36,6 @@ public class User {
     private List<ToDo> toDos;
 
     @ManyToOne
-    @JsonIgnore
     private Ship ship;
 
     @OneToOne
@@ -100,10 +99,17 @@ public class User {
             this.setShip(ship);
             return true;
 
-        } else if (ship == null && this.getShip() != null) {
+        }
+        return false;
+    }
+
+    public boolean removeShip(Ship ship) {
+        if (ship != null && ship.getUsers() != null) {
             this.setShip(null);
+            ship.removeUser(this);
             return true;
         }
+
         return false;
     }
 
