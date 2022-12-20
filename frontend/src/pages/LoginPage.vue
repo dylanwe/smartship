@@ -1,8 +1,8 @@
 <template>
   <div class="h-screen p-4 lg:p-8 flex justify-evenly">
     <div class="bg-primary-500 hidden sm:block sm:w-1/2 lg:w-1/2 xl:w-1/3 p-8 rounded-2xl h-fit">
-      <div class="mb-4 md:mb-12 2xl:mb-16">
-        <h3 class="text-lg xl:text-xl 2xl:text-2xl text-white font-bold mb-8 xl:mb-16">SmartShip</h3>
+      <div class="mb-4 md:mb-12">
+        <h3 class="text-lg xl:text-xl 2xl:text-2xl text-white font-bold mb-8 2xl:mb-10">SmartShip</h3>
         <h2 class="text-xl xl:text-2xl 2xl:text-4xl text-white font-bold mb-4">Start your journey and enable a
           sustainable maritime future</h2>
         <p class="text-neutral-100 text-base">
@@ -12,7 +12,7 @@
         </p>
       </div>
       <div>
-        <div class="block p-5 max-w bg-primary-700 rounded-xl mb-4 md:mb-8 2xl:mb-12">
+        <div class="block p-5 max-w bg-primary-700 rounded-xl mb-4 md:mb-8">
           <p class="text-sm md:text-base font-normal text-neutral-200 mb-2">
             Our maritime control levers enable operators to sail environmentally friendly,
             by transferring the vessel’s optimal speed, acceleration rate and rate of turn,

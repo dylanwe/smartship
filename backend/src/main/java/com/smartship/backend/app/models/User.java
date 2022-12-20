@@ -2,6 +2,7 @@ package com.smartship.backend.app.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.smartship.backend.app.exceptions.UnprocessableEntityException;
 import com.smartship.backend.app.views.CustomJson;
 
@@ -15,15 +16,22 @@ import java.util.Set;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @JsonView(CustomJson.Shallow.class)
     private Long id;
+    @JsonView(CustomJson.Summary.class)
     private String firstName;
+    @JsonView(CustomJson.Summary.class)
     private String lastName;
+    @JsonView(CustomJson.Shallow.class)
     @Column(unique = true)
     private String email;
     @JsonIgnore
     private String hashedPassword;
+    @JsonView(CustomJson.Summary.class)
     private LocalDate birthday;
+    @JsonView(CustomJson.Shallow.class)
     private ROLE role;
+    @JsonView(CustomJson.Summary.class)
     private String bio;
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user" )
@@ -32,6 +40,12 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @JsonSerialize(using = CustomJson.ShallowSerializer.class)
     private List<Notification> notification;
+
+    @ManyToOne
+    private Ship ship;
+
+    @OneToOne
+    private Dashboard dashboard;
 
     public User() {
     }
@@ -74,6 +88,35 @@ public class User {
         String emailPattern = "^(.+)@(\\S+)$";
         if (user.getEmail().length() < 4 && !user.getEmail().matches(emailPattern))
             throw new UnprocessableEntityException("E-mail was wrong");
+    }
+
+    public void setDashboard(Dashboard dashboard) {
+        this.dashboard = dashboard;
+    }
+
+    public Dashboard getDashboard() {
+        return dashboard;
+    }
+
+    public boolean connectToShip(Ship ship) {
+        if (ship != null && this.getShip() == null) {
+            // update both sides of the association
+            ship.addUser(this);
+            this.setShip(ship);
+            return true;
+
+        }
+        return false;
+    }
+
+    public boolean removeShip(Ship ship) {
+        if (ship != null && ship.getUsers() != null) {
+            this.setShip(null);
+            ship.removeUser(this);
+            return true;
+        }
+
+        return false;
     }
 
     public Long getId() {
@@ -158,10 +201,6 @@ public class User {
     public List<ToDo> getToDos() {
         return toDos;
     }
-//    public Set<Notification> getNotifications() {
-//        return notification;
-//    }
-
 
     public List<Notification> getNotification() {
         return notification;
@@ -169,6 +208,14 @@ public class User {
 
     public void setToDos(List<ToDo> toDos) {
         this.toDos = toDos;
+    }
+
+    public Ship getShip() {
+        return ship;
+    }
+
+    public void setShip(Ship ship) {
+        this.ship = ship;
     }
 
     public enum ROLE {

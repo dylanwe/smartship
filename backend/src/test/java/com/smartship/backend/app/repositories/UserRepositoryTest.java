@@ -1,7 +1,7 @@
 package com.smartship.backend.app.repositories;
 
 import com.smartship.backend.app.models.User;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -21,8 +21,8 @@ class UserRepositoryTest {
     @Autowired
     private UserRepository userRepository;
 
-    @BeforeEach
-    void setup() {
+    @AfterEach
+    void tearDown() {
         userRepository.deleteAll();
     }
 

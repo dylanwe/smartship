@@ -1,71 +1,85 @@
 <template>
-  <Line :chart-options="chartOptions" :chart-data="chartData" />
-</template>
-  
-<script>
-import { Line } from 'vue-chartjs'
-import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, Filler } from 'chart.js'
+  <apexchart type="area" height="90%" width="100%" :options="chartOptions"
+             :series="series"></apexchart>
 
-ChartJS.register(Title, Tooltip, Legend, LineElement, LinearScale, PointElement, CategoryScale, Filler)
+</template>
+
+<script>
 
 export default {
   name: 'LineChart',
-  components: { Line },
   props: {
-    hasIndicators: Boolean,
-    hideGrid: Boolean,
-    hidePointers: Boolean,
-    data: Object
+    sensor: Object,
+    dataSet: Array
+  },
+  watch: {
+    dataSet(newVal) { // update
+      this.series = [{data: newVal}];
+    }
   },
   data() {
     return {
-      chartData: {
-        datasets: [{
-          labels:  this.data?.x || ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-          borderColor: 'rgb(14, 165, 233)',
-          pointBackgroundColor: 'white',
-          pointRadius: this.hidePointers ? 0 : 4,
-          pointBorderWidth: 1,
-          data: this.data?.dataSet || [12, 19, 3, 5, 2, 3],
-          fill: true,
-          borderWidth: 2,
-          backgroundColor: (ctx) => {
-            const canvas = ctx.chart.ctx;
-            const gradient = canvas.createLinearGradient(0, 0, 0, 200); //TODO get height of div dynamically
-            gradient.addColorStop(0.2, '#54d6ff');
-            gradient.addColorStop(1, 'white');
-            return gradient;
-          },
-        }]
-      },
+      series: [{
+        name: this.sensor.unit,
+        data: this.dataSet
+      }],
       chartOptions: {
-       
-        responsive: true,
-        maintainAspectRatio: false,
-
-        plugins: {
-          legend: {
-            display: false
+        chart: {
+          type: 'area',
+          stacked: false,
+          zoom: {
+            type: 'x',
+            enabled: true,
+            autoScaleYaxis: true
+          },
+          toolbar: {
+            autoSelected: 'zoom'
           }
         },
-        scales: {
-          y: {
-            display: !this.hideGrid,
-            beginAtZero: true,
-            grid: {
-              display: false
+        dataLabels: {
+          enabled: false
+        },
+        markers: {
+          size: 0,
+        },
+        title: {
+          text: this.sensor.name,
+          align: 'left'
+        },
+        fill: {
+          type: 'gradient',
+          gradient: {
+            shadeIntensity: 1,
+            inverseColors: false,
+            opacityFrom: 0.5,
+            opacityTo: 0,
+            stops: [0, 90, 100]
+          },
+        },
+        yaxis: {
+          title: {
+            text: this.sensor.unit
+          },
+        },
+        xaxis: {
+          type: 'datetime',
+        },
+        tooltip: {
+          shared: false,
+          x: {
+            formatter(val) {
+              return new Date(val).toLocaleString()
             }
           },
-          x: {
-            display: !this.hideGrid,
-            grid: {
-              display: false
+          y: {
+            formatter(val) {
+              return val
             }
           }
-        },
-        tension: 0.3
+        }
+      },
 
-      }
+
     }
   }
 }
