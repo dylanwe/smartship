@@ -85,7 +85,13 @@ public class User {
             throw new UnprocessableEntityException("E-mail was wrong");
     }
 
+    public void setDashboard(Dashboard dashboard) {
+        this.dashboard = dashboard;
+    }
 
+    public Dashboard getDashboard() {
+        return dashboard;
+    }
 
     public boolean connectToShip(Ship ship) {
         if (ship != null && this.getShip() == null) {
