@@ -50,23 +50,28 @@ export default class UserManagementAdaptor {
      *
      * @returns {Promise<*|null>}
      */
-    async addAccount(email, firstName, lastName, password, role) {
+    async addAccount(email, firstName, lastName, password, role, assignedShip) {
         return await this.fetchJson(this.RESOURCE_URL + '/' + role, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({email, firstName, lastName, password})
+            body: JSON.stringify({email, firstName, lastName, password, assignedShip})
         });
     }
 
-    async updateUser(user) {
+    async updateUser(user, assignedShip) {
          return await fetch(
             `${this.RESOURCE_URL}`,
             {
                 method: 'PUT',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(user),
+                body: JSON.stringify({user, assignedShip}),
                 credentials: 'include'
             }
         );
     }
+
+    async getOperatorsForShip(ship) {
+        return await this.fetchJson(this.RESOURCE_URL + "/ship/" + ship.id);
+    }
+
 }

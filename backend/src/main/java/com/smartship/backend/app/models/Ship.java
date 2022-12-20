@@ -25,8 +25,7 @@ public class Ship {
     @JsonView(CustomJson.Shallow.class)
     private String name;
 
-    @OneToMany
-//    @JsonView(CustomJson.Summary.class)
+    @OneToMany(mappedBy = "ship")
     @JsonIgnore
     private Set<User> users = new HashSet<>();
 
@@ -117,4 +116,14 @@ public class Ship {
         this.users = users;
     }
 
+    @Override
+    public String toString() {
+        return "Ship{" +
+                "id=" + id +
+                ", smartShipId='" + smartShipId + '\'' +
+                ", name='" + name + '\'' +
+                ", users=" + users +
+                ", shipSensors=" + shipSensors +
+                '}';
+    }
 }

@@ -96,7 +96,7 @@ public class InitialDataImpl implements InitialData {
         shipOne = shipRepository.save(shipOne);
 
         User user = userRepository.findAll().get(0);
-        shipOne.addUser(user);
+        user.connectToShip(shipOne);
 
         Sensor sensorEngineTemp1 = new Sensor("Engine 1 Temperature", "Engine 1", Sensor.GROUP.Motor, Sensor.TYPE.Temperature, "Celsius");
         Sensor sensorEngineTemp2 = new Sensor("Engine 2 Temperature", "Engine 2", Sensor.GROUP.Motor, Sensor.TYPE.Temperature, "Celsius");
