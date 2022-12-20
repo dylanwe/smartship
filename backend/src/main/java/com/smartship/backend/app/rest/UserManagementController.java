@@ -50,9 +50,12 @@ public class UserManagementController {
         User foundUser = userManagementRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %s wasn't found", id)));
 
-        foundUser.removeShip(foundUser.getShip());
-
-        userManagementRepository.save(foundUser);
+        if (foundUser.getShip() != null) {
+            //Remove the connection the user has with the ship
+            foundUser.removeShip(foundUser.getShip());
+            //Update the database, so it knows it has no connection anymore
+            userManagementRepository.save(foundUser);
+        }
 
         userManagementRepository.deleteById(id);
 
@@ -77,7 +80,7 @@ public class UserManagementController {
                 "See everything in it's entirety... effortlessly. That is what it means to truly see."
         ));
 
-        if (!Objects.equals(shipSmartId, "")) {
+        if (!Objects.equals(shipSmartId, "none")) {
             Ship ship = shipRepository.findBySmartShipId(shipSmartId).orElseThrow(
                     () -> new NotFoundException(shipSmartId)
             );
@@ -106,11 +109,14 @@ public class UserManagementController {
                         id
                 )));
 
-        if (!Objects.equals(shipSmartId, "")) {
+        if (!Objects.equals(shipSmartId, "none")) {
             Ship ship = shipRepository.findBySmartShipId(shipSmartId).orElseThrow(
                     () -> new NotFoundException(shipSmartId)
             );
 
+            //Remove the connection to the old ship
+            foundUser.removeShip(foundUser.getShip());
+            //Add the connection to the new ship
             foundUser.connectToShip(ship);
         }
 

@@ -3,7 +3,7 @@
       classes="flex justify-center items-center"
       content-class="relative flex flex-col max-h-full mx-4 p-6 border rounded-md bg-white bg-neutral-50">
 
-    <div class="overflow-x-auto relative mb-6">
+    <div v-if="this.operators.length !== 0" class="overflow-x-auto relative mb-6">
       <table class="w-full text-sm text-left text-neutral-700">
         <caption class="p-2 text-neutral-700 bg-neutral-50 text-left">
           <span class="mr-8 text-2xl font-bold">All operators</span>
@@ -39,6 +39,10 @@
         </tr>
         </tbody>
       </table>
+    </div>
+    <div v-else>
+      <span class="mr-8 text-2xl font-bold">All operators</span>
+      <p class="text-xl mb-6">There are no operators assigned to this ship.</p>
     </div>
 
     <button

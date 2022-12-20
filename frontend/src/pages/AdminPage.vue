@@ -91,11 +91,14 @@ export default {
   components: {AddAccountModal, EditAccountModal},
   async created() {
     //If the user isn't an admin, send the user to the dashboard
-    // if (this.sessionService.getCurrentUser().role !== 'Admin') {
-    //   this.$router.push(this.$route.matched[0].path)
-    // }
+    if (this.sessionService.getCurrentUser().role !== 'Admin') {
+      this.$router.push(this.$route.matched[0].path)
+    }
     //Get all the managers from the database via the backend
     this.managers = await this.userManagementService.findAccountForRole(User.ROLE.Manager);
+
+
+    console.log(this.sessionService.getCurrentUser().role)
   },
   data() {
     return {
@@ -131,7 +134,7 @@ export default {
         let error = document.getElementById('error');
 
         //Add a new manager with the given data via the backend
-        const addedUser = await this.userManagementService.addAccount(email, firstName, lastName, password, User.ROLE.Manager, '');
+        const addedUser = await this.userManagementService.addAccount(email, firstName, lastName, password, User.ROLE.Manager, 'none');
 
         //Show an error message if a new user didn't get created.
         if (addedUser == null) {
@@ -163,7 +166,7 @@ export default {
       this.showEditUserModal = true;
     },
     async saveUser(manager) {
-      await this.userManagementService.updateUser(manager)
+      await this.userManagementService.updateUser(manager, "none")
       await this.refresh();
     }
   }

@@ -37,7 +37,7 @@
         </div>
       </div>
 
-      <div class="flex">
+      <div v-if="this.userRole === 'Manager'" class="flex">
         <div class="mb-6 w-full">
           <label for="shipSelect" class="block mb-1 text-sm font-medium text-neutral-500">Assign a ship</label>
           <select id="shipSelect"
@@ -52,9 +52,16 @@
       </div>
 
       <div class="flex">
-        <button type="submit" @click="$emit('add', this.email, this.firstName, this.lastName, this.password, this.assignedShip)"
+        <button v-if="this.userRole === 'Manager'" type="submit"
+                @click="$emit('add', this.email, this.firstName, this.lastName, this.password, this.assignedShip)"
                 class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors mr-6"
-                >
+        >
+          Add account
+        </button>
+        <button v-else type="submit"
+                @click="$emit('add', this.email, this.firstName, this.lastName, this.password)"
+                class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors mr-6"
+        >
           Add account
         </button>
         <button
@@ -70,15 +77,16 @@
 </template>
 
 <script>
-import { VueFinalModal } from 'vue-final-modal'
+import {VueFinalModal} from 'vue-final-modal'
 
 export default {
   name: "AddOperatorModal",
-  inject: ['shipService'],
-  components: { VueFinalModal },
+  inject: ['sessionService', 'shipService'],
+  components: {VueFinalModal},
 
   async created() {
     this.ships = await this.shipService.getAllShips();
+    this.userRole = this.sessionService.getCurrentUser().role;
   },
   data() {
     return {
@@ -88,6 +96,7 @@ export default {
       lastName: "",
       password: "",
       assignedShip: "",
+      userRole: "",
     }
   },
 
