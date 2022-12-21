@@ -62,10 +62,28 @@ public class NotificationController {
         return ResponseEntity.ok().body(responseBody);
     }
 
+    @PutMapping("/{notificationId}")
+    public ResponseEntity<?> updateNotification(@PathVariable Long userId,
+                                                @PathVariable Long notificationId,
+                                                @RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
+        // check if the user id in the JWT token matches the user id in the request path
+        if (!userId.equals(jwTokenInfo.userId())) {
+            throw new UnauthorizedException("User id doesn't match");
+        }
 
+        // find the notification with the specified id
+        Notification notification = notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new NotFoundException("Notification not found"));
 
+        // update the readNotification field with the value from the request body
+        notification.setReadNotification(true);
+        notificationRepository.save(notification);
+
+        return ResponseEntity.ok().build();
+    }
     @GetMapping
-    public ResponseEntity<List<Notification>> getAllNotificationsForUser(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId) {
+    public ResponseEntity<List<Notification>> getAllNotificationsForUser(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo,
+                                                                         @PathVariable Long userId) {
         //check user from jwt
         if (!userId.equals(jwTokenInfo.userId()))
             throw new UnauthorizedException("User id doesn't match");

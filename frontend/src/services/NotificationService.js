@@ -17,60 +17,18 @@ export default class NotificationService {
         );
     }
 
-
-    async getUserNotificationsAscending(userId) {
-        return await fetch(
-            `${this.RESOURCE_URL}/${userId}/notifications/ascending`,
-            {
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'},
-                credentials: 'include'
-            }
-        );
-    }
-
-    async getNotificationDescending(userId){
-        return await fetch(
-            `${this.RESOURCE_URL}/${userId}/notifications/descending`,
-            {
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'},
-                credentials: 'include'
-            }
-        )
-    }
-
-    async getUserNotificationsTypes(userId) {
-        return await fetch(
-            `${this.RESOURCE_URL}/${userId}/notifications/type/{notificationType}`,
-            {
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'},
-                credentials: 'include'
-            }
-        );
-    }
-
-    async getUserNotificationsSearch(userId) {
-        return await fetch(
-            `${this.RESOURCE_URL}/${userId}/notifications/search`,
-            {
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'},
-                credentials: 'include'
-            }
-        );
-    }
-
     async markNotificationAsRead(userId, notificationId) {
+        const body = JSON.stringify({readNotification: true});
+
         return await fetch(
-            `${this.RESOURCE_URL}/${userId}/notifications/${notificationId}/read`,
+            `${this.RESOURCE_URL}/${userId}/notifications/${notificationId}`,
             {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 credentials: 'include',
+                body: body
             }
         );
     }
