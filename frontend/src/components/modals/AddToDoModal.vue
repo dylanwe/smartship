@@ -25,22 +25,20 @@
                 <input type="text" v-model.trim="taskName"
                        class="border text-sm rounded-lg block w-full p-2.5"
                        :class="(v$.taskName.$error) ? errorInputStyle : goodInputStyle"
-                       placeholder="task" required="">
+                       placeholder="Task" required="">
                 <div v-if="v$.taskName.$error" class="text-sm text-red-500 pt-2">{{
                     v$.taskName.$errors[0]?.$message
                   }}
                 </div>
               </div>
-              <div>
-                <label for="dueDate" class="block mb-2 text-sm font-medium text-slate-900">Due date</label>
-                <input type="date" v-model.trim="dueDate"
-                       class="border text-sm rounded-lg block w-full p-2.5"
-                       :class="(v$.dueDate.$silentErrors.length !== 0) ? errorInputStyle : goodInputStyle"
-                       required="">
-                <div v-if="v$.dueDate.$silentErrors" class="text-sm text-red-500 pt-2">{{
-                    v$.dueDate.$silentErrors[0]?.$message
-                  }}
-                </div>
+              <label for="dueDate" class="block mb-2 text-sm font-medium text-slate-900">Due date</label>
+              <input type="date" v-model.trim="dueDate"
+                     class="border text-sm rounded-lg block w-full p-2.5"
+                     :class="(v$.dueDate.$silentErrors.length !== 0) ? errorInputStyle : goodInputStyle"
+                     required="">
+              <div v-if="v$.dueDate.$silentErrors" class="text-sm text-red-500 pt-2">{{
+                  v$.dueDate.$silentErrors[0]?.$message
+                }}
               </div>
               <button :disabled="taskName.length < 2 || v$.taskName.$error || v$.dueDate.$silentErrors.length !== 0"
                       type="submit"

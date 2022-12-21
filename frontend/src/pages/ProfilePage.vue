@@ -101,18 +101,6 @@
     <!--Block 2-->
     <div class="flex flex-col lg:flex-row lg:space-y-0 space-y-4 lg:space-x-4 mb-4">
       <div class="flex-1">
-        <div class="bg-white w-full rounded-2xl p-4 mb-4">
-          <h2 class="text-2xl font-bold text-neutral-900">Hours worked</h2>
-          <div class="w-[98%]">
-            <Bar
-                :chart-options="chartOptions2"
-                :chart-data="hoursWorkedChart"
-                :chart-id="chartId"
-                :dataset-id-key="datasetIdKey"
-                :height="250"
-            />
-          </div>
-        </div>
         <div class="bg-white w-full rounded-2xl p-4">
           <h2 class="text-2xl font-bold text-neutral-900">Tasks done</h2>
           <div class="w-[98%]">

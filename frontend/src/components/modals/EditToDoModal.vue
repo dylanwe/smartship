@@ -121,7 +121,6 @@ export default {
     async deleteToDo() {
       await this.toDoService.deleteUserToDoById(this.user.id, this.selectedToDoId);
       this.$emit("refreshToDoList");
-      this.closeToDoModal();
     }
   }
 }
