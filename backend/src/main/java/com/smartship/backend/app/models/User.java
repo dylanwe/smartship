@@ -1,6 +1,7 @@
 package com.smartship.backend.app.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.smartship.backend.app.exceptions.UnprocessableEntityException;
 import com.smartship.backend.app.views.CustomJson;
@@ -8,6 +9,7 @@ import com.smartship.backend.app.views.CustomJson;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -34,6 +36,10 @@ public class User {
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user" )
     private List<ToDo> toDos;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonSerialize(using = CustomJson.ShallowSerializer.class)
+    private List<Notification> notification;
 
     @ManyToOne
     private Ship ship;
@@ -194,6 +200,10 @@ public class User {
 
     public List<ToDo> getToDos() {
         return toDos;
+    }
+
+    public List<Notification> getNotification() {
+        return notification;
     }
 
     public void setToDos(List<ToDo> toDos) {

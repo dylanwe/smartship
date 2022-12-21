@@ -20,7 +20,7 @@ public class JWTRequestFilter extends OncePerRequestFilter {
     private final JWTokenUtil jwTokenUtil;
 
     @Autowired
-    public JWTRequestFilter(GlobalConfig globalConfig, JWTokenUtil jwTokenUtil) {
+    public JWTRequestFilter(GlobalConfig globalConfig,      JWTokenUtil jwTokenUtil) {
         this.globalConfig = globalConfig;
         this.jwTokenUtil = jwTokenUtil;
     }

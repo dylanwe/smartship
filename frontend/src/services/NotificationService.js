@@ -1,19 +1,35 @@
-import Notification from "@/models/notifications/Notification";
 
 export default class NotificationService {
-    notifications;
+    RESOURCE_URL;
 
-    constructor() {
-        this.notifications = [
-            Notification.createMockNotification(1),
-            Notification.createMockNotification(2),
-            Notification.createMockNotification(3),
-            Notification.createMockNotification(4)
-
-        ];
+    constructor(resourceUrl) {
+        this.RESOURCE_URL = resourceUrl;
     }
 
-    async findAllNotification() {
-        return this.notifications;
+    async getUserNotifications(userId) {
+        return await fetch(
+            `${this.RESOURCE_URL}/${userId}/notifications`,
+            {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json'},
+                credentials: 'include'
+            }
+        );
+    }
+
+    async markNotificationAsRead(userId, notificationId) {
+        const body = JSON.stringify({readNotification: true});
+
+        return await fetch(
+            `${this.RESOURCE_URL}/${userId}/notifications/${notificationId}`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: body
+            }
+        );
     }
 }
