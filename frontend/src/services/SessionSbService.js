@@ -94,10 +94,10 @@ export default class SessionSbService {
         });
 
         if (response.ok) {
-            const data = await response.json();
-            localStorage.setItem("token", data.jwtToken);
+            const {jwtToken} = await response.json();
+            localStorage.setItem("token", jwtToken);
             SessionSbService.isLoggedIn = true;
-            return data.jwtToken;
+            return jwtToken;
         } else {
             this.signOut();
             return null;
