@@ -35,4 +35,8 @@ export class UserAdapterInMemory {
     updateNotificationSettings(preferences) {}
 
     findNotificationSettings() {}
+
+    getUsers() {
+        return this.users;
+    }
 }

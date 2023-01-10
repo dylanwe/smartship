@@ -10,17 +10,14 @@ import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.ToDoRepository;
 import com.smartship.backend.app.repositories.UserRepository;
 import com.smartship.backend.app.utility.JWTokenInfo;
-import org.aspectj.weaver.ast.Not;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RestController

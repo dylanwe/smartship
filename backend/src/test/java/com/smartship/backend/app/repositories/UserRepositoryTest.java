@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 import java.time.LocalDate;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Dylan Weijgertze
@@ -35,7 +35,7 @@ class UserRepositoryTest {
         boolean exists = userRepository.existsByEmail(email);
 
         // Then
-        assertThat(exists).isFalse();
+        assertFalse(exists, "The user with the email bruce@wayne.com was found but should not have been found");
     }
 
     @Test
@@ -55,6 +55,6 @@ class UserRepositoryTest {
         boolean exists = userRepository.existsByEmail("bruce@wayne.com");
 
         // Then
-        assertThat(exists).isTrue();
+        assertTrue(exists, "The user with bruce@wayne.com could not be found");
     }
 }

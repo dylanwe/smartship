@@ -52,7 +52,7 @@
 
 export default {
     name: "WidgetLibrary",
-    inject: ["shipService" ],
+    inject: ["shipService", "sessionService"],
     props: {
         showWidgetbar: Boolean,
         layout: Array
@@ -60,10 +60,8 @@ export default {
     emits: ['addWidget', 'closeWidgetMenu'],
 
     async created() {
-
-      //FIXME dynamic
-      this.widgets = await this.shipService.getSensors(4);
-
+      const {shipId} = this.sessionService.getCurrentUser();
+      this.widgets = await this.shipService.getSensors(shipId);
     },
 
     data() {

@@ -260,7 +260,7 @@ export default {
      */
     async getWidgetData(widget){
       const [from,to] =this.dateRange;
-     return ExtractDataSet(await this.dashboardService.getWidgetData(widget.shipSensor.id, from,to));
+      return ExtractDataSet(await this.dashboardService.getWidgetData(widget.shipSensor.id, from,to));
     },
 
     /**
