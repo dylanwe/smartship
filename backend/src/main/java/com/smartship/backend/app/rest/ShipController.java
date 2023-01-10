@@ -141,7 +141,6 @@ public class ShipController {
             }
 
             // Parse sensor data 13:10:00 15/07/2022
-            System.out.println(Instant.parse(object.path("Time").asText()));
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy").withZone(ZoneId.systemDefault());
 
             LocalDateTime time = LocalDateTime.parse(object.path("Time").asText(), formatter);

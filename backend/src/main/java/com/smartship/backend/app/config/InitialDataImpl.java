@@ -46,7 +46,7 @@ public class InitialDataImpl implements InitialData {
     public void addData() {
         createInitialUsers();
         addNotificationSettings();
-        createInitialUsers();
+        createInitialDashboards();
     }
 
     /**
@@ -59,17 +59,43 @@ public class InitialDataImpl implements InitialData {
         System.out.println("Adding a initial users");
         // Encrypt the password
         String hashedPassword = BCrypt.hashpw("secret", BCrypt.gensalt());
-        userRepository.save(
-                new User(
-                        "John",
-                        "Smith",
-                        "test@mail.com",
-                        hashedPassword,
-                        LocalDate.now(),
-                        User.ROLE.Operator,
-                        "See everything in it's entirety... effortlessly. That is what it means to truly see."
-                )
-        );
+        String hashedPassword2 = BCrypt.hashpw("manager", BCrypt.gensalt());
+        String hashedPassword3 = BCrypt.hashpw("admin", BCrypt.gensalt());
+
+        User user =  userRepository.save(new User(
+                "John",
+                "Smith",
+                "test@mail.com",
+                hashedPassword,
+                LocalDate.now(),
+                User.ROLE.Operator,
+                "See everything in it's entirety... effortlessly. That is what it means to truly see."
+        ));
+
+        userRepository.save(new User(
+                "Manager",
+                "Smith",
+                "manager@mail.com",
+                hashedPassword2,
+                LocalDate.now(),
+                User.ROLE.Manager,
+                "See everything in it's entirety... effortlessly. That is what it means to truly see."
+        ));
+
+        userRepository.save(new User(
+                "Admin",
+                "Smith",
+                "admin@mail.com",
+                hashedPassword3,
+                LocalDate.now(),
+                User.ROLE.Admin,
+                "See everything in it's entirety... effortlessly. That is what it means to truly see."
+        ));
+
+        Ship ship =  shipRepository.save(new Ship("07202515-a483-464c-b704-5671f104044b", "Titanic"));
+
+        user.connectToShip(ship);
+
     }
 
     private void addNotificationSettings() {
@@ -92,11 +118,13 @@ public class InitialDataImpl implements InitialData {
     private void createInitialDashboards() {
         if (dashboardRepository.findAll().size() > 0) return;
 
-        Ship shipOne = new Ship("07202515-a483-464c-b704-5671f104044b", "Ship 1");
-        shipOne = shipRepository.save(shipOne);
+        Ship shipOne = shipRepository.findBySmartShipId("07202515-a483-464c-b704-5671f104044b")
+                .orElseThrow();
+//                new Ship("07202515-a483-464c-b704-5671f104044b", "Ship 1");
+//        shipOne = shipRepository.save(shipOne);
 
-        User user = userRepository.findAll().get(0);
-        user.connectToShip(shipOne);
+//        User user = userRepository.findAll().get(0);
+//        user.connectToShip(shipOne);
 
         Sensor sensorEngineTemp1 = new Sensor("Engine 1 Temperature", "Engine 1", Sensor.GROUP.Motor, Sensor.TYPE.Temperature, "Celsius");
         Sensor sensorEngineTemp2 = new Sensor("Engine 2 Temperature", "Engine 2", Sensor.GROUP.Motor, Sensor.TYPE.Temperature, "Celsius");
@@ -109,21 +137,21 @@ public class InitialDataImpl implements InitialData {
 
         List<Sensor> sensors = sensorRepository.saveAll(List.of(sensorEngineTemp1, sensorEngineTemp2, sensorBatteryTemp1, sensorBatteryTemp2, sensorEngineUsage1));
 
-        Widget widgetTemperatures = new Widget("<", "Temperatures", "SmallLineChart", 1, 1, 1, 1, 1, 2);
+        Widget widgetTemperatures = new Widget("<", "Temperatures", "SmallLineChart", 1, 1, 1, 2, 1, 1);
 
 
-        Widget widgetEngine = new Widget("<", "Engine", "LineChart", 1, 1, 1, 1, 2, 2);
+        Widget widgetEngine = new Widget("<", "Engine", "LineChart", 2, 5, 2, 5, 2, 2);
 
         widgetRepository.saveAll(List.of(
                 widgetTemperatures, widgetEngine
         ));
+        // Dont move this below addsensor loop
+        widgetEngine.addSensor(sensorEngineUsage1);
 
         // add sensors
         for (Sensor sensor : sensors) {
             widgetTemperatures.addSensor(sensor);
         }
-
-        widgetEngine.addSensor(sensorEngineUsage1);
 
         widgetRepository.saveAll(List.of(widgetTemperatures));
 
@@ -160,6 +188,8 @@ public class InitialDataImpl implements InitialData {
 
         Dashboard dashboard = dashboardRepository.save(new Dashboard(userRepository.findAll().get(0)));
         DashboardItem dashboardItem = dashboardItemRepository.save(new DashboardItem(0, 0, 2, 2, shipsSensors.get(0)));
+
+        userRepository.findAll().get(0).setDashboard(dashboard);
 
         dashboard.addToLayout(dashboardItem);
         System.out.println("Added a initial dashboard");

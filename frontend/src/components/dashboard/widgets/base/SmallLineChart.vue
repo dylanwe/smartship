@@ -2,7 +2,7 @@
   <div class="flex flex-col justify-center pl-2">
     <h3 class="text-neutral-400">{{ sensor.name }}</h3>
       <h1 class="text-xl font-semibold">
-        {{ this.dataSet.length ? `${this.dataSet.at(-1)[1]} ${this.sensor.unit}` : 'NaN' }}
+        {{ this.dataSet.length ? `${this.dataSet.at(-1)[1]} ${this.sensor.unit}` : 'No data' }}
       </h1>
 
       <SparkLineChart :sensor="sensor" :dataSet="dataSet"/>

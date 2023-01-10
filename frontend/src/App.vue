@@ -28,7 +28,7 @@ export default {
       userService: new UserAdapter(`${API_URL}/users`),
       dashboardService: new DashboardAdapter(`${API_URL}/dashboards`),
       shipService: new ShipAdapter(`${API_URL}/ships`),
-      notificationService: new NotificationService(),
+      notificationService: new NotificationService(`${API_URL}/users`),
       userManagementService: new UserManagementAdaptor(`${API_URL}/userManagement`),
       toDoService: new ToDoAdapter(`${API_URL}/users`),
     }

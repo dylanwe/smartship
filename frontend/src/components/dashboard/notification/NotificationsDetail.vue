@@ -18,7 +18,7 @@
             class="bg-neutral-200 text-neutral-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full ">Message</span>
     </div>
     <p class="mb-1 text-base font-normal text-neutral-500">
-      {{ selectedNotification.text }}
+      {{ selectedNotification.body }}
     </p>
   </div>
 </template>

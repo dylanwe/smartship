@@ -16,6 +16,7 @@ it('should update the first user', () => {
     const newUser = User.createSampleUser(FIRST_ID);
     userService.updateUserInfo(newUser);
 
-    expect(userService.users[0].equals(newUser))
+    expect(userService.users[0].equals(newUser),
+        'The stored user did not update')
         .toBeTruthy();
 });

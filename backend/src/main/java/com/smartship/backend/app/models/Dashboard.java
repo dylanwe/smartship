@@ -45,8 +45,6 @@ public class Dashboard {
             addToLayout(item);
         }
 
-
-
     }
 
     /**
