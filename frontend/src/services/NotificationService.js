@@ -1,4 +1,3 @@
-
 export default class NotificationService {
     RESOURCE_URL;
 
@@ -31,5 +30,9 @@ export default class NotificationService {
                 body: body
             }
         );
+    }
+
+    async recentNotifications(userId) {
+        return await fetch(`${this.RESOURCE_URL}/${userId}/notifications/recent`);
     }
 }
