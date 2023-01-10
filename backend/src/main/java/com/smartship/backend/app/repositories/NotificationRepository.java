@@ -1,6 +1,7 @@
 package com.smartship.backend.app.repositories;
 
 import com.smartship.backend.app.models.Notification;
+import com.smartship.backend.app.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,5 +16,8 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     @Query("SELECT n FROM Notification n WHERE n.notificationType = :notificationType")
     List<Notification> findByNotificationType(@Param("notificationType") String notificationType);
 
-    List<Notification>findByUserId(Long userId);
+    List<Notification> findTop2ByUserAndReadNotificationIsFalseOrderByNotificationDateTimeAsc(User user);
+    List<Notification> findAllByUserAndReadNotificationIsFalse(User user);
+
+    List<Notification> findByUserId(Long userId);
 }

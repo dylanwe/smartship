@@ -44,6 +44,15 @@ public class ToDo {
         this.user = user;
     }
 
+    public ToDo(String name, boolean completed, LocalDate completedAt, LocalDate dueAt, LocalDate createdAt, User user) {
+        this.name = name;
+        this.completed = completed;
+        this.completedAt = completedAt;
+        this.dueAt = dueAt;
+        this.createdAt = createdAt;
+        this.user = user;
+    }
+
     public ToDo() {
 
     }
