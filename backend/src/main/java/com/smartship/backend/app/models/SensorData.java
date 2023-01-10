@@ -29,14 +29,12 @@ public class SensorData {
     @JsonView(CustomJson.Shallow.class)
     private ShipData shipData;
 
-    private Double threshold;
 
 
-    public SensorData(Double val, Long time, ShipSensor shipSensor, Double threshold) {
+    public SensorData(Double val, Long time, ShipSensor shipSensor) {
         this.val = val;
         this.time = time;
         this.shipSensor = shipSensor;
-        this.threshold = threshold;
         }
 
     public SensorData() {
@@ -66,10 +64,6 @@ public class SensorData {
 
     public void setTime(Long time) {
         this.time = time;
-    }
-
-    public Double getThreshold() {
-        return threshold;
     }
 
     public ShipSensor getShipSensor() {

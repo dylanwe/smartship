@@ -28,13 +28,16 @@ public class ShipController {
     private final SensorDataRepository sensorDataRepository;
     private final ShipSensorRepository shipSensorRepository;
 
+    private final NotificationRepository notificationRepository;
+
     @Autowired
-    public ShipController(ShipRepository shipRepository, SensorRepository sensorRepository, ShipDataRepository shipDataRepository, SensorDataRepository sensorDataRepository, ShipSensorRepository shipSensorRepository) {
+    public ShipController(ShipRepository shipRepository, SensorRepository sensorRepository, ShipDataRepository shipDataRepository, SensorDataRepository sensorDataRepository, ShipSensorRepository shipSensorRepository, NotificationRepository notificationRepository) {
         this.shipRepository = shipRepository;
         this.sensorRepository = sensorRepository;
         this.shipDataRepository = shipDataRepository;
         this.sensorDataRepository = sensorDataRepository;
         this.shipSensorRepository = shipSensorRepository;
+        this.notificationRepository = notificationRepository;
     }
 
 
@@ -149,7 +152,7 @@ public class ShipController {
 
             Double value = object.path("Value").asDouble();
 
-            SensorData newSensorData = new SensorData(value, epoch, shipSensors.get(sensorId), 50.0);
+            SensorData newSensorData = new SensorData(value, epoch, shipSensors.get(sensorId));
             sensorData.add(newSensorData);
 
             // Parse ship data
@@ -157,9 +160,29 @@ public class ShipController {
             String gpsLatitude = object.path("GPS-Latitude").asText();
             String gpsLongitude = object.path("GPS-Longitude").asText();
 
-
             shipData.add(new ShipData(speed, gpsLatitude, gpsLongitude, newSensorData));
 
+            ShipSensor shipSensor = shipSensors.get(sensorId);
+
+            List<Notification> notifications = new ArrayList<>();
+
+                if (shipSensor.getMaxThreshold() != null && shipSensor.getMaxThreshold() < newSensorData.getVal()) {
+                    for (User user : ship.getUsers()) {
+                    Notification notification = new Notification("Your sensor " + sensorName + " went over the maximum threshold",
+                            sensorName + " went over the maximum threshold " + shipSensor.getMaxThreshold() + ". Send a mechanic to check on the sensor",
+                            false, LocalDateTime.now(), Notification.TYPE.Error, user);
+                        notifications.add(notification);
+                }
+            }
+            if (shipSensor.getMinThreshold() != null && shipSensor.getMinThreshold() > newSensorData.getVal()) {
+                for (User user : ship.getUsers()) {
+                    Notification notification = new Notification("Your sensor " + sensorName + " went over the minimum threshold",
+                            sensorName + " went over the minimum threshold " + shipSensor.getMinThreshold() + ". Send a mechanic to check on the sensor",
+                            false, LocalDateTime.now(), Notification.TYPE.Error, user);
+                    notifications.add(notification);
+                }
+            }
+            notificationRepository.saveAll(notifications);
         }
 
         // Save data to repos

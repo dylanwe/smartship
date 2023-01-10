@@ -95,7 +95,9 @@
             <div class="flex-1 pl-4">
               <h3 class="text-lg font-semibold text-neutral-900">{{ notification.title }}</h3>
               <time class="mb-1 text-sm font-normal leading-none text-neutral-400">
-                {{ notification.date }}
+                {{
+                  formatDate(notification.date)
+                }}
               </time>
               <p class="mb-1 text-base font-normal text-neutral-500">{{
                   notification.body.substring(0, 80)
@@ -206,8 +208,9 @@ export default {
         if (response.ok) {
           // update the notification in the frontend
           const updatedNotification = this.notifications.find(notification => notification.id === notificationId);
-          updatedNotification.readNotification = true;
+          updatedNotification.status = Notification.Status.READ;
           this.selectedNotification = updatedNotification;
+          console.log(response)
         }
       } catch (error) {
         console.error(error);
@@ -239,7 +242,6 @@ export default {
         return bTimestamp - aTimestamp;
       });
     },
-
     filterNotificationsByType(notificationType) {
       console.log(notificationType)
       if (notificationType !== 'Notification Types') {
@@ -250,6 +252,10 @@ export default {
       } else {
         this.filteredNotifications = this.notifications;
       }
+    },
+    formatDate(date){
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+      return new Date(date).toLocaleDateString("en-US", options);
     }
   }
 }

@@ -163,6 +163,11 @@ public class InitialDataImpl implements InitialData {
                 shipSensorRepository.save(new ShipSensor("bb7baec4-c049-45c5-81ce-2715801ebb6begee", shipOne, sensorEngineUsage1))
         );
 
+        for (ShipSensor shipsSensor : shipsSensors) {
+            shipsSensor.setMaxThreshold(3.0);
+            shipsSensor.setMinThreshold(0.0);
+        }
+
         // Create a LocalDateTime instance using the random values
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
         LocalDateTime dateTime = LocalDateTime.parse("13:10:00 15/07/2022", formatter);
@@ -180,7 +185,7 @@ public class InitialDataImpl implements InitialData {
                 int second = random.nextInt(60);
 
                 Double randomValue = new Random().nextDouble(100);
-                SensorData sensorData = sensorDataRepository.save(new SensorData(randomValue, LocalDateTime.of(2022, month, day, hour, minute, second).atZone(ZoneId.systemDefault()).toEpochSecond(), shipSensor, 50.0));
+                SensorData sensorData = sensorDataRepository.save(new SensorData(randomValue, LocalDateTime.of(2022, month, day, hour, minute, second).atZone(ZoneId.systemDefault()).toEpochSecond(), shipSensor));
 
                 shipDataRepository.save(new ShipData(randomValue, "123", "123", sensorData));
             }
