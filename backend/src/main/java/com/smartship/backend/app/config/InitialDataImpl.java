@@ -118,16 +118,22 @@ public class InitialDataImpl implements InitialData {
 
     private void createInitialNotifications() {
         if (notificationRepository.findAll().size() > 0) return;
-        User user = userRepository.findByEmail("test@mail.com").get();
+        User userOperator = userRepository.findByEmail("test@mail.com").get();
+        User userManager = userRepository.findByEmail("manager@mail.com").get();
         notificationRepository.saveAll(List.of(
                 new Notification("Your workday has ended",
                 "Your shift is done, you have been working 8 hours",
-                false, LocalDateTime.now(), Notification.TYPE.Message, user),
+                false, LocalDateTime.now(), Notification.TYPE.Message, userOperator),
                 new Notification("Bad weather conditions",
                 "There is a storm ahead. Make sure that you are prepared",
-                false, LocalDateTime.now(), Notification.TYPE.Info, user)
+                false, LocalDateTime.now(), Notification.TYPE.Info, userOperator),
+                new Notification("Can you add a new operator?",
+                        "Could you please add a new operator to the Titanic?",
+                        false, LocalDateTime.now(), Notification.TYPE.Message, userManager),
+                new Notification("Bad weather conditions in the Atlantic Ocean",
+                        "There is a storm ahead. Make sure that you are warn the operators",
+                        false, LocalDateTime.now(), Notification.TYPE.Info, userManager)
         ));
-
     }
 
     /**
