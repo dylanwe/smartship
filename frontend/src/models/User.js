@@ -57,7 +57,7 @@ export default class User {
             userJson.role,
             userJson.birthday,
             userJson.bio,
-            userJson.ship.id
+            userJson.ship?.id
         );
     }
 
