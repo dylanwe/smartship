@@ -133,23 +133,6 @@ public class NotificationController {
         );
     }
 
-    @GetMapping("/type/{notificationType}")
-    public ResponseEntity<List<Notification>> getAllNotificationsForUserAndType(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo,
-                                                                                @PathVariable Long userId, @PathVariable String type) {
-        //check user from jwt
-        if (!userId.equals(jwTokenInfo.userId()))
-            throw new UnauthorizedException("User id doesn't match");
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Can't find user id"));
-        Notification.TYPE notificationType = Notification.TYPE.valueOf(type.toUpperCase());
-        return ResponseEntity.ok().body(
-                notificationRepository.findAllByUserAndType(userId, notificationType).stream()
-                        .sorted(Comparator.comparing(Notification::getNotificationDateTime).reversed())
-                        .collect(Collectors.toList())
-        );
-    }
-
     @GetMapping("/search")
     public ResponseEntity<List<Notification>> searchNotifications(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId, @RequestParam("letters") String letters) {
         //check user from jwt

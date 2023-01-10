@@ -32,14 +32,4 @@ export default class NotificationService {
             }
         );
     }
-    async getNotificationsByUserAndType(userId, type) {
-        return await fetch(
-            `${this.RESOURCE_URL}/${userId}/notifications/type/(notificationType}`,
-            {
-                method: 'GET',
-                headers: {'Content-Type': 'application/json'},
-                credentials: 'include'
-            }
-        );
-    }
 }
