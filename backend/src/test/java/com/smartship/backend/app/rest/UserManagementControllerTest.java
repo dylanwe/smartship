@@ -34,9 +34,39 @@ class UserManagementControllerTest {
     @Autowired
     private UserManagementRepository userManagementRepository;
 
-    @BeforeEach
+    @AfterEach
     void tearDown() {
         userManagementRepository.deleteAll();
+    }
+
+    @Test
+    void shouldUpdateUser() throws JsonProcessingException {
+        User bruce = userManagementRepository.save(new User(
+                "Bruce",
+                "Wayne",
+                "bruce@wayne.com",
+                BCrypt.hashpw("secret", BCrypt.gensalt()),
+                LocalDate.now().minusYears(5),
+                User.ROLE.Operator,
+                "I am the night"));
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        //Custom json user needed by the method
+        String json = "{ \"id\":\"" + bruce.getId() +"\", \"firstName\":\"BruceBoi\", \"lastName\":\"Wayne\", \"email\":\"bruceBoi@wayne.com\" }";
+
+        //Read the json String and convert it into a JsonNode
+        JsonNode jsonUser = objectMapper.readTree(json);
+
+        ObjectNode objectNode = new ObjectNode(JsonNodeFactory.instance);
+
+        objectNode.put("assignedShip", "none");
+        objectNode.put("user", jsonUser);
+
+        assertEquals("Bruce", userManagementRepository.findAll().get(0).getFirstName());
+        restTemplate.put("/api/v1/userManagement", objectNode);
+        assertEquals("BruceBoi", userManagementRepository.findAll().get(0).getFirstName());
+
     }
 
     @Test
@@ -91,36 +121,5 @@ class UserManagementControllerTest {
 
         //Should have no more users
         assertEquals(0, userManagementRepository.findAll().size());
-    }
-
-    @Test
-    void shouldUpdateUser() throws JsonProcessingException {
-        User bruce = new User(
-                "Bruce",
-                "Wayne",
-                "bruce@wayne.com",
-                BCrypt.hashpw("secret", BCrypt.gensalt()),
-                LocalDate.now().minusYears(5),
-                User.ROLE.Operator,
-                "I am the night");
-        userManagementRepository.save(bruce);
-
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        //Custom json user needed by the method
-        String json = "{ \"id\":\"1\", \"firstName\":\"BruceBoi\", \"lastName\":\"Wayne\", \"email\":\"bruceBoi@wayne.com\" }";
-
-        //Read the json String and convert it into a JsonNode
-        JsonNode jsonUser = objectMapper.readTree(json);
-
-        ObjectNode objectNode = new ObjectNode(JsonNodeFactory.instance);
-
-        objectNode.put("assignedShip", "none");
-        objectNode.put("user", jsonUser);
-
-        assertEquals("Bruce", userManagementRepository.findAll().get(0).getFirstName());
-        restTemplate.put("/api/v1/userManagement", objectNode);
-        assertEquals("BruceBoi", userManagementRepository.findAll().get(0).getFirstName());
-
     }
 }
