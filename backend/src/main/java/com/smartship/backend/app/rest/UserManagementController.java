@@ -2,11 +2,13 @@ package com.smartship.backend.app.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.smartship.backend.app.exceptions.NotAcceptableException;
 import com.smartship.backend.app.exceptions.NotFoundException;
 import com.smartship.backend.app.models.Ship;
 import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.ShipRepository;
 import com.smartship.backend.app.repositories.UserManagementRepository;
+import com.smartship.backend.app.utility.JWTokenInfo;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +44,15 @@ public class UserManagementController {
         List<User> foundUsers = userManagementRepository.findByShipId(shipId);
 
         return ResponseEntity.ok().body(foundUsers);
+    }
+
+    @GetMapping(path = "/resetPassword/{email}")
+    public ResponseEntity<User> findUserByEmail(@PathVariable String email) {
+
+        User foundUser = userManagementRepository.findByEmail(email).orElseThrow(() -> new NotAcceptableException(
+                String.format("User with email %s wasn't found", email)));
+
+        return ResponseEntity.ok().body(foundUser);
     }
 
     @DeleteMapping(path = "/{id}")
@@ -127,6 +138,26 @@ public class UserManagementController {
         User updatedUser = userManagementRepository.save(foundUser);
 
         return ResponseEntity.ok().body(updatedUser);
+    }
+
+    @PutMapping(path = "/password")
+    public ResponseEntity<User> updateUserPassword(@RequestBody ObjectNode body) {
+        long id = Long.parseLong(body.path("id").asText());
+        String newPassword = body.path("newPassword").asText();
+
+        User foundUser = userManagementRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format(
+                        "User with id %s wasn't found",
+                        id
+                )));
+
+        String newHashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+
+        // save the new password
+        foundUser.setHashedPassword(newHashedPassword);
+        userManagementRepository.save(foundUser);
+
+        return ResponseEntity.ok().body(foundUser);
     }
 
 }

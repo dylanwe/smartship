@@ -74,4 +74,19 @@ export default class UserManagementAdaptor {
         return await this.fetchJson(this.RESOURCE_URL + "/ship/" + ship.id);
     }
 
+    async findUserByEmail(email) {
+        return await this.fetchJson(this.RESOURCE_URL + "/resetPassword/" + email);
+    }
+
+    async updateUserPassword(id, newPassword) {
+        return await this.fetchJson(this.RESOURCE_URL + "/password",
+            {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id, newPassword}),
+                credentials: 'include'
+            }
+        );
+    }
+
 }
