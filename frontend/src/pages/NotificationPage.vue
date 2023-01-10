@@ -45,27 +45,27 @@
           <ul
               class="py-1 text-sm text-neutral-700" aria-labelledby="dropdown-button">
             <li @click="selectOptionType('Notification Types')">
-              <button @click="filteredNotifications = filterNotificationsByType('Notification Types')" type="button"
+              <button @click="filterNotificationsByType('Notification Types')" type="button"
                       class="inline-flex w-full px-4 py-2 hover:bg-neutral-100">
                 None
               </button>
             </li>
             <li @click="selectOptionType('Error')">
-              <button @click="filteredNotifications = filterNotificationsByType('ERROR')"
+              <button @click="filterNotificationsByType('Error')"
                       type="button"
                       class="inline-flex w-full px-4 py-2 hover:bg-neutral-100">
                 Error
               </button>
             </li>
             <li @click="selectOptionType('Info')">
-              <button @click="filteredNotifications = filterNotificationsByType('INFO')"
+              <button @click="filterNotificationsByType('Info')"
                       type="button"
                       class="inline-flex w-full px-4 py-2 hover:bg-neutral-100">
                 Info
               </button>
             </li>
             <li @click="selectOptionType('Message')">
-              <button @click="filteredNotifications = filterNotificationsByType('MESSAGE')"
+              <button @click="filterNotificationsByType('Message')"
                       type="button"
                       class="inline-flex w-full px-4 py-2 hover:bg-neutral-100">
                 Message
@@ -136,7 +136,9 @@ export default {
 
   data() {
     return {
+      originalNotifications: [],
       notifications: [],
+      filteredNotifications: [],
       selectedNotification: null,
       showDateDropdown: false,
       showTypeDropdown: false,
@@ -153,6 +155,7 @@ export default {
     this.notifications.forEach(notification => {
       this.setNotificationStatus(notification);
     });
+    this.originalNotifications = this.notifications;
   },
 
   computed: {
@@ -243,14 +246,15 @@ export default {
       });
     },
     filterNotificationsByType(notificationType) {
-      console.log(notificationType)
       if (notificationType !== 'Notification Types') {
-        this.filteredNotifications = this.notifications.filter(
+        this.filteredNotifications = this.originalNotifications.filter(
             notification => notification.notificationType.toUpperCase() === notificationType.toUpperCase()
-        );
-        console.log(this.filteredNotifications);
+      );
+        this.notifications = this.filteredNotifications
+        return this.notifications
       } else {
-        this.filteredNotifications = this.notifications;
+        this.notifications = this.originalNotifications;
+        return this.originalNotifications;
       }
     },
     formatDate(date){
