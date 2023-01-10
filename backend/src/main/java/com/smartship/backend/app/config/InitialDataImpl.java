@@ -120,6 +120,7 @@ public class InitialDataImpl implements InitialData {
         if (notificationRepository.findAll().size() > 0) return;
         User userOperator = userRepository.findByEmail("test@mail.com").get();
         User userManager = userRepository.findByEmail("manager@mail.com").get();
+        User userAdmin = userRepository.findByEmail("admin@mail.com").get();
         notificationRepository.saveAll(List.of(
                 new Notification("Your workday has ended",
                 "Your shift is done, you have been working 8 hours",
@@ -132,6 +133,12 @@ public class InitialDataImpl implements InitialData {
                         false, LocalDateTime.now(), Notification.TYPE.Message, userManager),
                 new Notification("Bad weather conditions in the Atlantic Ocean",
                         "There is a storm ahead. Make sure that you are warn the operators",
+                        false, LocalDateTime.now(), Notification.TYPE.Info, userManager),
+                new Notification("We would like to join SmartShip",
+                        "We would like to join SmartShip and use your technology for our business.",
+                        false, LocalDateTime.now(), Notification.TYPE.Message, userManager),
+                new Notification("We would like to add a new manager.",
+                        "We have hired a new manager and would like to add him to our account.",
                         false, LocalDateTime.now(), Notification.TYPE.Info, userManager)
         ));
     }
