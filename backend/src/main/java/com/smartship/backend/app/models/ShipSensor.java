@@ -38,9 +38,9 @@ public class ShipSensor {
     private Set<SensorData> sensorData;
 
     @JsonView(CustomJson.Shallow.class)
-    private Double maxThreshold = 3.0;
+    private Double maxThreshold;
     @JsonView(CustomJson.Shallow.class)
-    private Double minThreshold = 0.0;
+    private Double minThreshold;
 
     public ShipSensor() {
     }
