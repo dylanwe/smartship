@@ -12,5 +12,4 @@ public interface UserManagementRepository extends JpaRepository<User, Long> {
     List<User> findByRole(User.ROLE role);
 
     List<User> findByShipId(long ship_id);
-
 }
