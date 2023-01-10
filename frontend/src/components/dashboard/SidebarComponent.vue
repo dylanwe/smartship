@@ -44,45 +44,6 @@
             <span class="overflow-x-hidden whitespace-nowrap">Notifications</span>
           </router-link>
         </li>
-        <li>
-          <router-link to="/dashboard/power-usage"
-                       class="flex items-center hover:bg-neutral-100 -mx-2 p-2 rounded-lg transition-colors">
-            <div class="mr-2">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                   stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/>
-              </svg>
-            </div>
-            <span class="overflow-x-hidden whitespace-nowrap">Power usage</span>
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/dashboard/information"
-                       class="flex items-center hover:bg-neutral-100 -mx-2 p-2 rounded-lg transition-colors">
-            <div class="mr-2">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                   stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
-              </svg>
-            </div>
-            <span class="overflow-x-hidden whitespace-nowrap">Ship information</span>
-          </router-link>
-        </li>
-        <li>
-          <router-link to="/dashboard/rating"
-                       class="flex items-center hover:bg-neutral-100 -mx-2 p-2 rounded-lg transition-colors">
-            <div class="mr-2">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                   stroke="currentColor" class="w-6 h-6">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M7.5 14.25v2.25m3-4.5v4.5m3-6.75v6.75m3-9v9M6 20.25h12A2.25 2.25 0 0020.25 18V6A2.25 2.25 0 0018 3.75H6A2.25 2.25 0 003.75 6v12A2.25 2.25 0 006 20.25z"/>
-              </svg>
-            </div>
-            <span class="overflow-x-hidden whitespace-nowrap">Rating</span>
-          </router-link>
-        </li>
         <li v-if="this.role === 'Manager'">
           <router-link to="/dashboard/managerPanel"
                        class="flex items-center hover:bg-neutral-100 -mx-2 p-2 rounded-lg transition-colors">
