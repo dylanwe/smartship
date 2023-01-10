@@ -26,7 +26,7 @@ export default class Notification {
         this.date = date;
         this.title = title;
         this.body = body;
-        this.notifiicationType = notificationType;
+        this.notificationType = notificationType;
 
     }
 }

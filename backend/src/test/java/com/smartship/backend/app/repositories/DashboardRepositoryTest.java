@@ -121,6 +121,4 @@ class DashboardRepositoryTest {
         boolean added = shipOne.addUser(bruce);
         assertThat(added).isTrue();
     }
-
-
 }

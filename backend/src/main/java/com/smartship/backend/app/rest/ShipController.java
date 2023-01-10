@@ -28,13 +28,16 @@ public class ShipController {
     private final SensorDataRepository sensorDataRepository;
     private final ShipSensorRepository shipSensorRepository;
 
+    private final NotificationRepository notificationRepository;
+
     @Autowired
-    public ShipController(ShipRepository shipRepository, SensorRepository sensorRepository, ShipDataRepository shipDataRepository, SensorDataRepository sensorDataRepository, ShipSensorRepository shipSensorRepository) {
+    public ShipController(ShipRepository shipRepository, SensorRepository sensorRepository, ShipDataRepository shipDataRepository, SensorDataRepository sensorDataRepository, ShipSensorRepository shipSensorRepository, NotificationRepository notificationRepository) {
         this.shipRepository = shipRepository;
         this.sensorRepository = sensorRepository;
         this.shipDataRepository = shipDataRepository;
         this.sensorDataRepository = sensorDataRepository;
         this.shipSensorRepository = shipSensorRepository;
+        this.notificationRepository = notificationRepository;
     }
 
 
@@ -49,10 +52,7 @@ public class ShipController {
         String name = body.path("name").asText();
         String smartShipId = body.path("shipId").asText();
 
-        Ship ship = new Ship(
-                smartShipId,
-                name
-        );
+        Ship ship = new Ship(smartShipId,name);
 
         shipRepository.save(ship);
 
@@ -157,9 +157,29 @@ public class ShipController {
             String gpsLatitude = object.path("GPS-Latitude").asText();
             String gpsLongitude = object.path("GPS-Longitude").asText();
 
-
             shipData.add(new ShipData(speed, gpsLatitude, gpsLongitude, newSensorData));
 
+            ShipSensor shipSensor = shipSensors.get(sensorId);
+
+            List<Notification> notifications = new ArrayList<>();
+
+                if (shipSensor.getMaxThreshold() != null && shipSensor.getMaxThreshold() < newSensorData.getVal()) {
+                    for (User user : ship.getUsers()) {
+                    Notification notification = new Notification("Your sensor " + sensorName + " went over the maximum threshold",
+                            sensorName + " went over the maximum threshold " + shipSensor.getMaxThreshold() + ". Send a mechanic to check on the sensor",
+                            false, LocalDateTime.now(), Notification.TYPE.Error, user);
+                        notifications.add(notification);
+                }
+            }
+            if (shipSensor.getMinThreshold() != null && shipSensor.getMinThreshold() > newSensorData.getVal()) {
+                for (User user : ship.getUsers()) {
+                    Notification notification = new Notification("Your sensor " + sensorName + " went over the minimum threshold",
+                            sensorName + " went over the minimum threshold " + shipSensor.getMinThreshold() + ". Send a mechanic to check on the sensor",
+                            false, LocalDateTime.now(), Notification.TYPE.Error, user);
+                    notifications.add(notification);
+                }
+            }
+            notificationRepository.saveAll(notifications);
         }
 
         // Save data to repos
@@ -196,5 +216,23 @@ public class ShipController {
         return ResponseEntity.ok().body(foundShip);
     }
 
+
+    @PutMapping("/sensors/{sensorId}")
+    @JsonView(CustomJson.Summary.class)
+    public ResponseEntity<ShipSensor> updateSensor( @PathVariable String sensorId, @RequestBody ObjectNode body ) {
+
+     ShipSensor foundShipSensor = shipSensorRepository.findById(sensorId)
+             .orElseThrow(() -> new NotFoundException(String.format("Ship Sensor with id %s wasn't found", sensorId)));
+
+        double min = body.get("minThreshold").asDouble();
+        double max = body.get("maxThreshold").asDouble();
+
+        foundShipSensor.setMinThreshold(body.get("minThreshold").isNull() ? null : min);
+        foundShipSensor.setMaxThreshold(body.get("maxThreshold").isNull() ? null : max);
+
+        shipSensorRepository.save(foundShipSensor);
+
+        return ResponseEntity.ok().body(foundShipSensor);
+    }
 
 }

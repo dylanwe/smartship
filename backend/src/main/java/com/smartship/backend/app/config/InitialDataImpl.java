@@ -142,16 +142,19 @@ public class InitialDataImpl implements InitialData {
 
         Widget widgetEngine = new Widget("<", "Engine", "LineChart", 2, 5, 2, 5, 2, 2);
 
-        widgetRepository.saveAll(List.of(
-                widgetTemperatures, widgetEngine
-        ));
+        widgetRepository.saveAll(List.of(widgetTemperatures, widgetEngine));
+
         // Dont move this below addsensor loop
         widgetEngine.addSensor(sensorEngineUsage1);
 
         // add sensors
         for (Sensor sensor : sensors) {
-            widgetTemperatures.addSensor(sensor);
+            if (!sensor.equals(sensorEngineUsage1)) widgetTemperatures.addSensor(sensor);
         }
+
+
+
+
 
         widgetRepository.saveAll(List.of(widgetTemperatures));
 
@@ -162,6 +165,11 @@ public class InitialDataImpl implements InitialData {
                 shipSensorRepository.save(new ShipSensor("bb7baec4-c049-45c5-81ce-2715801e6begee", shipOne, sensorBatteryTemp2)),
                 shipSensorRepository.save(new ShipSensor("bb7baec4-c049-45c5-81ce-2715801ebb6begee", shipOne, sensorEngineUsage1))
         );
+
+        for (ShipSensor shipsSensor : shipsSensors) {
+            shipsSensor.setMaxThreshold(3.0);
+            shipsSensor.setMinThreshold(0.0);
+        }
 
         // Create a LocalDateTime instance using the random values
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");

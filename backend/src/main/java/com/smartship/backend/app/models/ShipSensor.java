@@ -37,6 +37,10 @@ public class ShipSensor {
     @JsonSerialize(using = CustomJson.ShallowSerializer.class)
     private Set<SensorData> sensorData;
 
+    @JsonView(CustomJson.Shallow.class)
+    private Double maxThreshold;
+    @JsonView(CustomJson.Shallow.class)
+    private Double minThreshold;
 
     public ShipSensor() {
     }
@@ -82,5 +86,21 @@ public class ShipSensor {
 
     public Set<DashboardItem> getDashboardItems() {
         return dashboardItems;
+    }
+
+    public Double getMaxThreshold() {
+        return maxThreshold;
+    }
+
+    public void setMaxThreshold(Double maxThreshold) {
+        this.maxThreshold = maxThreshold;
+    }
+
+    public Double getMinThreshold() {
+        return minThreshold;
+    }
+
+    public void setMinThreshold(Double minThreshold) {
+        this.minThreshold = minThreshold;
     }
 }

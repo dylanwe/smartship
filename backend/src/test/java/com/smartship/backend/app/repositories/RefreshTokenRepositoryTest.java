@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -42,7 +42,7 @@ class RefreshTokenRepositoryTest {
         boolean tokenExists = refreshTokenRepository.findByToken(token).isPresent();
 
         // Then
-        assertThat(tokenExists).isFalse();
+        assertFalse(tokenExists, "The token was found by it's id when it wasn't saved");
     }
 
     @Test
@@ -65,7 +65,7 @@ class RefreshTokenRepositoryTest {
         RefreshToken expected = refreshTokenRepository.findByToken(refreshToken.getToken()).get();
 
         // Then
-        assertEquals(refreshToken, expected);
+        assertEquals(expected, refreshToken, "Found refresh token did not equal the token we gave");
     }
 
     @Test
@@ -77,7 +77,7 @@ class RefreshTokenRepositoryTest {
         boolean tokenExists = refreshTokenRepository.findById(userId).isPresent();
 
         // Then
-        assertThat(tokenExists).isFalse();
+        assertFalse(tokenExists, "Token was found even though it shouldn't have existed");
     }
 
     @Test
@@ -100,7 +100,7 @@ class RefreshTokenRepositoryTest {
         boolean tokenExists = refreshTokenRepository.existsByUserId(bruce.getId());
 
         // Then
-        assertThat(tokenExists).isTrue();
+        assertTrue(tokenExists, "The token should exist after saving it");
     }
 
     @Test
@@ -126,6 +126,6 @@ class RefreshTokenRepositoryTest {
         boolean tokenExists = refreshTokenRepository.existsByUserId(bruce.getId());
 
         // Then
-        assertThat(tokenExists).isFalse();
+        assertFalse(tokenExists, "Deleting did not work because some tokens where still found for the user bruce");
     }
 }
