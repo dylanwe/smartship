@@ -110,30 +110,6 @@
             </div>
           </li>
         </ul>
-        <ul v-else-if="filteredNotifications">
-          <li v-for="(notification, index) in filteredNotifications" :key="index"
-              @click="markNotificationAsRead(user.id, notification.id, filteredNotifications)"
-              class="hover:bg-primary-50 rounded-md flex p-2 rounded-2xl cursor-pointer transition-colors">
-            <div :class="(notification.status === 'READ') ? 'bg-neutral-200' : 'bg-primary-500'"
-                 class="h-2 w-2 rounded-full mt-2.5"></div>
-            <div class="flex-1 pl-4">
-              <h3 class="text-lg font-semibold text-neutral-900">{{ notification.title }}</h3>
-              <time class="mb-1 text-sm font-normal leading-none text-neutral-400">
-                {{ notification.date }}
-              </time>
-              <p class="mb-1 text-base font-normal text-neutral-500">{{
-                  notification.body.substring(0, 80)
-                }}...</p>
-
-              <span v-if="notification.notificationType.toUpperCase() === 'INFO'"
-                    class="bg-primary-200 text-primary-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Info</span>
-              <span v-else-if="notification.notificationType.toUpperCase() === 'ERROR'"
-                    class="bg-red-200 text-red-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Error</span>
-              <span v-else
-                    class="bg-neutral-200 text-neutral-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Message</span>
-            </div>
-          </li>
-        </ul>
       </ol>
     </div>
 
@@ -159,7 +135,6 @@ export default {
   data() {
     return {
       notifications: [],
-      filteredNotifications: [],
       selectedNotification: null,
       showDateDropdown: false,
       showTypeDropdown: false,
@@ -264,6 +239,7 @@ export default {
         return bTimestamp - aTimestamp;
       });
     },
+
     filterNotificationsByType(notificationType) {
       console.log(notificationType)
       if (notificationType !== 'Notification Types') {

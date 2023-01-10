@@ -149,7 +149,7 @@ public class ShipController {
 
             Double value = object.path("Value").asDouble();
 
-            SensorData newSensorData = new SensorData(value, epoch, shipSensors.get(sensorId));
+            SensorData newSensorData = new SensorData(value, epoch, shipSensors.get(sensorId), 50.0);
             sensorData.add(newSensorData);
 
             // Parse ship data

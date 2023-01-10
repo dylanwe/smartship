@@ -180,7 +180,7 @@ public class InitialDataImpl implements InitialData {
                 int second = random.nextInt(60);
 
                 Double randomValue = new Random().nextDouble(100);
-                SensorData sensorData = sensorDataRepository.save(new SensorData(randomValue, LocalDateTime.of(2022, month, day, hour, minute, second).atZone(ZoneId.systemDefault()).toEpochSecond(), shipSensor));
+                SensorData sensorData = sensorDataRepository.save(new SensorData(randomValue, LocalDateTime.of(2022, month, day, hour, minute, second).atZone(ZoneId.systemDefault()).toEpochSecond(), shipSensor, 50.0));
 
                 shipDataRepository.save(new ShipData(randomValue, "123", "123", sensorData));
             }
