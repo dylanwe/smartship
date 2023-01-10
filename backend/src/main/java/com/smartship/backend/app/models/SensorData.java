@@ -30,6 +30,7 @@ public class SensorData {
     private ShipData shipData;
 
 
+
     public SensorData(Double val, Long time, ShipSensor shipSensor) {
         this.val = val;
         this.time = time;

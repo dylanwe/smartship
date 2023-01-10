@@ -45,27 +45,27 @@
           <ul
               class="py-1 text-sm text-neutral-700" aria-labelledby="dropdown-button">
             <li @click="selectOptionType('Notification Types')">
-              <button @click="filteredNotifications = filterNotificationsByType('Notification Types')" type="button"
+              <button @click="filterNotificationsByType('Notification Types')" type="button"
                       class="inline-flex w-full px-4 py-2 hover:bg-neutral-100">
                 None
               </button>
             </li>
             <li @click="selectOptionType('Error')">
-              <button @click="filteredNotifications = filterNotificationsByType('ERROR')"
+              <button @click="filterNotificationsByType('Error')"
                       type="button"
                       class="inline-flex w-full px-4 py-2 hover:bg-neutral-100">
                 Error
               </button>
             </li>
             <li @click="selectOptionType('Info')">
-              <button @click="filteredNotifications = filterNotificationsByType('INFO')"
+              <button @click="filterNotificationsByType('Info')"
                       type="button"
                       class="inline-flex w-full px-4 py-2 hover:bg-neutral-100">
                 Info
               </button>
             </li>
             <li @click="selectOptionType('Message')">
-              <button @click="filteredNotifications = filterNotificationsByType('MESSAGE')"
+              <button @click="filterNotificationsByType('Message')"
                       type="button"
                       class="inline-flex w-full px-4 py-2 hover:bg-neutral-100">
                 Message
@@ -95,31 +95,9 @@
             <div class="flex-1 pl-4">
               <h3 class="text-lg font-semibold text-neutral-900">{{ notification.title }}</h3>
               <time class="mb-1 text-sm font-normal leading-none text-neutral-400">
-                {{ notification.date }}
-              </time>
-              <p class="mb-1 text-base font-normal text-neutral-500">{{
-                  notification.body.substring(0, 80)
-                }}...</p>
-
-              <span v-if="notification.notificationType.toUpperCase() === 'INFO'"
-                    class="bg-primary-200 text-primary-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Info</span>
-              <span v-else-if="notification.notificationType.toUpperCase() === 'ERROR'"
-                    class="bg-red-200 text-red-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Error</span>
-              <span v-else
-                    class="bg-neutral-200 text-neutral-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Message</span>
-            </div>
-          </li>
-        </ul>
-        <ul v-else-if="filteredNotifications">
-          <li v-for="(notification, index) in filteredNotifications" :key="index"
-              @click="markNotificationAsRead(user.id, notification.id, filteredNotifications)"
-              class="hover:bg-primary-50 rounded-md flex p-2 rounded-2xl cursor-pointer transition-colors">
-            <div :class="(notification.status === 'READ') ? 'bg-neutral-200' : 'bg-primary-500'"
-                 class="h-2 w-2 rounded-full mt-2.5"></div>
-            <div class="flex-1 pl-4">
-              <h3 class="text-lg font-semibold text-neutral-900">{{ notification.title }}</h3>
-              <time class="mb-1 text-sm font-normal leading-none text-neutral-400">
-                {{ notification.date }}
+                {{
+                  formatDate(notification.date)
+                }}
               </time>
               <p class="mb-1 text-base font-normal text-neutral-500">{{
                   notification.body.substring(0, 80)
@@ -158,6 +136,7 @@ export default {
 
   data() {
     return {
+      originalNotifications: [],
       notifications: [],
       filteredNotifications: [],
       selectedNotification: null,
@@ -176,6 +155,7 @@ export default {
     this.notifications.forEach(notification => {
       this.setNotificationStatus(notification);
     });
+    this.originalNotifications = this.notifications;
   },
 
   computed: {
@@ -231,8 +211,9 @@ export default {
         if (response.ok) {
           // update the notification in the frontend
           const updatedNotification = this.notifications.find(notification => notification.id === notificationId);
-          updatedNotification.readNotification = true;
+          updatedNotification.status = Notification.Status.READ;
           this.selectedNotification = updatedNotification;
+          console.log(response)
         }
       } catch (error) {
         console.error(error);
@@ -265,15 +246,20 @@ export default {
       });
     },
     filterNotificationsByType(notificationType) {
-      console.log(notificationType)
       if (notificationType !== 'Notification Types') {
-        this.filteredNotifications = this.notifications.filter(
+        this.filteredNotifications = this.originalNotifications.filter(
             notification => notification.notificationType.toUpperCase() === notificationType.toUpperCase()
-        );
-        console.log(this.filteredNotifications);
+      );
+        this.notifications = this.filteredNotifications
+        return this.notifications
       } else {
-        this.filteredNotifications = this.notifications;
+        this.notifications = this.originalNotifications;
+        return this.originalNotifications;
       }
+    },
+    formatDate(date){
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+      return new Date(date).toLocaleDateString("en-US", options);
     }
   }
 }

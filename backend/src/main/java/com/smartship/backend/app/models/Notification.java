@@ -2,6 +2,7 @@ package com.smartship.backend.app.models;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "notifications")
@@ -12,7 +13,7 @@ public class Notification {
     private String title;
     private String body;
     private Boolean readNotification;
-    private LocalDate notificationDateTime;
+    private LocalDateTime notificationDateTime;
     private TYPE notificationType;
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
@@ -20,7 +21,7 @@ public class Notification {
     public Notification() {
     }
 
-    public Notification(String title, String body, Boolean readNotification, LocalDate notificationDateTime, TYPE notificationType, User user) {
+    public Notification(String title, String body, Boolean readNotification, LocalDateTime notificationDateTime, TYPE notificationType, User user) {
         this.title = title;
         this.body = body;
         this.readNotification = readNotification;
@@ -53,12 +54,8 @@ public class Notification {
         this.body = body;
     }
 
-    public LocalDate getNotificationDateTime() {
+    public LocalDateTime getNotificationDateTime() {
         return notificationDateTime;
-    }
-
-    public void setNotificationDateTime(LocalDate notificationDateTime) {
-        this.notificationDateTime = notificationDateTime;
     }
 
     public TYPE getNotificationType() {
@@ -77,8 +74,12 @@ public class Notification {
         this.user = user;
     }
 
-    public LocalDate getDate() {
+    public LocalDateTime getDate() {
         return notificationDateTime;
+    }
+
+    public void setNotificationDateTime(LocalDateTime notificationDateTime) {
+        this.notificationDateTime = notificationDateTime;
     }
 
     public TYPE getType() {

@@ -11,8 +11,7 @@ import com.smartship.backend.app.utility.JWTokenInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -56,11 +55,12 @@ public class NotificationController {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %d wasn't found", userId)));
 
-        Notification notification = new Notification(title, notificationBody, false, LocalDate.now(), type, user);
+        Notification notification = new Notification(title, notificationBody, false, LocalDateTime.now(), type, user);
         notificationRepository.save(notification);
 
         Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("date", notification.getDate());
+        LocalDateTime date = notification.getDate();
+        responseBody.put("date", date.toLocalDate());
         return ResponseEntity.ok().body(responseBody);
     }
 
@@ -134,16 +134,6 @@ public class NotificationController {
                         .sorted(Comparator.comparing(Notification::getNotificationDateTime).reversed())
                         .collect(Collectors.toList())
         );
-    }
-
-    @GetMapping("/type/{notificationType}")
-    public ResponseEntity<List<Notification>> getNotificationsByType(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId, @PathVariable String notificationType) {
-        //check user from jwt
-        if (!userId.equals(jwTokenInfo.userId()))
-            throw new UnauthorizedException("User id doesn't match");
-
-        List<Notification> notifications = notificationRepository.findByNotificationType(notificationType);
-        return ResponseEntity.ok().body(notifications);
     }
 
     @GetMapping("/search")
