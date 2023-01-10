@@ -271,7 +271,8 @@ export default {
 
           let emailParams = {
             name: addedUser.firstName,
-            email: addedUser.email
+            email: addedUser.email,
+            password: password
           };
 
           //Send an email to the new user.
