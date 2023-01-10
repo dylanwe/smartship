@@ -142,16 +142,19 @@ public class InitialDataImpl implements InitialData {
 
         Widget widgetEngine = new Widget("<", "Engine", "LineChart", 2, 5, 2, 5, 2, 2);
 
-        widgetRepository.saveAll(List.of(
-                widgetTemperatures, widgetEngine
-        ));
+        widgetRepository.saveAll(List.of(widgetTemperatures, widgetEngine));
+
         // Dont move this below addsensor loop
         widgetEngine.addSensor(sensorEngineUsage1);
 
         // add sensors
         for (Sensor sensor : sensors) {
-            widgetTemperatures.addSensor(sensor);
+            if (!sensor.equals(sensorEngineUsage1)) widgetTemperatures.addSensor(sensor);
         }
+
+
+
+
 
         widgetRepository.saveAll(List.of(widgetTemperatures));
 
