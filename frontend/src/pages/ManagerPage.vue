@@ -8,6 +8,7 @@
         <caption class="p-5 text-neutral-700 bg-neutral-50">
           <h2 class="float-left text-3xl font-bold">Operators</h2>
           <button
+              name="newUserButton"
               @click="showNewUserModal = true"
               class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center transition-colors flex float-right items-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -49,7 +50,7 @@
           </td>
           <td class="py-4 px-6">
 
-            <button type="button" @click="deleteUser(operator)"
+            <button name="deleteUserButton" type="button" @click="deleteUser(operator)"
                     class="font-medium text-rose-500 hover:underline float-right">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -58,6 +59,7 @@
               </svg>
             </button>
             <button type="button" @click="editUser(operator)"
+                    name="editUserButton"
                     class="font-medium text-neutral-700 hover:underline float-right mr-4">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -79,6 +81,7 @@
         <caption class="p-5 text-neutral-700 bg-neutral-50">
           <h2 class="float-left text-3xl font-bold">Ships</h2>
           <button
+              name="newShipButton"
               @click="showNewShipModal = true"
               class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center transition-colors flex float-right items-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -117,6 +120,7 @@
           </td>
           <td class="py-4 px-6">
             <button type="button" @click="showOperatorsForShip(ship)"
+                    name="showShipOperatorsButton"
                     class="font-medium text-neutral-700 hover:underline mr-4">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
@@ -126,6 +130,7 @@
           </td>
           <td class="py-4 px-6">
             <button type="button" @click="deleteShip(ship)"
+                    name="deleteShipButton"
                     class="font-medium text-rose-500 hover:underline float-right">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                    stroke="currentColor" class="w-6 h-6">
@@ -221,7 +226,7 @@ export default {
     },
     async deleteUser(user) {
       //Show a popup window asking if they really want to delete the user.
-      const userSave = confirm('Are you sure you want to delete ' + user.firstName + ' ' + user.lastName
+      const userSave =  confirm('Are you sure you want to delete ' + user.firstName + ' ' + user.lastName
           + ' (id:' + user.id + ')?');
       //Delete the user if they pressed confirm and call the refresh method, which gets the operators again.
       if (userSave) {
