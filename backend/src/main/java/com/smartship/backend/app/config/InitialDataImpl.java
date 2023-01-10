@@ -25,10 +25,12 @@ public class InitialDataImpl implements InitialData {
     private final ShipSensorRepository shipSensorRepository;
     private final ShipDataRepository shipDataRepository;
     private final SensorDataRepository sensorDataRepository;
+    private final NotificationRepository notificationRepository;
 
     @Autowired
     public InitialDataImpl(UserRepository userRepository, DashboardRepository dashboardRepository,
-                           NotificationSettingRepository notificationSettingRepository, DashboardItemRepository dashboardItemRepository, WidgetRepository widgetRepository, ShipRepository shipRepository, SensorRepository sensorRepository, ShipSensorRepository shipSensorRepository, ShipDataRepository shipDataRepository, SensorDataRepository sensorDataRepository) {
+                           NotificationSettingRepository notificationSettingRepository, DashboardItemRepository dashboardItemRepository, WidgetRepository widgetRepository, ShipRepository shipRepository, SensorRepository sensorRepository, ShipSensorRepository shipSensorRepository, ShipDataRepository shipDataRepository, SensorDataRepository sensorDataRepository,
+                           NotificationRepository notificationRepository) {
 
         this.userRepository = userRepository;
         this.notificationSettingRepository = notificationSettingRepository;
@@ -40,6 +42,7 @@ public class InitialDataImpl implements InitialData {
         this.shipSensorRepository = shipSensorRepository;
         this.shipDataRepository = shipDataRepository;
         this.sensorDataRepository = sensorDataRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -47,6 +50,7 @@ public class InitialDataImpl implements InitialData {
         createInitialUsers();
         addNotificationSettings();
         createInitialDashboards();
+        createInitialNotifications();
     }
 
     /**
@@ -110,6 +114,20 @@ public class InitialDataImpl implements InitialData {
         if (savedSettings.size() < settings.size()) {
             notificationSettingRepository.saveAll(settings);
         }
+    }
+
+    private void createInitialNotifications() {
+        if (notificationRepository.findAll().size() > 0) return;
+        User user = userRepository.findByEmail("test@mail.com").get();
+        notificationRepository.saveAll(List.of(
+                new Notification("Your workday has ended",
+                "Your shift is done, you have been working 8 hours",
+                false, LocalDateTime.now(), Notification.TYPE.Message, user),
+                new Notification("Bad weather conditions",
+                "There is a storm ahead. Make sure that you are prepared",
+                false, LocalDateTime.now(), Notification.TYPE.Info, user)
+        ));
+
     }
 
     /**

@@ -161,10 +161,11 @@ export default {
   computed: {
     filteredSearch() {
       if (this.search) {
-        let filtered = this.notifications.filter(notification => {
+        const query = this.search.toLowerCase();
+        const filtered = this.notifications.filter(notification => {
           const title = notification.title.toLowerCase();
           const body = notification.body.toLowerCase();
-          return title.includes(this.search) || body.includes(this.search);
+          return title.includes(query) || body.includes(query);
         });
         return filtered.length ? filtered : null;
       } else {
