@@ -52,10 +52,10 @@ class AuthenticationControllerTest {
 
         // try to log in
         LoginResponse response = restTemplate.postForObject("/api/v1/auth/login", json, LoginResponse.class);
-        System.out.println(response);
+
         // check if content is correct
-        assertNotNull(response.jwtToken());
-        assertNotNull(response.refreshToken());
-        assertEquals(bruce, response.user());
+        assertNotNull(response.jwtToken(), "No JWT token was found in the response");
+        assertNotNull(response.refreshToken(), "No refresh token was found in the response");
+        assertEquals(bruce, response.user(), "The user bruce was not found in the response");
     }
 }

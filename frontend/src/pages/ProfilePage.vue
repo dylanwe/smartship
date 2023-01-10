@@ -76,12 +76,12 @@
           </router-link>
 
           <span class="bg-primary-100 text-primary-700 py-1 px-2 rounded-md font-bold">{{
-              notifications.length
+              totalUnread
             }}</span>
 
         </div>
         <ul>
-          <li class="flex items-center border-b border-neutral-200 py-2" v-for="notification in notifications"
+          <li class="flex items-center border-b border-neutral-200 py-2" v-for="notification in recentNotifications"
               :key="notification.id">
             <svg class="text-primary-500 w-6 h-6 stroke-1.5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none"
                  viewBox="0 0 24 24"
@@ -133,13 +133,13 @@
           <li class="list-none flex justify-between space-x-2 hover:bg-slate-100 p-2 rounded-md" v-for="todo in todos"
               :key="todo.id">
             <div>
-              <input type="checkbox" v-model="todo.completed" @change="toDoCompleted(todo)" />
+              <input type="checkbox" v-model="todo.completed" @change="toDoCompleted(todo)"/>
               <label id="checkbox" for="checkbox"
                      :class="(todo.completed) ? 'text-neutral-300 line-through' : 'text-neutral-900'"
                      class="ml-3 hover:underline cursor-pointer" @click="toggleEditToDoModal(todo.id)">{{ todo.name }}
               </label>
               <br>
-              <small class="text-slate-500" v-if="!todo.completed">{{todo.dueAt}}</small>
+              <small class="text-slate-500" v-if="!todo.completed">{{ todo.dueAt }}</small>
             </div>
           </li>
         </div>
@@ -157,7 +157,7 @@ import {Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, Lin
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 export default {
   name: "ProfileIndex",
-  inject: ["sessionService", "userService", "toDoService"],
+  inject: ["sessionService", "userService", "toDoService", "notificationService"],
   chartName: 'BarChart',
   components: {Bar, AddToDoModal, EditToDoModal},
   props: {
@@ -177,10 +177,8 @@ export default {
       selectedToDoId: null,
       user: null,
       todos: null,
-      notifications: [
-        {id: 1, title: "System info", desc: "You have a new task"},
-        {id: 2, title: "Parameter alert!", desc: "Alert alert alert"},
-      ],
+      recentNotifications: [],
+      totalUnread: 0,
       hoursWorkedChart: {
         labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
         datasets: [
@@ -234,8 +232,14 @@ export default {
   },
   async created() {
     this.user = this.sessionService.getCurrentUser();
-    const userToDos = await this.toDoService.getUserTodos(this.user.id);
-    this.todos = await userToDos.json();
+    this.todos = await this.toDoService.getUserTodos(this.user.id).then(res => res.json());
+    const {
+      recentNotifications,
+      totalUnread
+    } = await this.notificationService.recentNotifications(this.user.id).then(res => res.json());
+    this.recentNotifications = recentNotifications;
+    this.totalUnread = totalUnread;
+    console.log(this.recentNotifications);
   },
 
   methods: {

@@ -1,4 +1,5 @@
 package com.smartship.backend.app.rest;
+
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.smartship.backend.app.exceptions.NotFoundException;
 import com.smartship.backend.app.exceptions.UnauthorizedException;
@@ -10,6 +11,7 @@ import com.smartship.backend.app.utility.JWTokenInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -81,6 +83,7 @@ public class NotificationController {
 
         return ResponseEntity.ok().build();
     }
+
     @GetMapping
     public ResponseEntity<List<Notification>> getAllNotificationsForUser(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo,
                                                                          @PathVariable Long userId) {
@@ -115,6 +118,7 @@ public class NotificationController {
                         .collect(Collectors.toList())
         );
     }
+
     @GetMapping("/ascending")
     public ResponseEntity<List<Notification>> getNotificationsAscending(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId) {
         //check user from jwt
@@ -150,5 +154,23 @@ public class NotificationController {
 
         List<Notification> notifications = notificationRepository.findByMessageContainsLetters(letters);
         return ResponseEntity.ok().body(notifications);
+    }
+
+    @GetMapping("/recent")
+    public ResponseEntity<Map<String, Object>> findRecent(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId) {
+
+        if (!userId.equals(jwTokenInfo.userId()))
+            throw new UnauthorizedException("User id doesn't match");
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Can't find user id"));
+
+        List<Notification> recentNotifications = notificationRepository.findTop2ByUserAndReadNotificationIsFalseOrderByNotificationDateTimeAsc(user);
+
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("recentNotifications", recentNotifications);
+        responseBody.put("totalUnread", notificationRepository.findAllByUserAndReadNotificationIsFalse(user).size());
+
+        return ResponseEntity.ok().body(responseBody);
     }
 }
