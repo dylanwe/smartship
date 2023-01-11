@@ -4,11 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.smartship.backend.app.exceptions.NotAcceptableException;
 import com.smartship.backend.app.exceptions.NotFoundException;
+import com.smartship.backend.app.models.Dashboard;
 import com.smartship.backend.app.models.Ship;
 import com.smartship.backend.app.models.User;
+import com.smartship.backend.app.repositories.DashboardRepository;
 import com.smartship.backend.app.repositories.ShipRepository;
 import com.smartship.backend.app.repositories.UserManagementRepository;
-import com.smartship.backend.app.utility.JWTokenInfo;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,11 +25,14 @@ public class UserManagementController {
 
     private final UserManagementRepository userManagementRepository;
 
+    private final DashboardRepository dashboardRepository;
+
     private final ShipRepository shipRepository;
 
     @Autowired
-    public UserManagementController(UserManagementRepository userManagementRepository, ShipRepository shipRepository) {
+    public UserManagementController(UserManagementRepository userManagementRepository, DashboardRepository dashboardRepository, ShipRepository shipRepository) {
         this.userManagementRepository = userManagementRepository;
+        this.dashboardRepository = dashboardRepository;
         this.shipRepository = shipRepository;
     }
 
@@ -67,6 +71,13 @@ public class UserManagementController {
             //Update the database, so it knows it has no connection anymore
             userManagementRepository.save(foundUser);
         }
+
+        Dashboard dashboard = foundUser.getDashboard();
+
+        //Remove the connection the user has with the dashboard
+        dashboard.removeUser(foundUser);
+        dashboardRepository.save(dashboard);
+        userManagementRepository.save(foundUser);
 
         userManagementRepository.deleteById(id);
 

@@ -75,6 +75,26 @@ public class Dashboard {
         return false;
     }
 
+    public boolean addUser(User user) {
+        if (user != null && user.getDashboard() == null) {
+            // update both sides of the association
+            this.setUser(user);
+            user.connectToDashboard(this);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeUser(User user) {
+        if (user != null && this.getUser() != null) {
+            this.setUser(null);
+            user.removeDashboard(this);
+            return true;
+        }
+
+        return false;
+    }
+
     public DashboardItem findItemById(Long id) {
         return this.layout.stream().filter(c -> Objects.equals(c.getId(), id)).findFirst().orElse(null);
     }
@@ -94,6 +114,9 @@ public class Dashboard {
         return user;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public Set<DashboardItem> getLayout() {
         return layout;

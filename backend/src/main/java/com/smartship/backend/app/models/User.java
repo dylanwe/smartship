@@ -119,6 +119,27 @@ public class User {
         return false;
     }
 
+    public boolean connectToDashboard(Dashboard dashboard) {
+        if (dashboard != null && this.getDashboard() == null) {
+            // update both sides of the association
+            dashboard.addUser(this);
+            this.setDashboard(dashboard);
+            return true;
+
+        }
+        return false;
+    }
+
+    public boolean removeDashboard(Dashboard dashboard) {
+        if (dashboard != null) {
+            this.setDashboard(null);
+            dashboard.removeUser(this);
+            return true;
+        }
+
+        return false;
+    }
+
     public Long getId() {
         return id;
     }
