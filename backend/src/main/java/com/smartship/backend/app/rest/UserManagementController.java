@@ -72,12 +72,15 @@ public class UserManagementController {
             userManagementRepository.save(foundUser);
         }
 
-        Dashboard dashboard = foundUser.getDashboard();
+        if (foundUser.getDashboard() != null) {
+            Dashboard dashboard = foundUser.getDashboard();
 
-        //Remove the connection the user has with the dashboard
-        dashboard.removeUser(foundUser);
-        dashboardRepository.save(dashboard);
-        userManagementRepository.save(foundUser);
+            //Remove the connection the user has with the dashboard
+            dashboard.removeUser(foundUser);
+            //Update the database, so it knows it has no connection anymore
+            dashboardRepository.save(dashboard);
+            userManagementRepository.save(foundUser);
+        }
 
         userManagementRepository.deleteById(id);
 
