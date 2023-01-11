@@ -1,2 +1,2 @@
-
-[EWA_Technical_documentation.pdf](uploads/05c7f57c622d3003ad69b73737189669/EWA_Technical_documentation.pdf)
+Here is the link to our wiki page which has our technical documentation.
+https://gitlab.fdmci.hva.nl/se-ewa/2022-2023-1/smart-4/-/wikis/Technical-documentation
