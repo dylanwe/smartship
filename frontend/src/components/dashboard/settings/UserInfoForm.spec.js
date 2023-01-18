@@ -30,6 +30,9 @@ beforeEach(async function() {
 it('should load in user', () => {
     const firstNameInputValue = wrapper.find("input[name=firstName]").element.value;
 
+    console.log(currentUser);
+    console.log(wrapper.vm.$data.user);
+
     expect(firstNameInputValue,
         'current users first name did not load in')
         .toBe(currentUser.firstName);

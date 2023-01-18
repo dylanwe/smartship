@@ -17,9 +17,9 @@ export default class User {
      * @param {string} role
      * @param {string} birthday
      * @param {string} bio
-     * @param {number} shipId
+     * @param {Object} shipId
      */
-    constructor(id, firstName, lastName, email, role, birthday, bio, shipId) {
+    constructor(id, firstName, lastName, email, role, birthday, bio, ship) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -27,7 +27,7 @@ export default class User {
         this.role = User.ROLE[role];
         this.birthday = birthday;
         this.bio = bio;
-        this.shipId = shipId;
+        this.ship = ship;
     }
 
     /**
@@ -44,7 +44,7 @@ export default class User {
             user.role,
             user.birthday,
             user.bio,
-            user.shipId
+            user.ship
         );
     }
 
@@ -57,7 +57,7 @@ export default class User {
             userJson.role,
             userJson.birthday,
             userJson.bio,
-            userJson.ship?.id
+            userJson.ship
         );
     }
 
@@ -102,7 +102,7 @@ export default class User {
             User.ROLE.Operator,
             "12-07-2000",
             `My name is ${firstName}`,
-            1
+            {id: 1}
         );
     }
 
@@ -118,7 +118,7 @@ export default class User {
             this.email === other.email &&
             this.birthday === other.birthday &&
             this.bio === other.bio &&
-            this.shipId === other.shipId
+            this.ship?.id === other.ship?.id
         );
     }
 }
