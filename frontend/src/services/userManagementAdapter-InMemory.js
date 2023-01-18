@@ -17,17 +17,27 @@ export class userManagementAdapterInMemory {
         this.users = initialUsers;
     }
 
-    async findAccountForRole(role) {
+    findAccountForRole(role) {
         return this.users;
     }
 
-    async deleteUserById(id) {
+    deleteUserById(id) {
         this.users.shift();
     }
 
-    async addAccount(email, firstName, lastName, password, role, assignedShip) {}
+    addAccount(email, firstName, lastName, password, role, assignedShip) {
+        this.users.push(new User(10, firstName, lastName, email, role, "12-07-2000", "this be bio", {id: assignedShip}));
+    }
 
-    async updateUser(user, assignedShip) {}
+    updateUser(user, assignedShip) {}
 
-    async getOperatorsForShip(ship) {}
+    getOperatorsForShip(ship) {
+        const usersForShip = [];
+        for (let i = 0; i < this.users.length; i++) {
+            if (this.users[i].ship.id === ship) {
+                usersForShip.push(this.users[i])
+            }
+        }
+        return usersForShip;
+    }
 }

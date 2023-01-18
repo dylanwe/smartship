@@ -96,9 +96,6 @@ export default {
     }
     //Get all the managers from the database via the backend
     this.managers = await this.userManagementService.findAccountForRole(User.ROLE.Manager);
-
-
-    console.log(this.sessionService.getCurrentUser().role)
   },
   data() {
     return {
