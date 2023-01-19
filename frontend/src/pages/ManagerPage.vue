@@ -320,8 +320,6 @@ export default {
       await this.userManagementService.updateUser(operator, assignedShip)
       await this.refresh();
     },
-
-
     editShipSensors(ship){
       this.toEditShipSensors = ship;
       this.showEditShipSensorsModal = true;
