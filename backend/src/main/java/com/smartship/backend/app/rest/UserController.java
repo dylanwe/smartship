@@ -136,9 +136,8 @@ public class UserController {
                     notificationSettingRepository.findById(notificationSettingId).get()
             );
 
-            if (notificationPreferenceId != null) {
+            if (notificationPreferenceId != null)
                 notificationPreference.setId(notificationPreferenceId);
-            }
 
             notificationPreferences.add(notificationPreference);
         }

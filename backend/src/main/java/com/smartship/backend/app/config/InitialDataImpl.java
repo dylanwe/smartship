@@ -211,7 +211,7 @@ public class InitialDataImpl implements InitialData {
                 Random random = new Random();
 
                 // Get a random year, month, day, hour, minute, and second
-                int year = random.nextInt(10_000) + 1;
+                int year = LocalDate.now().getYear();
                 int month = random.nextInt(12) + 1;
                 int day = random.nextInt(28) + 1;
                 int hour = random.nextInt(24);
@@ -219,7 +219,8 @@ public class InitialDataImpl implements InitialData {
                 int second = random.nextInt(60);
 
                 Double randomValue = new Random().nextDouble(100);
-                SensorData sensorData = sensorDataRepository.save(new SensorData(randomValue, LocalDateTime.of(2022, month, day, hour, minute, second).atZone(ZoneId.systemDefault()).toEpochSecond(), shipSensor));
+                SensorData sensorData = sensorDataRepository.save(new SensorData(randomValue, LocalDateTime.of(year,
+                        month, day, hour, minute, second).atZone(ZoneId.systemDefault()).toEpochSecond(), shipSensor));
 
                 shipDataRepository.save(new ShipData(randomValue, "123", "123", sensorData));
             }
