@@ -18,7 +18,7 @@ export default class ToDoAdapter {
     }
 
     async getUserToDoById(userId, toDoId) {
-        return await fetch(
+        const resp = await fetch(
             `${this.RESOURCE_URL}/${userId}/todos/${toDoId}`,
             {
                 method: 'GET',
@@ -26,11 +26,17 @@ export default class ToDoAdapter {
                 credentials: 'include'
             }
         );
+
+        if (resp.ok) {
+            return await resp.json();
+        }
+
+        return resp;
     }
 
     async saveTodo(userId, name, dueDate) {
         dueDate = new Date(dueDate);
-        const month = (dueDate.getMonth() + 1 < 10) ? `0${dueDate.getMonth() + 1}` : dueDate.getMonth() + 1
+        const month = ((dueDate.getMonth() + 1 < 10) ? `0${dueDate.getMonth() + 1}` : dueDate.getMonth() + 1);
         // format date
         dueDate = `${dueDate.getDate()}-${month}-${dueDate.getFullYear()}`;
 

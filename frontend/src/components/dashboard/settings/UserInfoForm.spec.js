@@ -1,6 +1,6 @@
 import {mount} from '@vue/test-utils'
 import UserInfoForm from "./UserInfoForm.vue";
-import {UserAdapterInMemory} from "@/services/UserAdapter-InMemory";
+import UserAdapterInMemory from "@/services/UserAdapter-InMemory";
 import SessionSbServiceInMemory from "@/services/SessionSbService-InMemory";
 import {reactive} from "vue";
 import User from "@/models/User";

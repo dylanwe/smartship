@@ -1,4 +1,4 @@
-import {UserAdapterInMemory} from "@/services/UserAdapter-InMemory";
+import UserAdapterInMemory from "@/services/UserAdapter-InMemory";
 import User from "@/models/User";
 
 /**

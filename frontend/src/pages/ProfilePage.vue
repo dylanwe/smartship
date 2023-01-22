@@ -14,7 +14,7 @@
       <div class="bg-white flex-1 h-full rounded-2xl p-4">
         <div class="profile-picture flex inline-block items-center">
           <div>
-            <h2 class="text-4xl font-bold text-neutral-900">{{
+            <h2 id="profileName" class="text-4xl font-bold text-neutral-900">{{
                 (user) ? `${user.firstName} ${user.lastName}` : ''
               }}</h2>
             <p class="text-neutral-500">{{ (user) ? `${user.bio}` : '' }}</p>
@@ -93,7 +93,7 @@
               </svg>
               <div>
                 <h4 class="text-lg font-bold">{{ notification.title }}</h4>
-                <p class="text-neutral-700">{{ notification.desc }}</p>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <p class="text-neutral-700">{{ notification.desc }}</p>
               </div>
             </li>
           </router-link>
@@ -173,6 +173,7 @@ export default {
       default: 'label'
     },
   },
+
   data() {
     return {
       isToDoModalShown: false,
@@ -182,19 +183,6 @@ export default {
       todos: null,
       recentNotifications: [],
       totalUnread: 0,
-      hoursWorkedChart: {
-        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-        datasets: [
-          {
-            label: 'Hours',
-            backgroundColor: '#92D1F880',
-            data: [8, 12, 14, 10, 10, 14, 5],
-            borderRadius: 10,
-            borderColor: '#0EA5E9',
-            borderWidth: 2,
-          },
-        ]
-      },
 
       toDosDoneChart: {
         labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
@@ -224,7 +212,12 @@ export default {
       }
     }
   },
+
   computed: {
+    /**
+     * Gets the amount of uncompleted to-do's
+     * @returns {number|*}
+     */
     getSelectedAmount() {
       if (this.todos) {
         return this.todos.filter(todo => todo.completed === false).length;
@@ -233,6 +226,7 @@ export default {
       }
     }
   },
+
   async created() {
     this.user = this.sessionService.getCurrentUser();
     this.todos = await this.toDoService.getUserTodos(this.user.id).then(res => res.json());
@@ -242,7 +236,6 @@ export default {
     } = await this.notificationService.recentNotifications(this.user.id).then(res => res.json());
     this.recentNotifications = recentNotifications;
     this.totalUnread = totalUnread;
-    console.log(this.recentNotifications);
   },
 
   methods: {

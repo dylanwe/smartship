@@ -1,5 +1,6 @@
 <template>
-  <section v-if="selectedToDo" class="w-full h-full top-0 left-0 fixed bg-slate-800 bg-opacity-30" v-show="showToDoModal">
+  <section v-if="selectedToDo" class="w-full h-full top-0 left-0 fixed bg-slate-800 bg-opacity-30"
+           v-show="showToDoModal">
     <div id="authentication-modal" tabindex="-1" aria-hidden="true"
          class="fixed top-0 left-0 right-0 z-50 w-full p-4 overflow-x-hidden overflow-y-auto md:inset-0 h-modal md:h-full">
       <div class="flex w-full h-full items-center justify-center mx-auto">
@@ -21,7 +22,7 @@
             <form class="space-y-6" @submit.prevent="updateToDo">
               <div>
                 <label for="todo" class="block mb-2 text-sm font-medium text-slate-900">Task name</label>
-                <input type="text" v-model.trim="selectedToDo.name"
+                <input type="text" v-model.trim="selectedToDo.name" name="toDoName"
                        class="border text-sm rounded-lg block w-full p-2.5"
                        :class="(v$.selectedToDo.name.$error) ? errorInputStyle : goodInputStyle"
                        placeholder="task" required="">
@@ -32,7 +33,7 @@
               </div>
               <div>
                 <label for="dueDate" class="block mb-2 text-sm font-medium text-slate-900">Due date</label>
-                <input type="date" v-model.trim="selectedToDo.dueAt"
+                <input type="date" v-model.trim="selectedToDo.dueAt" name="dueDate"
                        class="border text-sm rounded-lg block w-full p-2.5"
                        :class="(v$.selectedToDo.dueAt.$silentErrors.length !== 0) ? errorInputStyle : goodInputStyle"
                        required="">
@@ -41,12 +42,14 @@
                   }}
                 </div>
               </div>
-              <button :disabled="selectedToDo.name.length < 2 || v$.selectedToDo.name.$error || v$.selectedToDo.dueAt.$silentErrors.length !== 0"
-                      type="submit"
-                      class="disabled:bg-slate-400 w-full text-white bg-sky-500 hover: transition-colors hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+              <button
+                  :disabled="selectedToDo.name.length < 2 || v$.selectedToDo.name.$error || v$.selectedToDo.dueAt.$silentErrors.length !== 0"
+                  type="submit"
+                  class="disabled:bg-slate-400 w-full text-white bg-sky-500 hover: transition-colors hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                 Update task
               </button>
-              <button @click="deleteToDo" type="submit" class="w-full text-red-400 bg-red-100 hover:bg-red-500 hover:text-white hover:transition-colors focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+              <button @click="deleteToDo" type="submit"
+                      class="w-full text-red-400 bg-red-100 hover:bg-red-500 hover:text-white hover:transition-colors focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
                 Delete Task
               </button>
             </form>
@@ -54,10 +57,7 @@
         </div>
       </div>
     </div>
-
-
   </section>
-
 </template>
 
 <script>
@@ -101,10 +101,12 @@ export default {
     this.user = this.sessionService.getCurrentUser();
   },
   watch: {
+    /**
+     * Get the selected to do from the service when the selectedToDoId is changed
+     */
     async selectedToDoId() {
       if (this.selectedToDoId) {
-        const bit = await this.toDoService.getUserToDoById(this.user.id, this.selectedToDoId);
-        this.selectedToDo = await bit.json();
+        this.selectedToDo = await this.toDoService.getUserToDoById(this.user.id, this.selectedToDoId);
       }
     }
   },
@@ -112,7 +114,6 @@ export default {
     closeToDoModal() {
       this.$emit("toggleEditToDoModal");
     },
-
     async updateToDo() {
       await this.toDoService.updateToDo(this.user.id, this.selectedToDo);
       this.$emit("refreshToDoList");

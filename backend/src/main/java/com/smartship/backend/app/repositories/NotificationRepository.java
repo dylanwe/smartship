@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 @Repository
@@ -17,6 +18,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     List<Notification> findByNotificationType(@Param("notificationType") String notificationType);
 
     List<Notification> findTop2ByUserAndReadNotificationIsFalseOrderByNotificationDateTimeAsc(User user);
+
     List<Notification> findAllByUserAndReadNotificationIsFalse(User user);
 
     List<Notification> findByUserId(Long userId);
