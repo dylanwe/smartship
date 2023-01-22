@@ -39,6 +39,7 @@ public class ToDoControllerTest {
     @AfterEach
     void tearDown() {
         toDoRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
