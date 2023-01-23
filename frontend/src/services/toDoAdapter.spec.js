@@ -22,7 +22,7 @@ beforeEach(function () {
     dateOfToday = `${year}-${month}-${day}`;
 });
 
-it('should find the first to-do of the first user', () => {
+it('user should have no todos at the beginning', () => {
     const user = userService.getUsers()[0];
     const todos = toDoService.getUserTodos(user.id);
 
@@ -40,7 +40,7 @@ it('should add to-do to the first user', () => {
     // get the last to-do of the first user
     const newestUserToDo = toDoService.getUserTodos(user.id)[toDoService.getUserTodos(user.id).length - 1];
 
-    // check if name is correct
+    // check if name of the to-do is correct
     expect(newestUserToDo.name,
         'The todo is not saved, name is not correct')
         .toBe(name);
@@ -79,9 +79,8 @@ it('should get user todo by todo id', () => {
     expect(foundToDo.id,
         "can't find todo by id")
         .toBe(FIRST_ID_TODOS);
-
-
 });
+
 it('should update todo', function () {
     const user = userService.getUsers()[0];
     const name = "check engine";
