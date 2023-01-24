@@ -1,7 +1,6 @@
 package com.smartship.backend.app.models;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -38,6 +37,36 @@ public class Notification {
         this.notificationId = id;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public LocalDateTime getDate() {
+        return notificationDateTime;
+    }
+
+    public void setReadNotification(boolean readNotification) {
+        this.readNotification = readNotification;
+    }
+
+    public enum TYPE {
+        Error,
+        Info,
+        Message
+    }
+
+    public Long getNotificationId() {
+        return notificationId;
+    }
+
+    public void setNotificationId(Long notificationId) {
+        this.notificationId = notificationId;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -54,8 +83,16 @@ public class Notification {
         this.body = body;
     }
 
-    public LocalDateTime getNotificationDateTime() {
-        return notificationDateTime;
+    public Boolean getReadNotification() {
+        return readNotification;
+    }
+
+    public void setReadNotification(Boolean readNotification) {
+        this.readNotification = readNotification;
+    }
+
+    public void setNotificationDateTime(LocalDateTime notificationDateTime) {
+        this.notificationDateTime = notificationDateTime;
     }
 
     public TYPE getNotificationType() {
@@ -64,39 +101,5 @@ public class Notification {
 
     public void setNotificationType(TYPE notificationType) {
         this.notificationType = notificationType;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public LocalDateTime getDate() {
-        return notificationDateTime;
-    }
-
-    public void setNotificationDateTime(LocalDateTime notificationDateTime) {
-        this.notificationDateTime = notificationDateTime;
-    }
-
-    public TYPE getType() {
-        return notificationType;
-    }
-
-    public boolean getReadNotification() {
-        return readNotification;
-    }
-
-    public void setReadNotification(boolean readNotification) {
-        this.readNotification = readNotification;
-    }
-
-    public enum TYPE {
-        Error,
-        Info,
-        Message
     }
 }

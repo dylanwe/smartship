@@ -32,19 +32,29 @@ public class NotificationController {
         this.userRepository = userRepository;
     }
 
+    /**
+     * This is a POST endpoint for creating a new notification for a specific user.
+     *
+     * @param body an ObjectNode containing the notification details, such as title, body and type
+     * @param userId the user id for the user the notification is being created for
+     * @param jwTokenInfo the JWT token information, used to check the user associated with the token
+     * @return a ResponseEntity with the date of the created notification
+     */
     @PostMapping
     public ResponseEntity<?> addNotification(@RequestBody ObjectNode body,
                                              @PathVariable Long userId,
                                              @RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
-        //check user from jwt
+        //check if the user id in the path variable matches the user id in the JWT
         if (!userId.equals(jwTokenInfo.userId()))
             throw new UnauthorizedException("User id doesn't match");
 
+        //extract title, body and type from the request body
         String title = body.path("title").asText();
         String notificationBody = body.path("body").asText();
         String typeString = body.path("type").asText();
         Notification.TYPE type;
 
+        //convert the type string to a Notification.TYPE enum
         if (typeString.equalsIgnoreCase("error")) {
             type = Notification.TYPE.Error;
         } else if (typeString.equalsIgnoreCase("info")) {
@@ -53,23 +63,34 @@ public class NotificationController {
             type = Notification.TYPE.Message;
         }
 
+        //find the user by id and throw an exception if not found
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %d wasn't found", userId)));
 
+        //create a new notification and save it
         Notification notification = new Notification(title, notificationBody, false, LocalDateTime.now(), type, user);
         notificationRepository.save(notification);
 
+        //create a response body and add the date of the notification
         Map<String, Object> responseBody = new HashMap<>();
         LocalDateTime date = notification.getDate();
         responseBody.put("date", date.toLocalDate());
         return ResponseEntity.ok().body(responseBody);
     }
 
+    /**
+     * This is a PUT endpoint that updates the read status of a notification
+     *
+     * @param userId         the id of the user who owns the notification
+     * @param notificationId the id of the notification to update
+     * @param jwTokenInfo    the JWT token information extracted from the request header
+     * @return a response indicating that the update was successful
+     */
     @PutMapping("/{notificationId}")
     public ResponseEntity<?> updateNotification(@PathVariable Long userId,
                                                 @PathVariable Long notificationId,
                                                 @RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
-        // check if the user id in the JWT token matches the user id in the request path
+        //check if the user id in the path variable matches the user id in the JWT
         if (!userId.equals(jwTokenInfo.userId())) {
             throw new UnauthorizedException("User id doesn't match");
         }
@@ -85,66 +106,31 @@ public class NotificationController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * Get all notifications for a specific user
+     *
+     * @param jwTokenInfo JWT token information extracted from request header
+     * @param userId The id of the user for which to retrieve notifications
+     * @return A list of notifications for the specified user, sorted by date in descending order
+     */
     @GetMapping
     public ResponseEntity<List<Notification>> getAllNotificationsForUser(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo,
                                                                          @PathVariable Long userId) {
-        //check user from jwt
+        //check if the user id in the JWT token matches the user id in the request path
         if (!userId.equals(jwTokenInfo.userId()))
             throw new UnauthorizedException("User id doesn't match");
 
+        // find the user with the specified id
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Can't find user id"));
 
+        // Retrieve all notifications for the user, sort by date in descending order, and return as the response body
         return ResponseEntity.ok().body(
                 notificationRepository.findByUserId(user.getId())
                         .stream()
-                        .sorted(Comparator.comparing(Notification::getNotificationDateTime).reversed())
+                        .sorted(Comparator.comparing(Notification::getDate).reversed())
                         .collect(Collectors.toList())
         );
-    }
-
-    @GetMapping("/descending")
-    public ResponseEntity<List<Notification>> getNotificationDescending(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId) {
-        //check user from jwt
-        if (!userId.equals(jwTokenInfo.userId()))
-            throw new UnauthorizedException("User id doesn't match");
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Can't find user id"));
-
-        return ResponseEntity.ok().body(
-                user.getNotification()
-                        .stream()
-                        .sorted(Comparator.comparing(Notification::getNotificationDateTime))
-                        .collect(Collectors.toList())
-        );
-    }
-
-    @GetMapping("/ascending")
-    public ResponseEntity<List<Notification>> getNotificationsAscending(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId) {
-        //check user from jwt
-        if (!userId.equals(jwTokenInfo.userId()))
-            throw new UnauthorizedException("User id doesn't match");
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Can't find user id"));
-
-        return ResponseEntity.ok().body(
-                user.getNotification()
-                        .stream()
-                        .sorted(Comparator.comparing(Notification::getNotificationDateTime).reversed())
-                        .collect(Collectors.toList())
-        );
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<Notification>> searchNotifications(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId, @RequestParam("letters") String letters) {
-        //check user from jwt
-        if (!userId.equals(jwTokenInfo.userId()))
-            throw new UnauthorizedException("User id doesn't match");
-
-        List<Notification> notifications = notificationRepository.findByMessageContainsLetters(letters);
-        return ResponseEntity.ok().body(notifications);
     }
 
     /**
