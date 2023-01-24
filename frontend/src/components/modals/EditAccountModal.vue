@@ -11,7 +11,7 @@
       <div class="flex justify-between">
         <div class="mb-6 w-full mr-4">
           <label for="firstName" class="block mb-1 text-sm font-medium text-neutral-500">First name</label>
-          <input type="text" id="firstName"
+          <input type="text" id="firstName" name="firstName"
                  class="bg-white border border-2 border-neutral-200 text-neutral-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
                  required v-model="this.copyUser.firstName">
         </div>
@@ -42,14 +42,14 @@
         </div>
       </div>
 
-      <div class="flex">
+      <div class="flex gap-2">
         <button v-if="this.userRole === 'Manager'" type="submit" @click="saveAccount(this.copyUser, this.newAssignedShip)"
-                class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors mr-6"
+                class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors "
         >
           Save
         </button>
         <button v-else type="submit" @click="saveAccount(this.copyUser)"
-                class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors mr-6"
+                class="text-white bg-primary-500 hover:bg-primary-600 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center transition-colors "
         >
           Save
         </button>
@@ -70,7 +70,7 @@ import {VueFinalModal} from 'vue-final-modal'
 import User from "@/models/User";
 
 export default {
-  name: "AddOperatorModal",
+  name: "EditAccountModal",
   components: {VueFinalModal},
   inject: ['sessionService', 'shipService'],
   props: ["toEditUser"],

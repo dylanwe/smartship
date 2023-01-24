@@ -58,6 +58,13 @@ export default class UserManagementAdaptor {
         });
     }
 
+    /**
+     * Update a user and the assigned ship
+     *
+     * @param user
+     * @param assignedShip
+     * @returns {Promise<Response>}
+     */
     async updateUser(user, assignedShip) {
          return await fetch(
             `${this.RESOURCE_URL}`,
@@ -70,8 +77,42 @@ export default class UserManagementAdaptor {
         );
     }
 
+    /**
+     * Get all the operators that are assigned to the given ship
+     *
+     * @param ship
+     * @returns {Promise<*|null>}
+     */
     async getOperatorsForShip(ship) {
         return await this.fetchJson(this.RESOURCE_URL + "/ship/" + ship.id);
+    }
+
+    /**
+     * Find a user by the given email
+     *
+     * @param email
+     * @returns {Promise<*|null>}
+     */
+    async findUserByEmail(email) {
+        return await this.fetchJson(this.RESOURCE_URL + "/resetPassword/" + email);
+    }
+
+    /**
+     * Update the password of the given user
+     *
+     * @param id
+     * @param newPassword
+     * @returns {Promise<*|null>}
+     */
+    async updateUserPassword(id, newPassword) {
+        return await this.fetchJson(this.RESOURCE_URL + "/password",
+            {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id, newPassword}),
+                credentials: 'include'
+            }
+        );
     }
 
 }

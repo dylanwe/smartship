@@ -60,8 +60,8 @@ export default {
     emits: ['addWidget', 'closeWidgetMenu'],
 
     async created() {
-      const {shipId} = this.sessionService.getCurrentUser();
-      this.widgets = await this.shipService.getSensors(shipId);
+      const {ship} = this.sessionService.getCurrentUser();
+      this.widgets = await this.shipService.getSensors(ship.id);
     },
 
     data() {

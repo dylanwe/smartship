@@ -20,13 +20,13 @@ public class JWTRequestFilter extends OncePerRequestFilter {
     private final JWTokenUtil jwTokenUtil;
 
     @Autowired
-    public JWTRequestFilter(GlobalConfig globalConfig,      JWTokenUtil jwTokenUtil) {
+    public JWTRequestFilter(GlobalConfig globalConfig, JWTokenUtil jwTokenUtil) {
         this.globalConfig = globalConfig;
         this.jwTokenUtil = jwTokenUtil;
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)throws ServletException, IOException {
         String servletPath = request.getServletPath();
 
         // OPTIONS request and non-secured area should pass through without check

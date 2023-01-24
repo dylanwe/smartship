@@ -33,6 +33,13 @@ export default class ShipAdapter {
         return await this.fetchJson(`/${shipId}/sensors`)
     }
 
+    async updateSensor(sensorId,sensor){
+        return await this.fetchJson(`/sensors/${sensorId}`,{  method: 'PUT',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(sensor)
+        })
+    }
+
     async getShipByShipId(smartShipId) {
         return await this.fetchJson(`/${smartShipId}`)
     }

@@ -14,7 +14,7 @@
       <div class="bg-white flex-1 h-full rounded-2xl p-4">
         <div class="profile-picture flex inline-block items-center">
           <div>
-            <h2 class="text-4xl font-bold text-neutral-900">{{
+            <h2 id="profileName" class="text-4xl font-bold text-neutral-900">{{
                 (user) ? `${user.firstName} ${user.lastName}` : ''
               }}</h2>
             <p class="text-neutral-500">{{ (user) ? `${user.bio}` : '' }}</p>
@@ -81,19 +81,22 @@
 
         </div>
         <ul>
-          <li class="flex items-center border-b border-neutral-200 py-2" v-for="notification in recentNotifications"
-              :key="notification.id">
-            <svg class="text-primary-500 w-6 h-6 stroke-1.5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none"
-                 viewBox="0 0 24 24"
-                 strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-              <path strokeLinecap="round" strokeLinejoin="round"
-                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
-            </svg>
-            <div>
-              <h4 class="text-lg font-bold">{{ notification.title }}</h4>
-              <p class="text-neutral-700">{{ notification.desc }}</p>
-            </div>
-          </li>
+          <router-link to="/dashboard/notifications">
+            <li class="flex items-center border-b border-neutral-200 py-2 hover:underline"
+                v-for="notification in recentNotifications"
+                :key="notification.id">
+              <svg class="text-primary-500 w-6 h-6 stroke-1.5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none"
+                   viewBox="0 0 24 24"
+                   strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round"
+                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/>
+              </svg>
+              <div>
+                <h4 class="text-lg font-bold">{{ notification.title }}</h4>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <p class="text-neutral-700">{{ notification.desc }}</p>
+              </div>
+            </li>
+          </router-link>
         </ul>
       </div>
     </div>
@@ -170,6 +173,7 @@ export default {
       default: 'label'
     },
   },
+
   data() {
     return {
       isToDoModalShown: false,
@@ -179,19 +183,6 @@ export default {
       todos: null,
       recentNotifications: [],
       totalUnread: 0,
-      hoursWorkedChart: {
-        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-        datasets: [
-          {
-            label: 'Hours',
-            backgroundColor: '#92D1F880',
-            data: [8, 12, 14, 10, 10, 14, 5],
-            borderRadius: 10,
-            borderColor: '#0EA5E9',
-            borderWidth: 2,
-          },
-        ]
-      },
 
       toDosDoneChart: {
         labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
@@ -221,7 +212,12 @@ export default {
       }
     }
   },
+
   computed: {
+    /**
+     * Gets the amount of uncompleted to-do's
+     * @returns {number|*}
+     */
     getSelectedAmount() {
       if (this.todos) {
         return this.todos.filter(todo => todo.completed === false).length;
@@ -230,6 +226,7 @@ export default {
       }
     }
   },
+
   async created() {
     this.user = this.sessionService.getCurrentUser();
     this.todos = await this.toDoService.getUserTodos(this.user.id).then(res => res.json());
@@ -239,7 +236,6 @@ export default {
     } = await this.notificationService.recentNotifications(this.user.id).then(res => res.json());
     this.recentNotifications = recentNotifications;
     this.totalUnread = totalUnread;
-    console.log(this.recentNotifications);
   },
 
   methods: {

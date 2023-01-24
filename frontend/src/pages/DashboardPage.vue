@@ -152,7 +152,7 @@ import DeleteWidgetModal from "@/components/modals/DeleteWidgetModal";
 import Grid from "@/utils/Grid";
 import Dashboard from "@/models/Dashboard";
 import ExtractDataSet from "@/utils/ExtractDataSet";
-
+import User from "@/models/User";
 
 export default {
   name: "DashboardIndex",
@@ -201,11 +201,21 @@ export default {
   },
 
   async created() {
-    const {id: dashboardId,layout} = await this.dashboardService.getUserDashboard(this.sessionService.getCurrentUser());
+    const user = this.sessionService.getCurrentUser()
+
+    switch (user.role){
+      case User.ROLE.Admin: { return this.$router.push('dashboard/adminPanel');}
+      case User.ROLE.Manager: { return this.$router.push('dashboard/managerPanel');}
+    }
+
+    const {id: dashboardId,layout} = await this.dashboardService.getUserDashboard(user);
     this.dashboard = new Dashboard(dashboardId)
     this.dashboardId = dashboardId;
 
     this.layout = await Promise.all( layout.map(async (obj) =>  ({...obj, i: this.index++, data: (await this.getWidgetData(obj))})));
+
+
+
   },
 
   computed:{

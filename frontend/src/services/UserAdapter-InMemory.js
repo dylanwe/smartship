@@ -3,12 +3,12 @@ import User from "@/models/User";
 /**
  * @Author: Dylan Weijgertze
  */
-export class UserAdapterInMemory {
+export default class UserAdapterInMemory {
     lastId;
     users;
 
     /**
-     * Create a mock user service
+     * Create a mock user service with 7 mock users
      * @param {number} initialId
      */
     constructor(initialId = 1000) {
@@ -21,6 +21,11 @@ export class UserAdapterInMemory {
         this.users = initialUsers;
     }
 
+    /**
+     * Update information of a user
+     * @param user the new user information
+     * @return the new information of the user
+     */
     updateUserInfo(user) {
         let indexOfUser = this.users.findIndex(u => u.id === user.id);
 
@@ -36,6 +41,9 @@ export class UserAdapterInMemory {
 
     findNotificationSettings() {}
 
+    /**
+     * @returns {User[]} list of users
+     */
     getUsers() {
         return this.users;
     }

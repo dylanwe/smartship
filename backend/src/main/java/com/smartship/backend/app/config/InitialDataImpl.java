@@ -25,10 +25,12 @@ public class InitialDataImpl implements InitialData {
     private final ShipSensorRepository shipSensorRepository;
     private final ShipDataRepository shipDataRepository;
     private final SensorDataRepository sensorDataRepository;
+    private final NotificationRepository notificationRepository;
 
     @Autowired
     public InitialDataImpl(UserRepository userRepository, DashboardRepository dashboardRepository,
-                           NotificationSettingRepository notificationSettingRepository, DashboardItemRepository dashboardItemRepository, WidgetRepository widgetRepository, ShipRepository shipRepository, SensorRepository sensorRepository, ShipSensorRepository shipSensorRepository, ShipDataRepository shipDataRepository, SensorDataRepository sensorDataRepository) {
+                           NotificationSettingRepository notificationSettingRepository, DashboardItemRepository dashboardItemRepository, WidgetRepository widgetRepository, ShipRepository shipRepository, SensorRepository sensorRepository, ShipSensorRepository shipSensorRepository, ShipDataRepository shipDataRepository, SensorDataRepository sensorDataRepository,
+                           NotificationRepository notificationRepository) {
 
         this.userRepository = userRepository;
         this.notificationSettingRepository = notificationSettingRepository;
@@ -40,6 +42,7 @@ public class InitialDataImpl implements InitialData {
         this.shipSensorRepository = shipSensorRepository;
         this.shipDataRepository = shipDataRepository;
         this.sensorDataRepository = sensorDataRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -47,6 +50,7 @@ public class InitialDataImpl implements InitialData {
         createInitialUsers();
         addNotificationSettings();
         createInitialDashboards();
+        createInitialNotifications();
     }
 
     /**
@@ -62,7 +66,7 @@ public class InitialDataImpl implements InitialData {
         String hashedPassword2 = BCrypt.hashpw("manager", BCrypt.gensalt());
         String hashedPassword3 = BCrypt.hashpw("admin", BCrypt.gensalt());
 
-        User user =  userRepository.save(new User(
+        User user = userRepository.save(new User(
                 "John",
                 "Smith",
                 "test@mail.com",
@@ -92,7 +96,7 @@ public class InitialDataImpl implements InitialData {
                 "See everything in it's entirety... effortlessly. That is what it means to truly see."
         ));
 
-        Ship ship =  shipRepository.save(new Ship("07202515-a483-464c-b704-5671f104044b", "Titanic"));
+        Ship ship = shipRepository.save(new Ship("07202515-a483-464c-b704-5671f104044b", "Titanic"));
 
         user.connectToShip(ship);
 
@@ -110,6 +114,39 @@ public class InitialDataImpl implements InitialData {
         if (savedSettings.size() < settings.size()) {
             notificationSettingRepository.saveAll(settings);
         }
+    }
+
+    // Checks if there are any existing notifications in the notificationRepository
+    // If there are, the method does nothing
+    private void createInitialNotifications() {
+        if (notificationRepository.findAll().size() > 0) return;
+        // Retrieves User objects for "test@mail.com", "manager@mail.com", and "admin@mail.com"
+        // using the userRepository's findByEmail method
+        User userOperator = userRepository.findByEmail("test@mail.com").get();
+        User userManager = userRepository.findByEmail("manager@mail.com").get();
+        User userAdmin = userRepository.findByEmail("admin@mail.com").get();
+        // Creates a List of Notification objects, each with different properties
+        // and saves them to the notificationRepository
+        notificationRepository.saveAll(List.of(
+                new Notification("Your workday has ended",
+                        "Your shift is done, you have been working 8 hours",
+                        false, LocalDateTime.now(), Notification.TYPE.Message, userOperator),
+                new Notification("Bad weather conditions",
+                        "There is a storm ahead. Make sure that you are prepared",
+                        false, LocalDateTime.now(), Notification.TYPE.Info, userOperator),
+                new Notification("Can you add a new operator?",
+                        "Could you please add a new operator to the Titanic?",
+                        false, LocalDateTime.now(), Notification.TYPE.Message, userManager),
+                new Notification("Bad weather conditions in the Atlantic Ocean",
+                        "There is a storm ahead. Make sure that you are warn the operators",
+                        false, LocalDateTime.now(), Notification.TYPE.Info, userManager),
+                new Notification("We would like to join SmartShip",
+                        "We would like to join SmartShip and use your technology for our business.",
+                        false, LocalDateTime.now(), Notification.TYPE.Message, userManager),
+                new Notification("We would like to add a new manager.",
+                        "We have hired a new manager and would like to add him to our account.",
+                        false, LocalDateTime.now(), Notification.TYPE.Info, userManager)
+        ));
     }
 
     /**
@@ -153,9 +190,6 @@ public class InitialDataImpl implements InitialData {
         }
 
 
-
-
-
         widgetRepository.saveAll(List.of(widgetTemperatures));
 
         List<ShipSensor> shipsSensors = List.of(
@@ -180,7 +214,7 @@ public class InitialDataImpl implements InitialData {
                 Random random = new Random();
 
                 // Get a random year, month, day, hour, minute, and second
-                int year = random.nextInt(10_000) + 1;
+                int year = LocalDate.now().getYear();
                 int month = random.nextInt(12) + 1;
                 int day = random.nextInt(28) + 1;
                 int hour = random.nextInt(24);
@@ -188,7 +222,8 @@ public class InitialDataImpl implements InitialData {
                 int second = random.nextInt(60);
 
                 Double randomValue = new Random().nextDouble(100);
-                SensorData sensorData = sensorDataRepository.save(new SensorData(randomValue, LocalDateTime.of(2022, month, day, hour, minute, second).atZone(ZoneId.systemDefault()).toEpochSecond(), shipSensor));
+                SensorData sensorData = sensorDataRepository.save(new SensorData(randomValue, LocalDateTime.of(year,
+                        month, day, hour, minute, second).atZone(ZoneId.systemDefault()).toEpochSecond(), shipSensor));
 
                 shipDataRepository.save(new ShipData(randomValue, "123", "123", sensorData));
             }

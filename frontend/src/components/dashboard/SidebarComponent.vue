@@ -18,7 +18,7 @@
     <!--Menu-->
     <div class="flex flex-col justify-between h-full text-neutral-500">
       <ul>
-        <li>
+        <li v-if="this.role === 'Operator'">
           <router-link to="/dashboard"
                        class="flex items-center hover:bg-neutral-100 -mx-2 p-2 rounded-lg transition-colors">
             <div class="mr-2">
@@ -113,6 +113,8 @@
 </template>
 
 <script>
+
+
 export default {
   name: "SidebarComponent",
   inject: ["sessionService"],
@@ -126,10 +128,17 @@ export default {
     }
   },
   methods: {
+    /**
+     * Toggle menu to be open or closed
+     */
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
       this.$emit('isMenuOpen', this.isMenuOpen);
     },
+
+    /**
+     * Log the current user out
+     */
     signOut() {
       this.sessionService.signOut();
       this.$router.push("/");

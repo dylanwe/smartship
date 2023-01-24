@@ -52,10 +52,7 @@ public class ShipController {
         String name = body.path("name").asText();
         String smartShipId = body.path("shipId").asText();
 
-        Ship ship = new Ship(
-                smartShipId,
-                name
-        );
+        Ship ship = new Ship(smartShipId,name);
 
         shipRepository.save(ship);
 
@@ -219,5 +216,23 @@ public class ShipController {
         return ResponseEntity.ok().body(foundShip);
     }
 
+
+    @PutMapping("/sensors/{sensorId}")
+    @JsonView(CustomJson.Summary.class)
+    public ResponseEntity<ShipSensor> updateSensor( @PathVariable String sensorId, @RequestBody ObjectNode body ) {
+
+     ShipSensor foundShipSensor = shipSensorRepository.findById(sensorId)
+             .orElseThrow(() -> new NotFoundException(String.format("Ship Sensor with id %s wasn't found", sensorId)));
+
+        double min = body.get("minThreshold").asDouble();
+        double max = body.get("maxThreshold").asDouble();
+
+        foundShipSensor.setMinThreshold(body.get("minThreshold").isNull() ? null : min);
+        foundShipSensor.setMaxThreshold(body.get("maxThreshold").isNull() ? null : max);
+
+        shipSensorRepository.save(foundShipSensor);
+
+        return ResponseEntity.ok().body(foundShipSensor);
+    }
 
 }

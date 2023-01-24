@@ -33,9 +33,8 @@ public class RefreshTokenUtil {
      */
     public RefreshToken createRefreshToken(Long userId) {
         // First delete if user already has a refreshToken
-        if (refreshTokenRepository.existsByUserId(userId)) {
+        if (refreshTokenRepository.existsByUserId(userId))
             refreshTokenRepository.deleteAllByUserId(userId);
-        }
 
         // Give new token
         RefreshToken refreshToken = new RefreshToken();

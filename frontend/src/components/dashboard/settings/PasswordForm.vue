@@ -73,6 +73,9 @@ export default {
   },
 
   methods: {
+    /**
+     * Update a users password
+     */
     async updateUserPassword() {
       const response = await this.userService.updateUserPassword(
           this.password,

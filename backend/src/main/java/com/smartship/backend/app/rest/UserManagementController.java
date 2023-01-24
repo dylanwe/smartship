@@ -2,9 +2,12 @@ package com.smartship.backend.app.rest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.smartship.backend.app.exceptions.NotAcceptableException;
 import com.smartship.backend.app.exceptions.NotFoundException;
+import com.smartship.backend.app.models.Dashboard;
 import com.smartship.backend.app.models.Ship;
 import com.smartship.backend.app.models.User;
+import com.smartship.backend.app.repositories.DashboardRepository;
 import com.smartship.backend.app.repositories.ShipRepository;
 import com.smartship.backend.app.repositories.UserManagementRepository;
 import org.mindrot.jbcrypt.BCrypt;
@@ -22,11 +25,14 @@ public class UserManagementController {
 
     private final UserManagementRepository userManagementRepository;
 
+    private final DashboardRepository dashboardRepository;
+
     private final ShipRepository shipRepository;
 
     @Autowired
-    public UserManagementController(UserManagementRepository userManagementRepository, ShipRepository shipRepository) {
+    public UserManagementController(UserManagementRepository userManagementRepository, DashboardRepository dashboardRepository, ShipRepository shipRepository) {
         this.userManagementRepository = userManagementRepository;
+        this.dashboardRepository = dashboardRepository;
         this.shipRepository = shipRepository;
     }
 
@@ -44,6 +50,15 @@ public class UserManagementController {
         return ResponseEntity.ok().body(foundUsers);
     }
 
+    @GetMapping(path = "/resetPassword/{email}")
+    public ResponseEntity<User> findUserByEmail(@PathVariable String email) {
+
+        User foundUser = userManagementRepository.findByEmail(email).orElseThrow(() -> new NotAcceptableException(
+                String.format("User with email %s wasn't found", email)));
+
+        return ResponseEntity.ok().body(foundUser);
+    }
+
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<User> deleteUserById(@PathVariable long id) {
 
@@ -54,6 +69,16 @@ public class UserManagementController {
             //Remove the connection the user has with the ship
             foundUser.removeShip(foundUser.getShip());
             //Update the database, so it knows it has no connection anymore
+            userManagementRepository.save(foundUser);
+        }
+
+        if (foundUser.getDashboard() != null) {
+            Dashboard dashboard = foundUser.getDashboard();
+
+            //Remove the connection the user has with the dashboard
+            dashboard.removeUser(foundUser);
+            //Update the database, so it knows it has no connection anymore
+            dashboardRepository.save(dashboard);
             userManagementRepository.save(foundUser);
         }
 
@@ -127,6 +152,26 @@ public class UserManagementController {
         User updatedUser = userManagementRepository.save(foundUser);
 
         return ResponseEntity.ok().body(updatedUser);
+    }
+
+    @PutMapping(path = "/password")
+    public ResponseEntity<User> updateUserPassword(@RequestBody ObjectNode body) {
+        long id = Long.parseLong(body.path("id").asText());
+        String newPassword = body.path("newPassword").asText();
+
+        User foundUser = userManagementRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(String.format(
+                        "User with id %s wasn't found",
+                        id
+                )));
+
+        String newHashedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+
+        // save the new password
+        foundUser.setHashedPassword(newHashedPassword);
+        userManagementRepository.save(foundUser);
+
+        return ResponseEntity.ok().body(foundUser);
     }
 
 }
