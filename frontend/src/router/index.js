@@ -11,6 +11,7 @@ import NotificationIndex from "@/pages/NotificationPage";
 import ManagerIndex from "@/pages/ManagerPage";
 import AdminIndex from "@/pages/AdminPage";
 
+// Pages you can go to without logging in
 const savePages = ["login", "resetPassword"];
 
 const routes = [
@@ -47,7 +48,7 @@ export const router = createRouter({
     routes
 });
 
-// Protect all pages except for login
+// Make sure that a user is logged in when not going to a savePage
 router.beforeEach((to, from, next) => {
     if (!savePages.includes(to.name) && !SessionSbService.isLoggedIn) {
         next({name: 'login'})

@@ -138,6 +138,9 @@ export default {
   },
 
   methods: {
+    /**
+     * Update information of the logged-in user
+     */
     async updateUserInfo() {
       const updatedUser = await this.userService.updateUserInfo(toRaw(this.userCopy));
 

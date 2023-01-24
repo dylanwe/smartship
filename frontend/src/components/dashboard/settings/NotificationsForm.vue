@@ -60,9 +60,13 @@ export default {
   },
 
   methods: {
+    /**
+     * Update the notification preferences for the logged-in user
+     */
     async updateNotificationPreferences() {
       const settings = [];
 
+      // build notification settings objects and add them to settings
       for (const notificationSettingsKey in this.notificationSettings) {
         const notification = {};
 
