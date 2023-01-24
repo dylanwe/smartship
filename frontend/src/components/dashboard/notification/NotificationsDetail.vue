@@ -1,5 +1,5 @@
 <template>
-  <!-- SELECTED NOTIFICATION -->
+  <!-- Selected notification -->
   <div v-if="selectedNotification" class="bg-white rounded-2xl p-4">
     <div class="flex justify-between">
       <h2 class="text-2xl font-semibold text-neutral-900">
@@ -10,6 +10,8 @@
       </time>
     </div>
     <div class="pt-1 pb-7">
+
+      <!-- Style types -->
       <span v-if="selectedNotification.notificationType.toUpperCase() === 'INFO'"
             class="bg-primary-200 text-primary-800 text-xs font-inter mr-2 px-2.5 py-0.5 rounded-full">Info</span>
       <span v-else-if="selectedNotification.notificationType.toUpperCase() === 'ERROR'"
@@ -39,8 +41,9 @@ export default {
 
   methods: {
     formatDate(date){
-      const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-      return new Date(date).toLocaleDateString("en-US", options);
+      //format the date
+      const format = { year: 'numeric', month: '2-digit', day: '2-digit' };
+      return new Date(date).toLocaleDateString("en-US", format);
     }
   }
 }

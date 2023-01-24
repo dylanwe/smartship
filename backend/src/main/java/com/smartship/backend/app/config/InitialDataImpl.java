@@ -66,7 +66,7 @@ public class InitialDataImpl implements InitialData {
         String hashedPassword2 = BCrypt.hashpw("manager", BCrypt.gensalt());
         String hashedPassword3 = BCrypt.hashpw("admin", BCrypt.gensalt());
 
-        User user =  userRepository.save(new User(
+        User user = userRepository.save(new User(
                 "John",
                 "Smith",
                 "test@mail.com",
@@ -96,7 +96,7 @@ public class InitialDataImpl implements InitialData {
                 "See everything in it's entirety... effortlessly. That is what it means to truly see."
         ));
 
-        Ship ship =  shipRepository.save(new Ship("07202515-a483-464c-b704-5671f104044b", "Titanic"));
+        Ship ship = shipRepository.save(new Ship("07202515-a483-464c-b704-5671f104044b", "Titanic"));
 
         user.connectToShip(ship);
 
@@ -116,18 +116,24 @@ public class InitialDataImpl implements InitialData {
         }
     }
 
+    // Checks if there are any existing notifications in the notificationRepository
+    // If there are, the method does nothing
     private void createInitialNotifications() {
         if (notificationRepository.findAll().size() > 0) return;
+        // Retrieves User objects for "test@mail.com", "manager@mail.com", and "admin@mail.com"
+        // using the userRepository's findByEmail method
         User userOperator = userRepository.findByEmail("test@mail.com").get();
         User userManager = userRepository.findByEmail("manager@mail.com").get();
         User userAdmin = userRepository.findByEmail("admin@mail.com").get();
+        // Creates a List of Notification objects, each with different properties
+        // and saves them to the notificationRepository
         notificationRepository.saveAll(List.of(
                 new Notification("Your workday has ended",
-                "Your shift is done, you have been working 8 hours",
-                false, LocalDateTime.now(), Notification.TYPE.Message, userOperator),
+                        "Your shift is done, you have been working 8 hours",
+                        false, LocalDateTime.now(), Notification.TYPE.Message, userOperator),
                 new Notification("Bad weather conditions",
-                "There is a storm ahead. Make sure that you are prepared",
-                false, LocalDateTime.now(), Notification.TYPE.Info, userOperator),
+                        "There is a storm ahead. Make sure that you are prepared",
+                        false, LocalDateTime.now(), Notification.TYPE.Info, userOperator),
                 new Notification("Can you add a new operator?",
                         "Could you please add a new operator to the Titanic?",
                         false, LocalDateTime.now(), Notification.TYPE.Message, userManager),
@@ -182,9 +188,6 @@ public class InitialDataImpl implements InitialData {
         for (Sensor sensor : sensors) {
             if (!sensor.equals(sensorEngineUsage1)) widgetTemperatures.addSensor(sensor);
         }
-
-
-
 
 
         widgetRepository.saveAll(List.of(widgetTemperatures));
