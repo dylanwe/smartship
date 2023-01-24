@@ -140,7 +140,7 @@ import Notification from "@/models/notifications/Notification";
 import NotificationsDetail from "@/components/dashboard/notification/NotificationsDetail";
 
 export default {
-  inject: ["notificationService", "userService", "sessionService"],
+  inject: ["notificationService", "sessionService"],
   name: "NotificationIndex",
   components: {NotificationsDetail},
   emits: [
