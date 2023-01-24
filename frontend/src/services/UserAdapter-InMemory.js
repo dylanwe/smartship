@@ -21,6 +21,11 @@ export default class UserAdapterInMemory {
         this.users = initialUsers;
     }
 
+    /**
+     * Update information of a user
+     * @param user the new user information
+     * @return the new information of the user
+     */
     updateUserInfo(user) {
         let indexOfUser = this.users.findIndex(u => u.id === user.id);
 

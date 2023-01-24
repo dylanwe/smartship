@@ -128,10 +128,17 @@ export default {
     }
   },
   methods: {
+    /**
+     * Toggle menu to be open or closed
+     */
     toggleMenu() {
       this.isMenuOpen = !this.isMenuOpen;
       this.$emit('isMenuOpen', this.isMenuOpen);
     },
+
+    /**
+     * Log the current user out
+     */
     signOut() {
       this.sessionService.signOut();
       this.$router.push("/");

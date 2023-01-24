@@ -48,6 +48,11 @@ export default class User {
         );
     }
 
+    /**
+     * Creates a user instance from the backend json
+     * @param userJson
+     * @return {User}
+     */
     static createUserFromJson(userJson) {
         return new User(
             userJson.id,
@@ -61,6 +66,11 @@ export default class User {
         );
     }
 
+    /**
+     * Create a sample user
+     * @param id the id the user instance should have
+     * @return {User} the newly created user
+     */
     static createSampleUser(id) {
         const firstNames = ["Harry","Ross",
             "Bruce","Cook",

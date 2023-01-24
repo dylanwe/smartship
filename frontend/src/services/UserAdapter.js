@@ -6,6 +6,9 @@ import User from "@/models/User";
 export default class UserAdapter {
     RESOURCE_URL;
 
+    /**
+     * @param resourceUrl the url to find users with
+     */
     constructor(resourceUrl) {
         this.RESOURCE_URL = resourceUrl;
     }
@@ -55,6 +58,12 @@ export default class UserAdapter {
         );
     }
 
+    /**
+     * Update the notification preferences
+     *
+     * @param preferences the new preferences
+     * @return the newly added preferences
+     */
     async updateNotificationSettings(preferences) {
         return await fetch(
             `${this.RESOURCE_URL}/notification-preferences`,
