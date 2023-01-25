@@ -103,10 +103,12 @@ class DashboardRepositoryTest {
         dashboard = new Dashboard(bruce);
         dashboardItem = new DashboardItem(1, 3, 2, 2, shipSensor);
 
-        boolean added = dashboard.addToLayout(dashboardItem);
+        assertThat(dashboard.getLayout().size()).isZero();
+
+        dashboard.addToLayout(dashboardItem);
         dashboardRepository.save(dashboard);
 
-        assertThat(added).isTrue();
+        assertThat( dashboard.getLayout().size() >= 1).isTrue();
     }
 
     @Test

@@ -19,9 +19,11 @@ public class DashboardItem {
     @JsonView(CustomJson.Shallow.class)
     private int y;
 
+    // Width
     @JsonView(CustomJson.Shallow.class)
     private int w;
 
+    // Height
     @JsonView(CustomJson.Shallow.class)
     private int h;
 

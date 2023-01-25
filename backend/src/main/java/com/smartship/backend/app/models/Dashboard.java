@@ -34,19 +34,6 @@ public class Dashboard {
         this.user = user;
     }
 
-
-    public void addAllToLayout(DashboardItem[] items){
-        for (DashboardItem dashboardItem : layout) {
-          removeItem(dashboardItem);
-        }
-
-        for (DashboardItem item : items) {
-            System.out.println(item.getId());
-            addToLayout(item);
-        }
-
-    }
-
     /**
      * Associates the given item with this layout, if not yet associated
      *
@@ -75,6 +62,12 @@ public class Dashboard {
         return false;
     }
 
+    /**
+     * Associates the given user with this dashboard, if not yet associated
+     *
+     * @param user user
+     * @return whether a new association has been added
+     */
     public boolean addUser(User user) {
         if (user != null && user.getDashboard() == null) {
             // update both sides of the association
@@ -85,22 +78,21 @@ public class Dashboard {
         return false;
     }
 
+    /**
+     * Dissociates the given user with this dashboard
+     *
+     * @param user user
+     * @return whether an existing association has been removed
+     */
     public boolean removeUser(User user) {
         if (user != null && this.getUser() != null) {
             this.setUser(null);
             user.removeDashboard(this);
             return true;
         }
-
         return false;
     }
 
-    public DashboardItem findItemById(Long id) {
-        return this.layout.stream().filter(c -> Objects.equals(c.getId(), id)).findFirst().orElse(null);
-    }
-    public DashboardItem findItem(DashboardItem item) {
-        return this.layout.stream().filter(c -> Objects.equals(c,item)).findFirst().orElse(null);
-    }
 
     public void setId(Long id) {
         this.id = id;
@@ -122,7 +114,4 @@ public class Dashboard {
         return layout;
     }
 
-    public void setLayout(Set<DashboardItem> layout) {
-        this.layout = layout;
-    }
 }

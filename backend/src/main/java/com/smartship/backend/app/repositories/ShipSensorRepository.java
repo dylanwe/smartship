@@ -12,5 +12,4 @@ import java.util.Optional;
 @Repository
 public interface ShipSensorRepository extends JpaRepository<ShipSensor, String> {
     List<ShipSensor> findShipSensorByShipId(Long shipId);
-//    ShipSensor findShipSensorBy
 }
