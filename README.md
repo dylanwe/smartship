@@ -1,4 +1,4 @@
-- Techinical documentation: https://gitlab.fdmci.hva.nl/se-ewa/2022-2023-1/smart-4/-/wikis/Technical-documentation
+- Technical documentation: https://gitlab.fdmci.hva.nl/se-ewa/2022-2023-1/smart-4/-/wikis/Technical-documentation
 
 ## Deployed application
 link: https://smartship-fe-app-production.up.railway.app/
@@ -8,9 +8,17 @@ link: https://smartship-fe-app-production.up.railway.app/
 email: test@mail.com
 password: secret
 
+**Admin**
+email: *admin@mail.com*
+password: *admin*
 
-## Develop for the appilcation
-The frontend and backend can be worked on as seperate projects. Simply clone the project and open the desired portion(backend or frontend) in your editor. With your terminal navigate into the frontend and run:
+**Manager**
+email: *manager@mail.com*
+password: *manager*
+
+
+## Develop for the application
+The frontend and backend can be worked on as separate projects. Simply clone the project and open the desired portion(backend or frontend) in your editor. With your terminal navigate into the frontend and run:
 ```
 npm install
 ```
