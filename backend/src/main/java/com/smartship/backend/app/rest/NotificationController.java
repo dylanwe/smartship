@@ -11,6 +11,7 @@ import com.smartship.backend.app.utility.JWTokenInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -132,6 +133,13 @@ public class NotificationController {
         );
     }
 
+    /**
+     * find recent notifications
+     *
+     * @param jwTokenInfo JWT token for auth
+     * @param userId id of the user
+     * @return the all recent unread notifications
+     */
     @GetMapping("/recent")
     public ResponseEntity<Map<String, Object>> findRecent(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId) {
 

@@ -33,8 +33,15 @@ public class ToDoController {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Gets all the to-do's for the user
+     *
+     * @param jwTokenInfo JWT for auth
+     * @param userId      id of the user
+     * @return all to-do's of the user
+     */
     @GetMapping
-    public ResponseEntity<List<ToDo>> getAllTodosForUser(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo,@PathVariable Long userId) {
+    public ResponseEntity<List<ToDo>> getAllTodosForUser(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId) {
         //check user from jwt
         if (!userId.equals(jwTokenInfo.userId()))
             throw new UnauthorizedException("User id doesn't match");
@@ -50,8 +57,15 @@ public class ToDoController {
         );
     }
 
+    /**
+     * get to-dos that are supposed to be done before /or today
+     *
+     * @param jwTokenInfo
+     * @param userId
+     * @return a list of to-do's that are supposed to be done before /or today
+     */
     @GetMapping("due")
-    public ResponseEntity<?> getAllTodosForUserBeforeAndToday(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo,@PathVariable Long userId) {
+    public ResponseEntity<?> getAllTodosForUserBeforeAndToday(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId) {
         //check user from jwt
         if (!userId.equals(jwTokenInfo.userId()))
             throw new UnauthorizedException("User id doesn't match");
@@ -67,8 +81,17 @@ public class ToDoController {
                 .collect(Collectors.toList()));
     }
 
+    /**
+     * Get to-do's
+     *
+     * @param jwTokenInfo JWT for user auth
+     * @param userId      id of the user
+     * @param toDoId      id of the to-do
+     * @return to-do
+     */
+
     @GetMapping(path = "{toDoId}")
-    public ResponseEntity<ToDo> getToDo(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo,@PathVariable Long userId, @PathVariable Long toDoId ) {
+    public ResponseEntity<ToDo> getToDo(@RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo, @PathVariable Long userId, @PathVariable Long toDoId) {
         // check user from jwt
         if (!userId.equals(jwTokenInfo.userId()))
             throw new UnauthorizedException("User id doesn't match");
@@ -78,7 +101,14 @@ public class ToDoController {
 
         return ResponseEntity.ok().body(toDo);
     }
-
+    /**
+     * Adding a to-do
+     *
+     * @param body        of the to-do request
+     * @param userId      id of the user
+     * @param jwTokenInfo
+     * @return the added to-do
+     */
     @JsonIgnoreProperties("user")
     @PostMapping
     public ResponseEntity<?> addToDo(@RequestBody ObjectNode body, @PathVariable Long userId, @RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
@@ -93,9 +123,18 @@ public class ToDoController {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with id %d wasn't found", userId)));
 
-        return ResponseEntity.ok().body(toDoRepository.save(new ToDo(null,name, false, null, dueDate, LocalDate.now(), user)));
+        return ResponseEntity.ok().body(toDoRepository.save(new ToDo(null, name, false, null, dueDate, LocalDate.now(), user)));
     }
 
+    /**
+     * Update an existing to-do
+     *
+     * @param todoId      id of the to-do
+     * @param body        of the to-do
+     * @param userId      id of the user
+     * @param jwTokenInfo JWT for user auth
+     * @return the updated to-do
+     */
     @PutMapping(path = "{todoId}")
     public ResponseEntity<ToDo> updateToDo(@PathVariable Long todoId, @RequestBody ObjectNode body, @PathVariable Long userId, @RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
         //check user from jwt
@@ -121,7 +160,15 @@ public class ToDoController {
         return ResponseEntity.ok().body(toDoRepository.save(foundToDo));
     }
 
-    @DeleteMapping(path ="{todoId}")
+    /**
+     * Delete a to-do
+     *
+     * @param todoId      id of the to-do
+     * @param userId      id of the user
+     * @param jwTokenInfo JWT for user auth
+     * @return deleted to-do
+     */
+    @DeleteMapping(path = "{todoId}")
     public ResponseEntity<ToDo> deleteToDo(@PathVariable Long todoId, @PathVariable Long userId, @RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
         //check user from jwt
         if (!userId.equals(jwTokenInfo.userId()))

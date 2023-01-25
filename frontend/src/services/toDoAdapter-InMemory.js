@@ -1,3 +1,7 @@
+/**
+ * @Author Lisanne Lin
+ */
+
 export default class ToDoAdapterInMemory {
     userToDos;
     users;
@@ -29,18 +33,39 @@ export default class ToDoAdapterInMemory {
         ];
     }
 
+    /**
+     * gets the to-do's of a user by userId
+     *
+     * @param userId id of a user
+     * @returns {[]} a list of to-do's
+     */
     getUserTodos(userId) {
         return this.userToDos
             .find(user => user.userId === userId) // find the user
             ?.toDos; // get that users to-do if any
     }
 
+    /**
+     * gets a to-do from a user
+     *
+     * @param userId id of a user
+     * @param toDoId id of a to-do
+     * @returns the found to-do
+     */
     getUserToDoById(userId, toDoId) {
         return this.userToDos
             .find(user => user.userId === userId) // find the user
-            ?.toDos.find(toDo => toDo.id === toDoId); //find the to-do with id
+            ?.toDos.find(toDo => toDo.id === toDoId); // find the to-do with the correct id
     }
 
+    /**
+     * saves a to-do for a user
+     *
+     * @param userId id of a user
+     * @param name of the new to-do
+     * @param dueDate of the new to-do
+     * @returns the newly added to-do
+     */
     saveTodo(userId, name, dueDate) {
         // make a new to-do with today's date
         const newToDo = {
@@ -54,13 +79,19 @@ export default class ToDoAdapterInMemory {
 
         // find user, get his todos and add this new to do to that user's todos
         this.userToDos
-            .find(user => user.userId === userId) // find the user
-            ?.toDos.push(newToDo); // add new to-do
+            .find(user => user.userId === userId) // find the correct user
+            ?.toDos.push(newToDo); // adds new to-do to the user's to-do list
 
         return newToDo;
     }
 
-
+    /**
+     * updates an existing to-do
+     *
+     * @param userId id of the user
+     * @param toDo the to-do for the user
+     * @returns the updated to-do
+     */
     updateToDo(userId, toDo) {
         // find the users todos
         const userToDos = this.userToDos
