@@ -1,7 +1,6 @@
 package com.smartship.backend.app.rest;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.smartship.backend.app.models.ToDo;
 import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.ToDoRepository;
 import com.smartship.backend.app.repositories.UserRepository;
@@ -12,7 +11,6 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.cglib.core.Local;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 
@@ -63,6 +61,7 @@ public class ToDoControllerTest {
         loginJson.put("password", "secret");
         LoginResponse loginResponse = restTemplate.postForObject("/api/v1/auth/login", loginJson, LoginResponse.class);
 
+        // give the header the correct JWT token of the user
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(loginResponse.jwtToken());
 
@@ -71,23 +70,24 @@ public class ToDoControllerTest {
                 String.valueOf(LocalDate.now().getMonthValue()));
         String toDoDate = LocalDate.now().getDayOfMonth() + "-" + month + "-" + LocalDate.now().getYear();
 
-        Map<String, String> json = new HashMap<>();
-        json.put("name", toDoName);
-        json.put("dueDate", toDoDate);
+        // make request body
+        Map<String, String> requestBody = new HashMap<>();
+        requestBody.put("name", toDoName);
+        requestBody.put("dueDate", toDoDate);
 
-        HttpEntity<Map<String, String>> todoJsonWithAuth = new HttpEntity<>(json, headers);
+        // make request with the requestBody and headers(with authentication)
+        HttpEntity<Map<String, String>> requestWithAuth = new HttpEntity<>(requestBody, headers);
 
-        // create request
-        ObjectNode response = restTemplate.postForObject("/api/v1/users/" + bruce.getId() + "/todos", todoJsonWithAuth, ObjectNode.class);
+        // send request and receive response
+        ObjectNode response = restTemplate.postForObject("/api/v1/users/" + bruce.getId() + "/todos", requestWithAuth, ObjectNode.class);
 
-        System.out.println(response);
-
+        // checks if json values are correct
         assertEquals(toDoName, response.path("name").asText());
-        assertEquals(LocalDate.now().getYear() + "-" + month + "-"+ LocalDate.now().getDayOfMonth(), response.path("dueAt").asText());
-        assertEquals(LocalDate.now().getYear() + "-" + month + "-"+ LocalDate.now().getDayOfMonth(), response.path("createdAt").asText());
+        assertEquals(LocalDate.now().getYear() + "-" + month + "-" + LocalDate.now().getDayOfMonth(), response.path("dueAt").asText());
+        assertEquals(LocalDate.now().getYear() + "-" + month + "-" + LocalDate.now().getDayOfMonth(), response.path("createdAt").asText());
 
         //Check if user has to do
-        assertEquals(1, toDoRepository.findAll().size());
+        assertEquals(1, toDoRepository.findAll().size(), "Expected to find 1 todo, but none/more were found");
     }
 
 }

@@ -54,17 +54,18 @@ public class ToDoRepositoryTest {
         userRepository.deleteAll();
     }
 
-
     @Test
     void shouldNotFindAnyToDos() {
         List<ToDo> todos = toDoRepository.findAll();
         // check if todos is empty
-        assertThat(todos.size()).isEqualTo(0);
+        assertThat(todos.size())
+                .withFailMessage("Expected to find 0, but found one/more")
+                .isEqualTo(0);
     }
 
     @Test
     void ShouldFindAllByUserIdAndDueAtBefore() {
-        // make a couple of todos, some will have a due date in the future, save all those todos
+        // some will have a due date in the future
         User bruce = userRepository.save(new User(
                 "Bruce",
                 "Wayne",
@@ -108,14 +109,18 @@ public class ToDoRepositoryTest {
                 .findAllByUserIdAndDueAtBefore(bruce.getId(), LocalDate.now());
 
         // assert that we only have 2 todos
-        assertThat(dueToDos.size()).isEqualTo(2);
+        assertThat(dueToDos.size())
+                .withFailMessage("Expected to find 2, but found less than/more")
+                .isEqualTo(2);
     }
 
     @Test
     void ShouldFindAllByUserId() {
+        // save users
         User savedFrank = userRepository.save(frank);
         User savedBruce = userRepository.save(bruce);
 
+        // create new to-do's
         toDoRepository.saveAll(List.of(
                 new ToDo(
                         "Check engine",
@@ -144,12 +149,17 @@ public class ToDoRepositoryTest {
                 )
         ));
 
-
+        // get the list of to-dos of the users
         List<ToDo> franksTodos = toDoRepository.findAllByUserId(savedFrank.getId());
         List<ToDo> bruceTodos = toDoRepository.findAllByUserId(savedBruce.getId());
 
-        assertThat(franksTodos.size()).isEqualTo(1);
-        assertThat(bruceTodos.size()).isEqualTo(2);
+        // assert the size of the to-do's of the user
+        assertThat(franksTodos.size())
+                .withFailMessage("Expected to find 1, but found none/more")
+                .isEqualTo(1);
+        assertThat(bruceTodos.size())
+                .withFailMessage("Expected to find 2, but found one/more")
+                .isEqualTo(2);
     }
 
     @Test
@@ -159,7 +169,7 @@ public class ToDoRepositoryTest {
 
         User savedFrank = userRepository.save(frank);
 
-        ToDo chonka = toDoRepository.save(new ToDo(
+        ToDo newToDo = toDoRepository.save(new ToDo(
                 "Update ship data",
                 true,
                 LocalDate.now().minusDays(1),
@@ -170,14 +180,18 @@ public class ToDoRepositoryTest {
 
         // check if to do is added
         todos = toDoRepository.findAll();
-        assertThat(todos.size()).isEqualTo(1);
+        assertThat(todos.size())
+                .withFailMessage("Expected to find 1, but found none/more")
+                .isEqualTo(1);
 
         // remove added to do by id
-        toDoRepository.deleteById(chonka.getId());
+        toDoRepository.deleteById(newToDo.getId());
 
         // check if to do is deleted
         todos = toDoRepository.findAll();
-        assertThat(todos.size()).isEqualTo(0);
+        assertThat(todos.size())
+                .withFailMessage("Expected to find 0, but found one/more")
+                .isEqualTo(0);
 
 
     }

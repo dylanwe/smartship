@@ -11,6 +11,7 @@ let userService;
 let toDoService;
 let dateOfToday;
 
+//create new user and to-dos before every test
 beforeEach(function () {
     userService = new UserAdapterInMemory(FIRST_ID_USERS);
     toDoService = new ToDoAdapterInMemory(FIRST_ID_TODOS, userService);
@@ -62,7 +63,7 @@ it('should get user todo by todo id', () => {
     // save a to-do
     toDoService.saveTodo(user.id, name, dateOfToday);
 
-    // get the to do by it's id
+    // get the to do by its id
     const foundToDo = toDoService.getUserToDoById(user.id, FIRST_ID_TODOS);
 
     // check if gotten to-do is the same as the saved one
