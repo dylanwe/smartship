@@ -46,7 +46,14 @@ it('should not find available coords', () => {
     expect(grid.getCoordinates({h: 2, w: 2})).toBe(null);
 });
 
+it('should check if the placement is valid and in bounds', () => {
+    expect(grid.checkForPlacement(3, 3, {h: 1, w: 1})).toEqual(false);
+    expect(grid.checkForPlacement(2, 2, {h: 2, w: 2})).toEqual(false);
+});
 
-it("should prevent out of bounds", () => {
-    expect(grid.checkForPlacement(6, 2, {h: 2, w: 2})).toBe(false);
-})
+it('should check if the placement of an object is valid', () => {
+    expect(grid.checkForPlacement(0, 0, {h: 1, w: 1})).toEqual(false);
+    expect(grid.checkForPlacement(2, 0, {h: 1, w: 2})).toEqual(true);
+    expect(grid.checkForPlacement(0, 2, {h: 2, w: 1})).toEqual(false);
+    expect(grid.checkForPlacement(2, 2, {h: 2, w: 2})).toEqual(false);
+});
