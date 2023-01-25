@@ -106,13 +106,22 @@ export default {
       this.$emit('close');
     },
 
+    /**
+     * Update sensor's min and max threshold values
+     */
     async updateSensor() {
+      // check if min threshold is string or number
       this.selectedSensor.minThreshold = typeof this.min === 'string' ? null : this.min;
+      // check if max threshold is string or number
       this.selectedSensor.maxThreshold = typeof this.max === 'string' ? null : this.max;
 
+      // update sensor in the ship service
       await this.shipService.updateSensor(this.selectedSensor?.id, this.selectedSensor)
+
+      // close the modal
       this.closeModal();
     }
+
   },
   watch: {
     async 'ship'() {

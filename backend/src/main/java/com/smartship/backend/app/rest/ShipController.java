@@ -142,9 +142,9 @@ public class ShipController {
             }
 
             // Parse sensor data
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy").withZone(ZoneId.systemDefault());
-            LocalDateTime time = LocalDateTime.parse(object.path("Time").asText(), formatter);
             ZoneId zoneId = ZoneId.systemDefault();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy").withZone(zoneId);
+            LocalDateTime time = LocalDateTime.parse(object.path("Time").asText(), formatter);
             Long epoch = time.atZone(zoneId).toEpochSecond();
             Double value = object.path("Value").asDouble();
 

@@ -13,7 +13,7 @@ export default {
     dataSet: Array
   },
   watch: {
-    dataSet(newVal) { // update
+    dataSet(newVal) { // update dataset on change
       this.series = [{data: newVal}];
     }
   },

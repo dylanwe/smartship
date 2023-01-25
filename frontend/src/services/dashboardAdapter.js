@@ -24,26 +24,41 @@ export default class DashboardAdapter {
         }
     }
 
-    //TODO user must have dashboard
+    /**
+     * Get the dashboard for a user
+     * @param {Object} user - The user object
+     * @returns {Promise<Object>} - A promise that resolves to the user's dashboard
+     */
     async getUserDashboard(user) {
-        const data = await this.fetchJson(`/user/${user.id}`)
-        return data
+        return await this.fetchJson(`/user/${user.id}`)
     }
 
+    /**
+     * Get data for a specific widget
+     * @param {string} id - The id of the widget
+     * @param {number} from - The starting timestamp in milliseconds
+     * @param {number} to - The ending timestamp in milliseconds
+     * @returns {Promise<Object>} - A promise that resolves to the widget's data
+     */
     async getWidgetData(id, from, to) {
         from = Math.floor(from / 1000)
         to = Math.floor(to / 1000)
        return await this.fetchJson(`/widget/${id}?from=${from}&to=${to}`);
     }
 
+    /**
+     * Save a layout
+     * @param {string} id - The id of the layout
+     * @param {Array} layoutArray - An array of layout data
+     * @returns {Promise<Object>} - A promise that resolves to the saved layout data
+     */
     async saveLayout(id, layoutArray) {
-        const data = await this.fetchJson(`/${id}`, {
+        return await this.fetchJson(`/${id}`, {
             method: 'PUT',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(layoutArray),
             credentials: 'include'
         })
-        return data
     }
 
 

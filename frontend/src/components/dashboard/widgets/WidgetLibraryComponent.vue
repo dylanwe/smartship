@@ -61,7 +61,7 @@ export default {
 
     async created() {
       const {ship} = this.sessionService.getCurrentUser();
-      this.widgets = await this.shipService.getSensors(ship.id);
+      this.widgets = await this.shipService.getSensors(ship?.id);
     },
 
     data() {
@@ -79,17 +79,15 @@ export default {
         }
     },
     computed: {
-        // Search widget filter
-        filteredSearch() {
-            if (this.search) {
-                let filtered = this.widgets.filter(({ sensor: {name} }) =>
-                    name.toLowerCase().includes(this.search)
-                );
-                return filtered.length ? filtered : null
-            } else {
-                return this.widgets;
-            }
-        }
+      /**
+       * filters the widgets based on the search parameter.
+       * @param {String} search - The search parameter used to filter the widgets
+       * @returns {Array|null} Returns an array of filtered widgets if search parameter is present and matches any widget, else returns null.
+       */
+      filteredSearch() {
+        // Check if the search parameter is present
+        return this.search ? this.widgets.filter(({ sensor: {name} }) => name.toLowerCase().includes(this.search.toLowerCase())) : this.widgets;
+      }
     }
 }
 </script>

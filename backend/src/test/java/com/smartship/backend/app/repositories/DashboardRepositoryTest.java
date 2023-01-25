@@ -1,6 +1,8 @@
 package com.smartship.backend.app.repositories;
 
 import com.smartship.backend.app.models.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +12,13 @@ import org.springframework.context.annotation.ComponentScan;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Jesaja Pavlovic
@@ -21,6 +26,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @DataJpaTest
 @ComponentScan({"com.smartship.backend.app.repositories"})
 class DashboardRepositoryTest {
+
 
     @Autowired
     private DashboardRepository dashboardRepository;
@@ -32,22 +38,85 @@ class DashboardRepositoryTest {
     private WidgetRepository widgetRepository;
     @Autowired
     private SensorRepository sensorRepository;
+    @Autowired
+    private SensorDataRepository sensorDataRepository;
+    @Autowired
+    private ShipSensorRepository shipSensorRepository;
 
-
-    private User bruce;
-    private Ship shipOne;
-    private Widget widget;
-    private Sensor sensorEngineOneTemp;
-    private ShipSensor shipSensor;
-    private SensorData shipOneSensorData;
-    private Dashboard dashboard;
-    private DashboardItem dashboardItem;
 
     @BeforeEach
     void setup() {
-        dashboardRepository.deleteAll();
+        addTestDashboard();
+        addTestShipData();
+    }
 
-        bruce = new User(
+    @AfterEach
+    void tearDown() {
+        shipSensorRepository.deleteAll();
+        shipRepository.deleteAll();
+        userRepository.deleteAll();
+        widgetRepository.deleteAll();
+        sensorRepository.deleteAll();
+        sensorDataRepository.deleteAll();
+        dashboardRepository.deleteAll();
+    }
+
+
+    @Test
+    void itShouldFindADashboard() {
+        List<Dashboard> dashboards = dashboardRepository.findAll();
+        // Check if dashboard has been successfully created
+        assertThat(dashboards.size())
+                .withFailMessage("Expected to find 1, but found 0")
+                .isEqualTo(1);
+    }
+
+    @Test
+    public void itShouldAddItemToLayout() {
+        // Get the first dashboard from the repository
+        Dashboard dashboard = dashboardRepository.findAll().get(0);
+        // Create a new dashboard item
+        DashboardItem dashboardItem = new DashboardItem(1, 3, 2, 2, shipSensorRepository.findAll().get(0));
+
+        // Assert that the dashboard's layout is initially empty
+        assertThat(dashboard.getLayout().size()).isZero();
+
+
+        dashboard.addToLayout(dashboardItem);
+
+
+        // Assert that the dashboard's layout is now not empty
+        assertThat(dashboard.getLayout().size()).isGreaterThan(0);
+        // Assert that the dashboard item was added to the correct dashboard
+        assertEquals(dashboardItem.getDashboard(), dashboard);
+
+    }
+
+    @Test
+    public void itShouldFindDashboardByUserId() {
+        User user = userRepository.findAll().get(0);
+
+        Optional<Dashboard> dashboard = dashboardRepository.findByUserId(user.getId());
+
+        assertThat(dashboard)
+                .withFailMessage("Expected to find dashboard by user id, but found nothing")
+                .isPresent();
+    }
+
+
+
+
+
+    /**
+     * This method adds test data for a user and a dashboard.
+     *
+     * The test data includes:
+     * - A user
+     * - A dashboard associated with the user.
+     */
+    private void addTestDashboard() {
+        // Create a new user
+        User bruce = new User(
                 "Bruce",
                 "Wayne",
                 "bruce@wayne.com",
@@ -56,71 +125,47 @@ class DashboardRepositoryTest {
                 User.ROLE.Operator,
                 "I am the night");
 
+        // Save the user to the repository
         userRepository.save(bruce);
 
+        // Create a new dashboard associated with the user
+        dashboardRepository.save(new Dashboard(bruce));
+    }
 
-        dashboard = new Dashboard(bruce);
-
-        dashboardRepository.save(dashboard);
 
 
-        shipOne = new Ship("07202515-a483-464c-b704-5671f104044b", "Ship 1");
-
+    /**
+     * This method adds test data for a ship, its sensor, its widget, and its sensor data.
+     *
+     * The test data includes:
+     * - A ship with ID "07202515-a483-464c-b704-5671f104044b" and name "Ship 1"
+     * - A sensor for the ship's engine temperature, with name "Engine 1 Temperature"
+     * - A widget for displaying the engine temperatures, with name "Engine Temperatures"
+     * - A ship sensor linking the ship and the sensor, with ID "bb7baec4-c049-45c5-81ce-2715801e6bff"
+     * - Sensor data for the ship's sensor, with a value of 67.68 and a timestamp of "13:10:00 15/07/2022"
+     */
+    private void addTestShipData() {
+        // Create a new ship
+        Ship shipOne = new Ship("07202515-a483-464c-b704-5671f104044b", "Ship 1");
         shipRepository.save(shipOne);
 
-        widget = new Widget("<", "Engine Temperatures", "WidgetTemperature", 2, 2, 2, 2, 2, 2);
-
-
-        sensorEngineOneTemp =new Sensor("Engine 1 Temperature", "Engine 1", Sensor.GROUP.Motor, Sensor.TYPE.Temperature, "Celsius");
-
+        // Create a new sensor for the ship's engine temperature
+        Sensor sensorEngineOneTemp = new Sensor("Engine 1 Temperature", "Engine 1", Sensor.GROUP.Motor, Sensor.TYPE.Temperature, "Celsius");
         sensorRepository.saveAll(List.of(sensorEngineOneTemp));
 
+        // Create a new widget for displaying the engine temperatures
         Widget widgetEngineTemperatures = new Widget("<", "Engine Temperatures", "WidgetTemperature", 2, 2, 2, 2, 2, 2);
         widgetRepository.save(widgetEngineTemperatures);
 
-
+        // Add the sensor to the widget
         widgetEngineTemperatures.addSensor(sensorEngineOneTemp);
         widgetEngineTemperatures.addSensor(sensorEngineOneTemp);
 
-
-
-        ShipSensor shipSensor = new ShipSensor("bb7baec4-c049-45c5-81ce-2715801e6bff", shipOne,sensorEngineOneTemp );
-
-
-
-
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy");
-//        LocalDateTime dateTime = LocalDateTime.parse("13:10:00 15/07/2022", formatter);
-//
-//        shipOneSensorData = new SensorData(67.68, dateTime, shipSensor);
+        // Create a new ship sensor linking the ship and the sensor
+        ShipSensor shipSensor = new ShipSensor("bb7baec4-c049-45c5-81ce-2715801e6bff", shipOne, sensorEngineOneTemp);
+        shipSensorRepository.save(shipSensor);
 
     }
 
 
-    @Test
-    public void itShouldAddItemToLayout() {
-
-        dashboard = new Dashboard(bruce);
-        dashboardItem = new DashboardItem(1, 3, 2, 2, shipSensor);
-
-        assertThat(dashboard.getLayout().size()).isZero();
-
-        dashboard.addToLayout(dashboardItem);
-        dashboardRepository.save(dashboard);
-
-        assertThat( dashboard.getLayout().size() >= 1).isTrue();
-    }
-
-    @Test
-    public void itShoulAddUserToShip() {
-        boolean added = shipOne.addUser(bruce);
-        assertThat(added).isTrue();
-    }
-
-
-    @Test
-    public void itShouldCreateASensorAndLinkToWidget() {
-        boolean added = shipOne.addUser(bruce);
-        assertThat(added).isTrue();
-    }
 }

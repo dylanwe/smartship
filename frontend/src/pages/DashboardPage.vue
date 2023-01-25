@@ -114,7 +114,6 @@
                    class="bg-white border border-neutral-400 rounded-lg  p-2"
         >
           <!-- Widget Component -->
-          <!--:is="item.shipSensor.sensor.widget.componentName"-->
           <component class="h-full w-full" v-if="item.shipSensor"
                      :is="item.shipSensor.sensor.widget.componentName"
                      :dataSet="item.data"
@@ -141,10 +140,10 @@
 import {GridLayout, GridItem} from 'vue3-grid-layout';
 import DatePicker from 'vue-datepicker-next';
 import 'vue-datepicker-next/index.css';
-import { formatDistance } from 'date-fns'
+import { formatDistance } from 'date-fns';
 import LineChart from '../components/charts/LineChart';
-import SparkBarChart from '../components/charts/SparkBarChart'
-import SparkLineChart from '../components/charts/SparkLineChart'
+import SparkBarChart from '../components/charts/SparkBarChart';
+import SparkLineChart from '../components/charts/SparkLineChart';
 import BigLineChart from '../components/dashboard/widgets/base/BigLineChart.vue';
 import SmallLineChart from '../components/dashboard/widgets/base/SmallLineChart.vue';
 import WidgetLibraryComponent from '../components/dashboard/widgets/WidgetLibraryComponent.vue';
@@ -342,7 +341,7 @@ export default {
       this.showDeleteWidgetModal = false
 
       // Remove from layout
-      const index = this.layout.map(item => item.i).indexOf(widget.i);
+      const index = this.layout.map(item => item.id).indexOf(widget.id);
       this.layout.splice(index, 1);
 
     }
