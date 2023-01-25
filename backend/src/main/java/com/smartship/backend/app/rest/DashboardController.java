@@ -3,6 +3,7 @@ package com.smartship.backend.app.rest;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.smartship.backend.app.exceptions.NotAcceptableException;
 import com.smartship.backend.app.exceptions.NotFoundException;
+import com.smartship.backend.app.exceptions.UnauthorizedException;
 import com.smartship.backend.app.models.*;
 import com.smartship.backend.app.repositories.*;
 import com.smartship.backend.app.utility.JWTokenInfo;
@@ -106,7 +107,7 @@ public class DashboardController {
      * Retrieve a dashboard by id.
      *
      * @param id id of the dashboard
-     * @return  a dashboard with 200 OK HTTP status
+     * @return a dashboard with 200 OK HTTP status
      * @throws NotFoundException if dashboard with given id is not found
      */
     @GetMapping(path = "{id}")
@@ -127,11 +128,15 @@ public class DashboardController {
      * @throws NotFoundException if user or dashboard with given user id is not found
      */
     @GetMapping(path = "user/{userId}")
-    public ResponseEntity<Dashboard> getDashboardByUserId(@PathVariable Long userId) {
+    public ResponseEntity<Dashboard> getDashboardByUserId(@PathVariable Long userId, @RequestAttribute(value = JWTokenInfo.KEY) JWTokenInfo jwTokenInfo) {
 
         // Find user by id
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException(String.format("User with userid %s is not found", userId)));
+
+        //check if the user id in the path variable matches the user id in the JWT
+        if (!userId.equals(jwTokenInfo.userId()))
+            throw new UnauthorizedException("User id doesn't match");
 
         // Get or create user dashboard
         Dashboard dashboard = dashboardRepository.findByUserId(userId)
@@ -148,7 +153,7 @@ public class DashboardController {
     /**
      * Update layout of a dashboard by replacing it with new items.
      *
-     * @param id id of the dashboard
+     * @param id    id of the dashboard
      * @param items new items to update the layout
      * @return a set of new DashboardItem with 200 OK HTTP status
      * @throws NotFoundException if dashboard with given id is not found
@@ -178,9 +183,9 @@ public class DashboardController {
     /**
      * Retrieve SensorData between two timestamps for a given Sensor Id
      *
-     * @param id Sensor Id for which data is being fetched
+     * @param id   Sensor Id for which data is being fetched
      * @param from starting timestamp in millis
-     * @param to ending timestamp in millis
+     * @param to   ending timestamp in millis
      * @return a list of SensorData with 200 OK HTTP status
      */
     @GetMapping("widget/{id}")

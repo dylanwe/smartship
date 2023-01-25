@@ -1,5 +1,6 @@
 package com.smartship.backend.app.rest;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.smartship.backend.app.models.Ship;
 import com.smartship.backend.app.models.User;
 import com.smartship.backend.app.repositories.NotificationRepository;
@@ -7,6 +8,7 @@ import com.smartship.backend.app.repositories.ShipRepository;
 import com.smartship.backend.app.repositories.UserRepository;
 import com.smartship.backend.app.response.LoginResponse;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +16,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,11 +48,16 @@ public class ShipControllerTest {
         userRepository.deleteAll();
     }
 
+    @BeforeEach
+    void setUp() {
+        // create ship
+        Ship ship = new Ship("07202515-a483-464c-b704-5671f104044b", "Ship Name");
+        shipRepository.save(ship);
+    }
+
     @Test
     void itShouldAddShipSensorAndData() {
-        // create ship
-        Ship ship = new Ship("07202515-a483-464c-b704-5671f104044b","Ship Name");
-        shipRepository.save(ship);
+         Ship ship = shipRepository.findAll().get(0);
 
         //create request body
         Map<String, String> body = new HashMap<>();
@@ -63,15 +73,10 @@ public class ShipControllerTest {
         body.put("GPS-Latitude", "N52°3'53.754");
         body.put("GPS-Longitude", "N52°3'53.554");
 
+        ResponseEntity<ObjectNode> response = restTemplate.exchange("http://localhost:8087/api/v1/ships/" + ship.getSmartShipId(), HttpMethod.POST, new HttpEntity<>(List.of(body)), ObjectNode.class);
 
+        assertEquals(1, Objects.requireNonNull(response.getBody()).path("id").asLong(), "No data has been added");
 
-        //set the json object in http entity
-        HttpEntity<Map<String, String>> httpEntity = new HttpEntity<>(body);
-
-        //create request
-        restTemplate.postForObject("/api/v1/ships/" + ship.getSmartShipId() , httpEntity, Map.class);
-
-        assertThat(ship.getShipSensors().size()).isNotZero();
     }
 
 }

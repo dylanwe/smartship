@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
@@ -81,14 +82,16 @@ class DashboardRepositoryTest {
         // Assert that the dashboard's layout is initially empty
         assertThat(dashboard.getLayout().size()).isZero();
 
-
         dashboard.addToLayout(dashboardItem);
 
 
         // Assert that the dashboard's layout is now not empty
-        assertThat(dashboard.getLayout().size()).isGreaterThan(0);
+        assertThat(dashboard.getLayout().size())
+                .withFailMessage("No dashboard item was added.")
+                .isGreaterThan(0);
+
         // Assert that the dashboard item was added to the correct dashboard
-        assertEquals(dashboardItem.getDashboard(), dashboard);
+        assertEquals(dashboardItem.getDashboard(), dashboard, "The two dashboards aren't the same");
 
     }
 
@@ -101,6 +104,28 @@ class DashboardRepositoryTest {
         assertThat(dashboard)
                 .withFailMessage("Expected to find dashboard by user id, but found nothing")
                 .isPresent();
+    }
+
+    @Test
+    public void itShouldNotFindDashboard() {
+        // Make a user
+        User bruce = new User(
+                "Bruce",
+                "Wayne",
+                "eafaef@wayne.com",
+                BCrypt.hashpw("secret", BCrypt.gensalt()),
+                LocalDate.now().minusYears(5),
+                User.ROLE.Operator,
+                "I am the night");
+
+        // save user
+        bruce = userRepository.save(bruce);
+
+        Boolean dashboard = dashboardRepository.existsByUserId(bruce.getId());
+
+        assertThat(dashboard)
+                .withFailMessage("Expected to not find dashboard by user id, but found")
+                .isFalse();
     }
 
 
