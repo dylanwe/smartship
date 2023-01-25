@@ -42,7 +42,7 @@ public class ShipController {
 
 
     /**
-     * Create a new ship
+     * This endpoint handles the POST requests to create a new ship
      * @param body
      * @return
      */
@@ -65,8 +65,9 @@ public class ShipController {
     }
 
     /**
-     * Get all ships
-     * @return List of ships
+     * This endpoint handles the GET requests to retrieve a list of all ships.
+     *
+     * @return list of all ships, with a status of OK.
      */
     @GetMapping
     @JsonView(CustomJson.Shallow.class)
@@ -76,7 +77,7 @@ public class ShipController {
 
 
     /**
-     * Find ship by smartship id
+     * This endpoint handles the GET requests to Find ship by smartship id
      */
     @GetMapping("{smartShipId}")
     public ResponseEntity<Ship> findShip(@PathVariable String smartShipId) {
@@ -88,14 +89,13 @@ public class ShipController {
 
 
     /**
-     * Digest ship & sensor data and store them
+     * This endpoint handles the POST requests to Digest ship & sensor data and store them
      * @param smartShipId Ship id
      * @param rawData     List of ship data objects
      * @return Ship instance
      */
     @PostMapping(path = "{smartShipId}")
     public ResponseEntity<Ship> addData(@PathVariable String smartShipId, @RequestBody ObjectNode... rawData) {
-        //FIXME JWT role check (admin)
 
         // Map of unique sensors in given data List
         Map<String, Sensor> sensors = new HashMap<>();
@@ -108,9 +108,10 @@ public class ShipController {
         List<SensorData> sensorData = new ArrayList<>();
         List<ShipData> shipData = new ArrayList<>();
 
-
+        // Loop through the raw data objects
         for (ObjectNode object : rawData) {
 
+            // Extract sensor data from the object
             String sensorId = object.path("SensorID").asText();
             String sensorName = object.path("SensorName").asText();
             Sensor.GROUP sensorGroup = Sensor.GROUP.valueOf(object.path("Group").asText());
@@ -140,13 +141,11 @@ public class ShipController {
                 }
             }
 
-            // Parse sensor data 13:10:00 15/07/2022
+            // Parse sensor data
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss dd/MM/yyyy").withZone(ZoneId.systemDefault());
-
             LocalDateTime time = LocalDateTime.parse(object.path("Time").asText(), formatter);
-            ZoneId zoneId = ZoneId.systemDefault(); // or: ZoneId.of("Europe/Oslo");
+            ZoneId zoneId = ZoneId.systemDefault();
             Long epoch = time.atZone(zoneId).toEpochSecond();
-
             Double value = object.path("Value").asDouble();
 
             SensorData newSensorData = new SensorData(value, epoch, shipSensors.get(sensorId));
@@ -159,10 +158,12 @@ public class ShipController {
 
             shipData.add(new ShipData(speed, gpsLatitude, gpsLongitude, newSensorData));
 
+
+
+            // Create notifications if sensor thresholds are exceeded
             ShipSensor shipSensor = shipSensors.get(sensorId);
 
             List<Notification> notifications = new ArrayList<>();
-
                 if (shipSensor.getMaxThreshold() != null && shipSensor.getMaxThreshold() < newSensorData.getVal()) {
                     for (User user : ship.getUsers()) {
                     Notification notification = new Notification("Your sensor " + sensorName + " went over the maximum threshold",
@@ -182,7 +183,7 @@ public class ShipController {
             notificationRepository.saveAll(notifications);
         }
 
-        // Save data to repos
+        // Save data to repositories
         sensorDataRepository.saveAll(sensorData);
         shipDataRepository.saveAll(shipData);
 
@@ -190,8 +191,8 @@ public class ShipController {
     }
 
     /**
-     * Get all sensors of a ship
-     * @param shipId
+     * This endpoint handles the GET requests to get all sensors of a ship
+     * @param shipId The ID of the ship
      * @return
      */
     @GetMapping("{shipId}/sensors")
@@ -200,38 +201,57 @@ public class ShipController {
         return ResponseEntity.ok().body(shipSensorRepository.findShipSensorByShipId(shipId));
     }
 
+
+    /**
+     * This endpoint handles the DELETE requests to delete a ship by its ID
+     *  @param id The ID of the ship to delete.
+     *  @return Deleted ship or a 404 Not Found error if the ship was not found.
+     **/
     @DeleteMapping(path = "/{id}")
     public ResponseEntity<Ship> deleteShipById(@PathVariable long id) {
-
+        // Find the ship by its ID
         Ship foundShip = shipRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(String.format("Ship with id %s wasn't found", id)));
 
+        // Remove the ship from all associated users
         for (int i = 0; i < foundShip.getUsers().size(); i++) {
             foundShip.getUsers().stream().toList().get(i).removeShip(foundShip);
             foundShip.removeUser(foundShip.getUsers().stream().toList().get(i));
         }
 
+        // Delete the ship from the repository
         shipRepository.deleteById(id);
 
+        // Return the deleted ship
         return ResponseEntity.ok().body(foundShip);
     }
 
 
+    /**
+     * This endpoint handles PUT requests to update a ship sensor by its ID.
+     *
+     * @param sensorId The ID of the ship sensor to update.
+     * @param body The updated sensor data in JSON format.
+     * @return Updated ship sensor, or a 404 Not Found error if the sensor was not found.
+     */
     @PutMapping("/sensors/{sensorId}")
     @JsonView(CustomJson.Summary.class)
     public ResponseEntity<ShipSensor> updateSensor( @PathVariable String sensorId, @RequestBody ObjectNode body ) {
+        // Find the ship sensor by its ID
+        ShipSensor foundShipSensor = shipSensorRepository.findById(sensorId)
+                .orElseThrow(() -> new NotFoundException(String.format("Ship Sensor with id %s wasn't found", sensorId)));
 
-     ShipSensor foundShipSensor = shipSensorRepository.findById(sensorId)
-             .orElseThrow(() -> new NotFoundException(String.format("Ship Sensor with id %s wasn't found", sensorId)));
-
+        // Update the min and max threshold values
         double min = body.get("minThreshold").asDouble();
         double max = body.get("maxThreshold").asDouble();
 
         foundShipSensor.setMinThreshold(body.get("minThreshold").isNull() ? null : min);
         foundShipSensor.setMaxThreshold(body.get("maxThreshold").isNull() ? null : max);
 
+        // Save the updated sensor to the repository
         shipSensorRepository.save(foundShipSensor);
 
+        // Return the updated sensor
         return ResponseEntity.ok().body(foundShipSensor);
     }
 
