@@ -1,8 +1,3 @@
-- Technical documentation: https://gitlab.fdmci.hva.nl/se-ewa/2022-2023-1/smart-4/-/wikis/Technical-documentation
-
-## Deployed application
-link: https://smartship-fe-app-production.up.railway.app/
-
 #### Login information
 **Operator**
 email: test@mail.com
