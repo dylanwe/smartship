@@ -1,3 +1,8 @@
+# Smartship
+![dashboard](https://github.com/dylanwe/smartship/blob/main/frontend/src/assets/img/smartship.png)
+
+This project attempts to help give an overview on how a ship is doing and what needs to be done.
+
 #### Login information
 **Operator**
 email: test@mail.com
